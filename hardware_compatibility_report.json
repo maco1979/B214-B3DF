@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-12-31T05:10:42.777609",
+  "system_info": {
+    "os": "Windows",
+    "os_version": "11",
+    "architecture": "AMD64",
+    "python_version": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "platform_info": "Windows-11-10.0.22631-SP0"
+  },
+  "hardware_info": {
+    "cpu": {
+      "logical_cores": 8,
+      "physical_cores": 4
+    },
+    "memory": {
+      "total_gb": 31.96,
+      "available_gb": 9.6,
+      "percent_used": 69.9
+    },
+    "disk": {
+      "total_gb": 199.39,
+      "free_gb": 95.89,
+      "percent_used": 51.91
+    }
+  },
+  "dependencies": {
+    "python": {
+      "required": true,
+      "installed": true,
+      "version": "3.14.0"
+    },
+    "jax": {
+      "required": true,
+      "installed": true,
+      "version": "0.8.2"
+    },
+    "flax": {
+      "required": false,
+      "installed": false
+    },
+    "numpy": {
+      "required": true,
+      "installed": true,
+      "version": "2.3.5"
+    },
+    "fastapi": {
+      "required": true,
+      "installed": true,
+      "version": "0.104.1"
+    },
+    "requests": {
+      "required": true,
+      "installed": true,
+      "version": "2.32.4"
+    },
+    "pydantic": {
+      "required": true,
+      "installed": true,
+      "version": "2.12.5"
+    }
+  },
+  "overall_compatibility": "fully_compatible"
+}

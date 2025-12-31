@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UI测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #2D2D2D 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .test-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .test-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00D4FF 0%, #007BFF 50%, #6F42C1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .test-status {
+            font-size: 1.2rem;
+            color: #00D4FF;
+            margin-bottom: 2rem;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #00D4FF 0%, #007BFF 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+        
+        .success {
+            color: #00D4FF;
+        }
+        
+        .error {
+            color: #FF6B6B;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">AI农业平台 - UI测试</h1>
+        <div class="test-status">测试前端UI显示状态</div>
+        
+        <div class="test-card">
+            <h2>测试结果</h2>
+            <p id="status" class="success">✅ 页面已成功加载</p>
+            <p>✅ CSS样式正常应用</p>
+            <p>✅ JavaScript功能正常</p>
+        </div>
+        
+        <div class="test-card">
+            <h2>下一步操作</h2>
+            <button class="test-button" onclick="testReactApp()">测试React应用</button>
+            <button class="test-button" onclick="checkViteServer()">检查Vite服务器</button>
+            <button class="test-button" onclick="openMainApp()">打开主应用</button>
+        </div>
+        
+        <div id="result" class="test-card" style="display: none;">
+            <h2>测试结果详情</h2>
+            <p id="result-text"></p>
+        </div>
+    </div>
+
+    <script>
+        function testReactApp() {
+            const result = document.getElementById('result');
+            const resultText = document.getElementById('result-text');
+            
+            try {
+                // 测试React应用是否可访问
+                fetch('http://localhost:3000')
+                    .then(response => {
+                        if (response.ok) {
+                            resultText.innerHTML = '✅ React应用可正常访问<br>✅ 服务器响应正常';
+                            result.style.display = 'block';
+                        } else {
+                            resultText.innerHTML = '❌ React应用访问失败<br>状态码: ' + response.status;
+                            result.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        resultText.innerHTML = '❌ React应用无法访问<br>错误: ' + error.message;
+                        result.style.display = 'block';
+                    });
+            } catch (error) {
+                resultText.innerHTML = '❌ 测试过程中出错: ' + error.message;
+                result.style.display = 'block';
+            }
+        }
+        
+        function checkViteServer() {
+            const result = document.getElementById('result');
+            const resultText = document.getElementById('result-text');
+            
+            try {
+                // 检查Vite开发服务器状态
+                fetch('http://localhost:3000/@vite/client')
+                    .then(response => {
+                        if (response.ok) {
+                            resultText.innerHTML = '✅ Vite开发服务器正常运行<br>✅ HMR功能可用';
+                            result.style.display = 'block';
+                        } else {
+                            resultText.innerHTML = '❌ Vite服务器异常<br>状态码: ' + response.status;
+                            result.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        resultText.innerHTML = '❌ Vite服务器无法访问<br>错误: ' + error.message;
+                        result.style.display = 'block';
+                    });
+            } catch (error) {
+                resultText.innerHTML = '❌ 测试过程中出错: ' + error.message;
+                result.style.display = 'block';
+            }
+        }
+        
+        function openMainApp() {
+            window.open('http://localhost:3000', '_blank');
+        }
+        
+        // 页面加载完成后自动测试
+        window.addEventListener('load', function() {
+            console.log('UI测试页面已加载完成');
+            console.log('Vite服务器地址: http://localhost:3000');
+            console.log('React应用地址: http://localhost:3000');
+        });
+    </script>
+</body>
+</html>

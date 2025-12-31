@@ -1,0 +1,228 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: redis
+data:
+  redis.conf: |
+    maxmemory 2gb
+    maxmemory-policy allkeys-lru
+    cluster-enabled yes
+    cluster-config-file nodes.conf
+    cluster-node-timeout 5000
+    cluster-announce-ip ai-platform-redis-0.ai-platform-redis.ai-platform.svc.cluster.local
+    cluster-announce-port 6379
+    cluster-announce-bus-port 16379
+    appendonly yes
+    save 900 1
+    save 300 10
+    save 60 10000
+    tcp-keepalive 60
+    timeout 300
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ai-platform-redis
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: redis
+spec:
+  serviceName: ai-platform-redis
+  replicas: 6  # 3主3从，支持故障转移
+  selector:
+    matchLabels:
+      app: ai-platform
+      component: redis
+  template:
+    metadata:
+      labels:
+        app: ai-platform
+        component: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+          name: redis
+        - containerPort: 16379
+          name: cluster
+        command:
+        - sh
+        - -c
+        - |
+          redis-server /etc/redis/redis.conf
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "3Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: redis-config
+          mountPath: /etc/redis
+        - name: redis-data
+          mountPath: /data
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - redis-cli ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - redis-cli ping
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: redis-config
+        configMap:
+          name: redis-config
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-platform-redis
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: redis
+spec:
+  clusterIP: None  # Headless service for StatefulSet
+  selector:
+    app: ai-platform
+    component: redis
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  - name: cluster
+    port: 16379
+    targetPort: 16379
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ai-platform-redis-hpa
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: redis
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: ai-platform-redis
+  minReplicas: 6
+  maxReplicas: 12
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+# Redis哨兵服务，用于监控和故障转移
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-platform-redis-sentinel
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: redis-sentinel
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ai-platform
+      component: redis-sentinel
+  template:
+    metadata:
+      labels:
+        app: ai-platform
+        component: redis-sentinel
+    spec:
+      containers:
+      - name: sentinel
+        image: redis:7-alpine
+        command:
+        - sh
+        - -c
+        - |
+          redis-sentinel /etc/redis/sentinel.conf
+        ports:
+        - containerPort: 26379
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: sentinel-config
+          mountPath: /etc/redis
+      volumes:
+      - name: sentinel-config
+        configMap:
+          name: redis-sentinel-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-sentinel-config
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: redis-sentinel
+data:
+  sentinel.conf: |
+    port 26379
+    sentinel monitor mymaster ai-platform-redis-0.ai-platform-redis.ai-platform.svc.cluster.local 6379 2
+    sentinel down-after-milliseconds mymaster 5000
+    sentinel failover-timeout mymaster 10000
+    sentinel parallel-syncs mymaster 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-platform-redis-sentinel
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: redis-sentinel
+spec:
+  selector:
+    app: ai-platform
+    component: redis-sentinel
+  ports:
+  - port: 26379
+    targetPort: 26379
+  type: ClusterIP

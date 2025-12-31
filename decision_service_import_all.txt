@@ -1,0 +1,106 @@
+Found 11 python files under decision-service\src
+-- Importing decision-service\src\__init__.py as decision.__init__
+   OK
+-- Importing decision-service\src\api\__init__.py as decision.api.__init__
+   OK
+-- Importing decision-service\src\api\routes\__init__.py as decision.api.routes.__init__
+   OK
+-- Importing decision-service\src\api\routes\decision.py as decision.api.routes.decision
+   OK
+-- Importing decision-service\src\config\__init__.py as decision.config.__init__
+   OK
+-- Importing decision-service\src\config\config.py as decision.config.config
+   FAILED
+Traceback (most recent call last):
+  File "D:\1.5\scripts\import_all_decision.py", line 24, in <module>
+    spec.loader.exec_module(mod)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "<frozen importlib._bootstrap_external>", line 762, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\1.5\decision-service\src\config\config.py", line 9, in <module>
+    class Settings(BaseSettings):
+    ...<46 lines>...
+        }
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\pydantic\_internal\_model_construction.py", line 130, in __new__
+    config_wrapper = ConfigWrapper.for_model(bases, namespace, raw_annotations, kwargs)
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\pydantic\_internal\_config.py", line 138, in for_model
+    raise PydanticUserError('"Config" and "model_config" cannot be used together', code='config-both')
+pydantic.errors.PydanticUserError: "Config" and "model_config" cannot be used together
+
+For further information visit https://errors.pydantic.dev/2.12/u/config-both
+-- Importing decision-service\src\core\__init__.py as decision.core.__init__
+   OK
+-- Importing decision-service\src\core\decision_engine.py as decision.core.decision_engine
+   FAILED
+Traceback (most recent call last):
+  File "D:\1.5\scripts\import_all_decision.py", line 24, in <module>
+    spec.loader.exec_module(mod)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "<frozen importlib._bootstrap_external>", line 762, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\1.5\decision-service\src\core\decision_engine.py", line 6, in <module>
+    import flax.linen as nn
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\__init__.py", line 26, in <module>
+    from flax import linen
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\__init__.py", line 67, in <module>
+    from .attention import (
+    ...<8 lines>...
+    )
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\attention.py", line 35, in <module>
+    from flax.linen.normalization import LayerNorm
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\normalization.py", line 1184, in <module>
+    class WeightNorm(Module):
+    ...<206 lines>...
+        return jnp.asarray(value_bar, dtype)
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\module.py", line 1042, in __init_subclass__
+    cls._customized_dataclass_transform(kw_only)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\module.py", line 1114, in _customized_dataclass_transform
+    kw_only_dataclasses.dataclass(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+      cls,
+      ^^^^
+    ...<2 lines>...
+      extra_fields=extra_fields,
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )  # pytype: disable=wrong-keyword-args
+    ^
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\kw_only_dataclasses.py", line 125, in dataclass
+    return wrap if cls is None else wrap(cls)
+                                    ~~~~^^^^^
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\kw_only_dataclasses.py", line 123, in wrap
+    return _process_class(cls, extra_fields=extra_fields, **kwargs)
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\kw_only_dataclasses.py", line 210, in _process_class
+    transformed_cls: type[M] = dataclasses.dataclass(cls, **kwargs)
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\dataclasses.py", line 1370, in dataclass
+    return wrap(cls)
+  File "C:\Python314\Lib\dataclasses.py", line 1360, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+                          frozen, match_args, kw_only, slots,
+                          weakref_slot)
+  File "C:\Python314\Lib\dataclasses.py", line 1038, in _process_class
+    raise TypeError(f'{name!r} is a field but has no type annotation')
+TypeError: 'variable_filter' is a field but has no type annotation
+-- Importing decision-service\src\main.py as decision.main
+   FAILED
+Traceback (most recent call last):
+  File "D:\1.5\scripts\import_all_decision.py", line 24, in <module>
+    spec.loader.exec_module(mod)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "<frozen importlib._bootstrap_external>", line 762, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "D:\1.5\decision-service\src\main.py", line 12, in <module>
+    from .config.config import settings
+ModuleNotFoundError: No module named 'decision'
+-- Importing decision-service\src\models\__init__.py as decision.models.__init__
+   OK
+-- Importing decision-service\src\models\decision_models.py as decision.models.decision_models
+   OK
+
+Summary:
+Total: 11  Failed: 3
+Failures:
+decision-service\src\config\config.py FAILED
+decision-service\src\core\decision_engine.py FAILED
+decision-service\src\main.py FAILED

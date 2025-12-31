@@ -1,0 +1,200 @@
+{
+  "start_time": "2025-12-31T06:53:10.327381",
+  "test_cycles": [
+    {
+      "cycle_num": 1,
+      "timestamp": "2025-12-31T06:53:10.376718",
+      "checks": [
+        {
+          "endpoint": "/health",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.002747,
+          "timestamp": "2025-12-31T06:53:10.335658"
+        },
+        {
+          "endpoint": "/api/community/posts",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.024214,
+          "timestamp": "2025-12-31T06:53:10.360802"
+        },
+        {
+          "endpoint": "/api/auth/login",
+          "status_code": 422,
+          "success": true,
+          "response_time": 0.014636,
+          "timestamp": "2025-12-31T06:53:10.376557"
+        }
+      ],
+      "successful_count": 3,
+      "failed_count": 0,
+      "success_rate": 1.0,
+      "cycle_duration": 0.048341989517211914
+    },
+    {
+      "cycle_num": 2,
+      "timestamp": "2025-12-31T06:53:15.405511",
+      "checks": [
+        {
+          "endpoint": "/health",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.018711,
+          "timestamp": "2025-12-31T06:53:15.398536"
+        },
+        {
+          "endpoint": "/api/community/posts",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.0031,
+          "timestamp": "2025-12-31T06:53:15.402746"
+        },
+        {
+          "endpoint": "/api/auth/login",
+          "status_code": 422,
+          "success": true,
+          "response_time": 0.001833,
+          "timestamp": "2025-12-31T06:53:15.405370"
+        }
+      ],
+      "successful_count": 3,
+      "failed_count": 0,
+      "success_rate": 1.0,
+      "cycle_duration": 0.026592731475830078
+    },
+    {
+      "cycle_num": 3,
+      "timestamp": "2025-12-31T06:53:20.434010",
+      "checks": [
+        {
+          "endpoint": "/health",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.002211,
+          "timestamp": "2025-12-31T06:53:20.410891"
+        },
+        {
+          "endpoint": "/api/community/posts",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.019453,
+          "timestamp": "2025-12-31T06:53:20.431145"
+        },
+        {
+          "endpoint": "/api/auth/login",
+          "status_code": 422,
+          "success": true,
+          "response_time": 0.001913,
+          "timestamp": "2025-12-31T06:53:20.433931"
+        }
+      ],
+      "successful_count": 3,
+      "failed_count": 0,
+      "success_rate": 1.0,
+      "cycle_duration": 0.026137113571166992
+    },
+    {
+      "cycle_num": 4,
+      "timestamp": "2025-12-31T06:53:25.459540",
+      "checks": [
+        {
+          "endpoint": "/health",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.002509,
+          "timestamp": "2025-12-31T06:53:25.439769"
+        },
+        {
+          "endpoint": "/api/community/posts",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.015311,
+          "timestamp": "2025-12-31T06:53:25.456318"
+        },
+        {
+          "endpoint": "/api/auth/login",
+          "status_code": 422,
+          "success": true,
+          "response_time": 0.002355,
+          "timestamp": "2025-12-31T06:53:25.459456"
+        }
+      ],
+      "successful_count": 3,
+      "failed_count": 0,
+      "success_rate": 1.0,
+      "cycle_duration": 0.023186206817626953
+    },
+    {
+      "cycle_num": 5,
+      "timestamp": "2025-12-31T06:53:30.485975",
+      "checks": [
+        {
+          "endpoint": "/health",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.001982,
+          "timestamp": "2025-12-31T06:53:30.463858"
+        },
+        {
+          "endpoint": "/api/community/posts",
+          "status_code": 200,
+          "success": true,
+          "response_time": 0.002824,
+          "timestamp": "2025-12-31T06:53:30.467596"
+        },
+        {
+          "endpoint": "/api/auth/login",
+          "status_code": 422,
+          "success": true,
+          "response_time": 0.017156,
+          "timestamp": "2025-12-31T06:53:30.485856"
+        }
+      ],
+      "successful_count": 3,
+      "failed_count": 0,
+      "success_rate": 1.0,
+      "cycle_duration": 0.024855375289916992
+    }
+  ],
+  "errors": [],
+  "performance_metrics": [
+    {
+      "cycle_num": 1,
+      "avg_response_time": 0.013865666666666667,
+      "min_response_time": 0.002747,
+      "max_response_time": 0.024214,
+      "timestamp": "2025-12-31T06:53:10.376737"
+    },
+    {
+      "cycle_num": 2,
+      "avg_response_time": 0.007881333333333332,
+      "min_response_time": 0.001833,
+      "max_response_time": 0.018711,
+      "timestamp": "2025-12-31T06:53:15.405534"
+    },
+    {
+      "cycle_num": 3,
+      "avg_response_time": 0.007859,
+      "min_response_time": 0.001913,
+      "max_response_time": 0.019453,
+      "timestamp": "2025-12-31T06:53:20.434017"
+    },
+    {
+      "cycle_num": 4,
+      "avg_response_time": 0.006724999999999999,
+      "min_response_time": 0.002355,
+      "max_response_time": 0.015311,
+      "timestamp": "2025-12-31T06:53:25.459548"
+    },
+    {
+      "cycle_num": 5,
+      "avg_response_time": 0.007320666666666667,
+      "min_response_time": 0.001982,
+      "max_response_time": 0.017156,
+      "timestamp": "2025-12-31T06:53:30.485984"
+    }
+  ],
+  "end_time": "2025-12-31T06:53:35.489484",
+  "total_duration_seconds": 25.159779
+}

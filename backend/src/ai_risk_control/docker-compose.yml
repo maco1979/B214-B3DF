@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  ai-risk-control:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - DATABASE_URL=postgresql://postgres:password@db:5432/ai_risk_control
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - ai-risk-network
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=ai_risk_control
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - ai-risk-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - ai-risk-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - ai-risk-control
+    restart: unless-stopped
+    networks:
+      - ai-risk-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  ai-risk-network:
+    driver: bridge

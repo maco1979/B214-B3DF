@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摄像头测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #video {
+            width: 100%;
+            max-width: 640px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        #canvas {
+            margin-top: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .status {
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .photo-container {
+            text-align: center;
+        }
+        #photo-preview {
+            max-width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>摄像头测试页面</h1>
+        
+        <div class="status" id="status">点击"开始摄像头"按钮启动摄像头</div>
+        
+        <div class="video-container">
+            <video id="video" autoplay playsinline></video>
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn">开始摄像头</button>
+            <button id="stop-btn" disabled>停止摄像头</button>
+            <button id="photo-btn" disabled>拍照</button>
+            <button id="switch-btn" disabled>切换摄像头</button>
+            <button id="clear-btn" disabled>清除照片</button>
+        </div>
+        
+        <div class="photo-container">
+            <h2>拍摄的照片</h2>
+            <img id="photo-preview" alt="拍摄的照片">
+        </div>
+    </div>
+    
+    <canvas id="canvas" style="display: none;"></canvas>
+    
+    <script src="camera_test.js"></script>
+</body>
+</html>

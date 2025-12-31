@@ -1,0 +1,389 @@
+# Prometheus 服务监控配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: ai-platform
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    rule_files:
+      - "alert_rules.yml"
+
+    scrape_configs:
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+        - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: default;kubernetes;https
+
+      - job_name: 'kubernetes-nodes'
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          target_label: __metrics_path__
+          replacement: /api/v1/nodes/${1}/proxy/metrics
+
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name
+
+      # 监控AI平台各微服务
+      - job_name: 'ai-platform-auth'
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app]
+          action: keep
+          regex: ai-platform
+        - source_labels: [__meta_kubernetes_service_label_component]
+          action: keep
+          regex: auth
+        - source_labels: [__meta_kubernetes_service_port_name]
+          action: keep
+          regex: http
+        - target_label: component
+          replacement: auth
+
+      - job_name: 'ai-platform-models'
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app]
+          action: keep
+          regex: ai-platform
+        - source_labels: [__meta_kubernetes_service_label_component]
+          action: keep
+          regex: models
+        - source_labels: [__meta_kubernetes_service_port_name]
+          action: keep
+          regex: http
+        - target_label: component
+          replacement: models
+
+      - job_name: 'ai-platform-inference'
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app]
+          action: keep
+          regex: ai-platform
+        - source_labels: [__meta_kubernetes_service_label_component]
+          action: keep
+          regex: inference
+        - source_labels: [__meta_kubernetes_service_port_name]
+          action: keep
+          regex: http
+        - target_label: component
+          replacement: inference
+
+      - job_name: 'ai-platform-decision'
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app]
+          action: keep
+          regex: ai-platform
+        - source_labels: [__meta_kubernetes_service_label_component]
+          action: keep
+          regex: decision
+        - source_labels: [__meta_kubernetes_service_port_name]
+          action: keep
+          regex: http
+        - target_label: component
+          replacement: decision
+
+      - job_name: 'ai-platform-backend'
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app]
+          action: keep
+          regex: ai-platform
+        - source_labels: [__meta_kubernetes_service_label_component]
+          action: keep
+          regex: backend
+        - source_labels: [__meta_kubernetes_service_port_name]
+          action: keep
+          regex: http
+        - target_label: component
+          replacement: backend
+
+      - job_name: 'ai-platform-frontend'
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app]
+          action: keep
+          regex: ai-platform
+        - source_labels: [__meta_kubernetes_service_label_component]
+          action: keep
+          regex: frontend
+        - source_labels: [__meta_kubernetes_service_port_name]
+          action: keep
+          regex: http
+        - target_label: component
+          replacement: frontend
+
+---
+# AlertManager 配置
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: ai-platform
+data:
+  alertmanager.yml: |
+    global:
+      smtp_smarthost: 'localhost:587'
+      smtp_from: 'alertmanager@ai-platform.local'
+      smtp_auth_username: 'alertmanager'
+      smtp_auth_password: 'password'
+
+    route:
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'default-receiver'
+      routes:
+      - match:
+          severity: critical
+        receiver: 'critical-receiver'
+
+    receivers:
+    - name: 'default-receiver'
+      email_configs:
+      - to: 'admin@ai-platform.local'
+        send_resolved: true
+    - name: 'critical-receiver'
+      email_configs:
+      - to: 'admin@ai-platform.local'
+        send_resolved: true
+      webhook_configs:
+      - url: 'http://webhook-receiver:8080/alert'
+
+---
+# Prometheus 服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-server
+  namespace: ai-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+      component: server
+  template:
+    metadata:
+      labels:
+        app: prometheus
+        component: server
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        args:
+          - '--config.file=/etc/prometheus/prometheus.yml'
+          - '--storage.tsdb.path=/prometheus'
+          - '--web.console.libraries=/etc/prometheus/console_libraries'
+          - '--web.console.templates=/etc/prometheus/consoles'
+          - '--storage.tsdb.retention.time=200h'
+          - '--web.enable-lifecycle'
+        ports:
+        - containerPort: 9090
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: prometheus-config-volume
+          mountPath: /etc/prometheus/
+        - name: prometheus-storage-volume
+          mountPath: /prometheus/
+      volumes:
+      - name: prometheus-config-volume
+        configMap:
+          name: prometheus-config
+      - name: prometheus-storage-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-server
+  namespace: ai-platform
+  labels:
+    app: prometheus
+    component: server
+spec:
+  selector:
+    app: prometheus
+    component: server
+  ports:
+  - port: 9090
+    targetPort: 9090
+  type: ClusterIP
+---
+# AlertManager 服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: ai-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+      - name: alertmanager
+        image: prom/alertmanager:latest
+        args:
+          - '--config.file=/etc/alertmanager/alertmanager.yml'
+          - '--storage.path=/alertmanager'
+        ports:
+        - containerPort: 9033
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: alertmanager-config-volume
+          mountPath: /etc/alertmanager/
+        - name: alertmanager-storage-volume
+          mountPath: /alertmanager/
+      volumes:
+      - name: alertmanager-config-volume
+        configMap:
+          name: alertmanager-config
+      - name: alertmanager-storage-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: ai-platform
+  labels:
+    app: alertmanager
+spec:
+  selector:
+    app: alertmanager
+  ports:
+  - port: 9093
+    targetPort: 9033
+  type: ClusterIP
+---
+# 自动扩缩容指标服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-server
+  namespace: ai-platform
+  labels:
+    app: metrics-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metrics-server
+  template:
+    metadata:
+      labels:
+        app: metrics-server
+    spec:
+      containers:
+      - name: metrics-server
+        image: k8s.gcr.io/metrics-server/metrics-server:v0.6.2
+        args:
+        - --cert-dir=/tmp
+        - --secure-port=4443
+        - --kubelet-insecure-tls
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        ports:
+        - name: https
+          containerPort: 4443
+          protocol: TCP
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: tmp-dir
+          mountPath: /tmp
+      volumes:
+      - name: tmp-dir
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics-server
+  namespace: ai-platform
+  labels:
+    app: metrics-server
+spec:
+  selector:
+    app: metrics-server
+  ports:
+  - name: https
+    port: 443
+    targetPort: 4443
+  type: ClusterIP

@@ -1,0 +1,195 @@
+# Celery Worker 配置
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-platform-celery-worker
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: celery-worker
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: ai-platform
+      component: celery-worker
+  template:
+    metadata:
+      labels:
+        app: ai-platform
+        component: celery-worker
+    spec:
+      containers:
+      - name: celery-worker
+        image: ai-platform-worker:latest
+        command: ["celery", "-A", "tasks", "worker", "--loglevel=info"]
+        env:
+        - name: CELERY_BROKER_URL
+          value: "redis://ai-platform-redis:6379/0"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://ai-platform-redis:6379/0"
+        - name: WORKER_CONCURRENCY
+          value: "4"
+        - name: WORKER_PREFETCH_MULTIPLIER
+          value: "2"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - celery inspect active -A tasks
+          initialDelaySeconds: 60
+          periodSeconds: 30
+---
+# Celery Beat (定时任务调度器)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-platform-celery-beat
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: celery-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-platform
+      component: celery-beat
+  template:
+    metadata:
+      labels:
+        app: ai-platform
+        component: celery-beat
+    spec:
+      containers:
+      - name: celery-beat
+        image: ai-platform-worker:latest
+        command: ["celery", "-A", "tasks", "beat", "--loglevel=info", "--scheduler=scheduler"]
+        env:
+        - name: CELERY_BROKER_URL
+          value: "redis://ai-platform-redis:6379/0"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://ai-platform-redis:6379/0"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+# RabbitMQ 配置 (作为备选消息队列)
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ai-platform-rabbitmq
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: rabbitmq
+spec:
+  serviceName: ai-platform-rabbitmq
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ai-platform
+      component: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: ai-platform
+        component: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "ai_platform"
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: ai-platform-secrets
+              key: rabbitmq-password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          exec:
+            command: ["rabbitmqctl", "status"]
+          initialDelaySeconds: 60
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-platform-rabbitmq
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: rabbitmq
+spec:
+  clusterIP: None
+  selector:
+    app: ai-platform
+    component: rabbitmq
+  ports:
+  - name: amqp
+    port: 5672
+    targetPort: 5672
+  - name: management
+    port: 15672
+    targetPort: 15672
+---
+# 任务队列HPA配置
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ai-platform-celery-worker-hpa
+  namespace: ai-platform
+  labels:
+    app: ai-platform
+    component: celery-worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ai-platform-celery-worker
+  minReplicas: 5
+  maxReplicas: 50
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  # 基于队列长度的自定义指标
+  - type: External
+    external:
+      metric:
+        name: rabbitmq_queue_messages
+      target:
+        type: AverageValue
+        averageValue: "100"

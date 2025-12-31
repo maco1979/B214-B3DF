@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { padding: 10px 20px; margin-top: 10px; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API连接测试</h1>
+        
+        <div class="form-group">
+            <label for="apiUrl">API基础URL:</label>
+            <input type="text" id="apiUrl" value="http://localhost:8001/api">
+        </div>
+        
+        <div class="form-group">
+            <label for="email">邮箱:</label>
+            <input type="email" id="email" value="test@example.com">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" id="password" value="test123456">
+        </div>
+        
+        <button onclick="testLoginAPI()">测试登录API</button>
+        <button onclick="testHealthAPI()">测试健康检查API</button>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        async function testLoginAPI() {
+            const apiUrl = document.getElementById('apiUrl').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<p>正在测试登录API...</p>';
+            
+            try {
+                console.log(`测试API URL: ${apiUrl}`);
+                console.log(`测试邮箱: ${email}`);
+                
+                const response = await fetch(`${apiUrl}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-KEY': 'your-api-key-here'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                console.log(`响应状态: ${response.status}`);
+                console.log(`响应头:`, response.headers);
+                
+                let responseData;
+                if (response.ok) {
+                    responseData = await response.json();
+                    console.log(`响应数据:`, responseData);
+                    resultDiv.innerHTML = `<div class="success">
+                        <h3>登录API测试成功!</h3>
+                        <p>状态码: ${response.status}</p>
+                        <p>响应: ${JSON.stringify(responseData, null, 2)}</p>
+                    </div>`;
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `<div class="error">
+                        <h3>登录API测试失败!</h3>
+                        <p>状态码: ${response.status}</p>
+                        <p>错误信息: ${errorText}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('测试失败:', error);
+                resultDiv.innerHTML = `<div class="error">
+                    <h3>网络请求失败!</h3>
+                    <p>错误信息: ${error.message}</p>
+                    <p>请检查网络连接和API地址是否正确。</p>
+                </div>`;
+            }
+        }
+        
+        async function testHealthAPI() {
+            const apiUrl = document.getElementById('apiUrl').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<p>正在测试健康检查API...</p>';
+            
+            try {
+                console.log(`测试健康检查API URL: ${apiUrl}/system/health`);
+                
+                const response = await fetch(`${apiUrl}/system/health`, {
+                    method: 'GET',
+                    headers: {
+                        'X-API-KEY': 'your-api-key-here'
+                    }
+                });
+                
+                console.log(`健康检查响应状态: ${response.status}`);
+                
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log(`健康检查响应数据:`, responseData);
+                    resultDiv.innerHTML = `<div class="success">
+                        <h3>健康检查API测试成功!</h3>
+                        <p>状态码: ${response.status}</p>
+                        <p>响应: ${JSON.stringify(responseData, null, 2)}</p>
+                    </div>`;
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = `<div class="error">
+                        <h3>健康检查API测试失败!</h3>
+                        <p>状态码: ${response.status}</p>
+                        <p>错误信息: ${errorText}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('健康检查测试失败:', error);
+                resultDiv.innerHTML = `<div class="error">
+                    <h3>网络请求失败!</h3>
+                    <p>错误信息: ${error.message}</p>
+                    <p>请检查网络连接和API地址是否正确。</p>
+                </div>`;
+            }
+        }
+    </script>
+</body>
+</html>
