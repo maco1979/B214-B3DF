@@ -52,10 +52,10 @@ export function ModelDetail() {
         const { task_id } = response.data
         setTrainingStatus(response.data)
         
-        // 开始轮询训练状态
+        // 开始轮询训练状态（优化：5秒轮询一次，减少API请求频率）
         const interval = setInterval(() => {
           checkTrainingStatus(task_id)
-        }, 2000)
+        }, 5000)
         setPollingInterval(interval)
       } else {
         setTrainingError(response.error || '训练启动失败')

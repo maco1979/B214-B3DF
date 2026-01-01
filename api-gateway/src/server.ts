@@ -36,11 +36,17 @@ class ApiGatewayServer {
     }));
 
 
-    // 请求限制
+    // 请求限制（开发环境放宽限制）
     const limiter = rateLimit({
-      windowMs: 15 * 60 * 1000, // 15分钟
-      max: 1000, // 限制每个IP最多1000个请求
-      message: '请求过于频繁，请稍后再试'
+      windowMs: 1 * 60 * 1000, // 1分钟
+      max: 500, // 限制每个IP 1分钟最多500个请求
+      message: '请求过于频繁，请稍后重试',
+      standardHeaders: true, // 返回速率限制信息在 RateLimit-* headers
+      legacyHeaders: false, // 禁用 X-RateLimit-* headers
+      // 跳过成功的请求，只统计失败的请求
+      skipSuccessfulRequests: false,
+      // 跳过失败的请求
+      skipFailedRequests: false,
     });
     this.app.use(limiter);
 

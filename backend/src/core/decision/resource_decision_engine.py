@@ -219,13 +219,24 @@ class ResourceDecisionEngine:
                      gpu_risk * 0.2 + storage_risk * 0.2 + load_risk * 0.1)
         risk_scores["total_risk"] = total_risk
         
-        # 风险等级
-        if total_risk > 0.7:
-            risk_scores["risk_level"] = 3.0  # 高风险
-        elif total_risk > 0.4:
-            risk_scores["risk_level"] = 2.0  # 中风险
+        # 风险等级判定（生产健壮版）
+        # 定义风险阈值常量，消除魔法值
+        HIGH_RISK_THRESHOLD: float = 0.7
+        MEDIUM_RISK_THRESHOLD: float = 0.4
+        
+        # 输入校验与容错处理
+        if total_risk is None or not isinstance(total_risk, (int, float)):
+            risk_scores["risk_level"] = 1.0  # 默认低风险
         else:
-            risk_scores["risk_level"] = 1.0  # 低风险
+            # 确保风险值在合理范围内
+            total_risk = max(0.0, min(1.0, total_risk))
+            
+            if total_risk >= HIGH_RISK_THRESHOLD:
+                risk_scores["risk_level"] = 3.0  # 高风险
+            elif total_risk >= MEDIUM_RISK_THRESHOLD:
+                risk_scores["risk_level"] = 2.0  # 中风险
+            else:
+                risk_scores["risk_level"] = 1.0  # 低风险
         
         return risk_scores
     

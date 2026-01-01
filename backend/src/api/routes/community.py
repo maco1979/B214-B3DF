@@ -294,3 +294,68 @@ def get_categories():
     for post in community_posts_db:
         categories.add(post["category"])
     return list(categories)
+
+
+# 模拟直播流评论数据
+live_stream_comments_db: Dict[int, List[Dict[str, Any]]] = {}
+
+
+@router.post("/live-streams/{stream_id}/comments", response_model=Dict[str, Any], status_code=status.HTTP_201_CREATED)
+def create_live_stream_comment(stream_id: int, request: CommentCreateRequest):
+    """
+    为直播流创建评论
+    """
+    # 检查直播流是否存在
+    stream = None
+    for s in live_streams_db:
+        if s["id"] == stream_id:
+            stream = s
+            break
+    
+    if not stream:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="直播流不存在"
+        )
+    
+    # 初始化该直播流的评论列表（如果不存在）
+    if stream_id not in live_stream_comments_db:
+        live_stream_comments_db[stream_id] = []
+    
+    # 创建新评论
+    new_comment = {
+        "id": len(live_stream_comments_db[stream_id]) + 1,
+        "user_id": "current_user",  # 实际应用中应该从请求中获取当前用户ID
+        "username": "当前用户",  # 实际应用中应该从请求中获取当前用户名
+        "content": request.content,
+        "time": "刚刚",
+        "likes": 0,
+        "timestamp": datetime.now().isoformat()
+    }
+    
+    # 添加到直播流的评论列表
+    live_stream_comments_db[stream_id].append(new_comment)
+    
+    return new_comment
+
+
+@router.get("/live-streams/{stream_id}/comments", response_model=List[Dict[str, Any]], status_code=status.HTTP_200_OK)
+def get_live_stream_comments(stream_id: int):
+    """
+    获取直播流的评论列表
+    """
+    # 检查直播流是否存在
+    stream = None
+    for s in live_streams_db:
+        if s["id"] == stream_id:
+            stream = s
+            break
+    
+    if not stream:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="直播流不存在"
+        )
+    
+    # 返回该直播流的评论列表（如果存在）
+    return live_stream_comments_db.get(stream_id, [])

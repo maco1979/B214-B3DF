@@ -362,7 +362,13 @@
         "d_ff": 8192
       },
       "file_path": "D:\\1.5\\models\\agriculture_classification_v1.0.3.pth",
-      "hash": "78d35422f363db6d752fe4a777d2c32e7e7def8c475c49fc1ab3facd2fa79090"
+      "hash": "78d35422f363db6d752fe4a777d2c32e7e7def8c475c49fc1ab3facd2fa79090",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
     },
     "agriculture_classification_v1.0.4": {
       "model_id": "agriculture_classification_v1.0.4",
@@ -382,7 +388,13 @@
         "d_ff": 8192
       },
       "file_path": "D:\\1.5\\models\\agriculture_classification_v1.0.4.pth",
-      "hash": "dc0857074274123b9fa716ede936119417351a0df06ee688eef34cd0fff6fecd"
+      "hash": "dc0857074274123b9fa716ede936119417351a0df06ee688eef34cd0fff6fecd",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
     },
     "agriculture_classification_v1.0.5": {
       "model_id": "agriculture_classification_v1.0.5",
@@ -402,7 +414,85 @@
         "d_ff": 8192
       },
       "file_path": "D:\\1.5\\models\\agriculture_classification_v1.0.5.pth",
-      "hash": "a45ecc3c2220c71d9dd1ee4cad50b098072d5361ba61d9b2da6f2131ed37f913"
+      "hash": "a45ecc3c2220c71d9dd1ee4cad50b098072d5361ba61d9b2da6f2131ed37f913",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "agriculture_classification_v1.0.6": {
+      "model_id": "agriculture_classification_v1.0.6",
+      "name": "Test Version",
+      "type": "transformer",
+      "framework": "pytorch",
+      "version": "1.0.6",
+      "status": "registered",
+      "created_at": "2025-12-31T20:59:23.005399",
+      "updated_at": "2025-12-31T20:59:23.005408",
+      "metadata": {
+        "vocab_size": 30000,
+        "max_seq_len": 2048,
+        "d_model": 2048,
+        "num_heads": 16,
+        "num_layers": 24,
+        "d_ff": 8192
+      },
+      "file_path": "D:\\1.5\\models\\agriculture_classification_v1.0.6.pth",
+      "hash": "8057cfe086b447281f126bc849d2480257f0247c77881e65f8ef6f0d7fa1bac4",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "agriculture_classification_v1.0.7": {
+      "model_id": "agriculture_classification_v1.0.7",
+      "name": "Integration Test Version",
+      "type": "transformer",
+      "framework": "pytorch",
+      "version": "1.0.7",
+      "status": "registered",
+      "created_at": "2025-12-31T21:00:06.956417",
+      "updated_at": "2025-12-31T21:00:06.956423",
+      "metadata": {
+        "vocab_size": 30000,
+        "max_seq_len": 2048,
+        "d_model": 2048,
+        "num_heads": 16,
+        "num_layers": 24,
+        "d_ff": 8192
+      },
+      "file_path": "D:\\1.5\\models\\agriculture_classification_v1.0.7.pth",
+      "hash": "e77acc2760c8a42256dd6416acb3054da1307599b45dc75ac26b8561bab59e5c",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "agriculture_classification_v1.0.8": {
+      "model_id": "agriculture_classification_v1.0.8",
+      "name": "Integration Test Version",
+      "type": "transformer",
+      "framework": "pytorch",
+      "version": "1.0.8",
+      "status": "registered",
+      "created_at": "2025-12-31T21:00:48.668499",
+      "updated_at": "2025-12-31T21:00:48.668507",
+      "metadata": {
+        "vocab_size": 30000,
+        "max_seq_len": 2048,
+        "d_model": 2048,
+        "num_heads": 16,
+        "num_layers": 24,
+        "d_ff": 8192
+      },
+      "file_path": "D:\\1.5\\models\\agriculture_classification_v1.0.8.pth",
+      "hash": "2ed5f42070393496312dbf462b2608e226d1dc381a194d4b7759ccef5251f527"
     }
   },
   "versions": {
@@ -441,6 +531,24 @@
         "model_id": "agriculture_classification_v1.0.5",
         "version": "1.0.5",
         "created_at": "2025-12-31T20:44:24.423582",
+        "status": "registered"
+      },
+      {
+        "model_id": "agriculture_classification_v1.0.6",
+        "version": "1.0.6",
+        "created_at": "2025-12-31T20:59:23.005399",
+        "status": "registered"
+      },
+      {
+        "model_id": "agriculture_classification_v1.0.7",
+        "version": "1.0.7",
+        "created_at": "2025-12-31T21:00:06.956417",
+        "status": "registered"
+      },
+      {
+        "model_id": "agriculture_classification_v1.0.8",
+        "version": "1.0.8",
+        "created_at": "2025-12-31T21:00:48.668499",
         "status": "registered"
       }
     ],

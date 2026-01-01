@@ -9,6 +9,11 @@ from typing import Dict, Any, List, Optional, Tuple, Callable
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import numpy as np
+
+# 应用Flax兼容性补丁 - 在导入flax之前
+from .utils.flax_patch import apply_flax_patch
+apply_flax_patch()
+
 import jax.numpy as jnp
 import flax.linen as nn
 from enum import Enum
@@ -62,12 +67,10 @@ class OrganicNeuralNetwork(nn.Module):
     dropout_rate: float = 0.1
     
     def setup(self):
-        if self.hidden_dims is None:
-            self.hidden_dims = [256, 512, 256]
+        dims = self.hidden_dims if self.hidden_dims is not None else [256, 512, 256]
         
-        self.layers = []
-        for dim in self.hidden_dims:
-            self.layers.append(nn.Dense(features=dim))
+        # 使用列表推导式创建层列表
+        self.layers = [nn.Dense(features=dim) for dim in dims]
         
         self.output_layer = nn.Dense(features=self.output_dim)
         self.dropout = nn.Dropout(rate=0.1)
@@ -214,13 +217,12 @@ class OrganicAICore:
         self.risk_assessment_engine = None
         
         # 神经网络组件
-        # 使用默认参数初始化，然后在需要时再初始化参数
-        # 先创建实例，然后设置参数
-        self.policy_network = SelfEvolvingPolicy()
-        # 通过设置属性来配置网络
-        self.policy_network.action_space_dim = 10
-        self.policy_network.hidden_dims = [256, 512, 256]
-        self.policy_network.dropout_rate = 0.1
+        # 使用正确的参数初始化SelfEvolvingPolicy
+        self.policy_network = SelfEvolvingPolicy(
+            action_space_dim=10,
+            hidden_dims=[256, 512, 256],
+            dropout_rate=0.1
+        )
         self.policy_params = None
         
         # 主动迭代控制
@@ -245,6 +247,10 @@ class OrganicAICore:
         try:
             import jax.random
             # 初始化策略网络参数
+            # The above code is written in Python and it seems to be using the JAX library for
+            # numerical computing. It creates a dummy state variable `dummy_state` which is
+            # initialized with an array of ones with 32 dimensions. This array represents a
+            # 32-dimensional state feature vector.
             dummy_state = jnp.ones(32)  # 32维状态特征
             self.policy_params = self.policy_network.init(
                 jax.random.PRNGKey(42), dummy_state
@@ -716,10 +722,15 @@ class OrganicAICore:
         logger.info("AI核心硬件数据学习已停止")
 
 
+import asyncio
+
 # 全局AI核心实例
-organic_ai_core = OrganicAICore()
+organic_ai_core = None
 
 
 async def get_organic_ai_core():
     """获取有机体AI核心实例"""
+    global organic_ai_core
+    if organic_ai_core is None:
+        organic_ai_core = OrganicAICore()
     return organic_ai_core

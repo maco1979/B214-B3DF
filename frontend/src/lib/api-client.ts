@@ -10,6 +10,7 @@ const TOKEN_KEY = 'ai-project-token'
 const http: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: false,
+  timeout: 30000,  // 30秒超时，防止请求无限等待
 })
 
 // 请求拦截器：注入 API Key 与 Bearer Token

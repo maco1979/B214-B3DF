@@ -7,8 +7,16 @@ import { MainLayout as Layout } from './components/layout/MainLayout'
 import ErrorBoundary from './components/ErrorBoundary'
 import { AuthProvider } from './hooks/useAuth'
 import { queryClient } from './lib/query-client'
+import { useOnlineStatus } from './hooks/useOnlineStatus'
 
 import './index.css'
+
+// 网络状态监听组件（全局生效）
+function NetworkStatusMonitor() {
+  // 调用hook启用网络状态监听，网络变化时自动显示toast
+  useOnlineStatus()
+  return null
+}
 
 // 旧路径重定向组件
 function RedirectToModelDetail() {
@@ -121,6 +129,8 @@ function App() {
                 },
               }}
             />
+            {/* 全局网络状态监听 */}
+            <NetworkStatusMonitor />
           </ErrorBoundary>
         </QueryClientProvider>
       </AuthProvider>

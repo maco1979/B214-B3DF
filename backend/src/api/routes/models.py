@@ -1,13 +1,19 @@
 """
 模型管理API路由
 提供模型的创建、查询、更新和删除功能
+
+安全特性:
+- 输入参数验证（防止SQL注入/XSS攻击）
+- 模型ID格式验证
 """
 
+import re
+import html
 from typing import Any, Dict, List, Optional
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, status, File, UploadFile, Form, Path, Body
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, status, File, UploadFile, Form, Path, Body, Query
+from pydantic import BaseModel, validator, Field
 
 # 使用绝对导入
 from src.core.services import model_manager
@@ -15,15 +21,112 @@ from src.core.services import model_manager
 router = APIRouter(prefix="/models", tags=["models"])
 
 
+# ===== 安全验证工具函数 =====
+def validate_model_id_format(model_id: str) -> str:
+    """验证模型ID格式，防止注入攻击
+    
+    允许的字符: 字母、数字、下划线、短横线、点、中文字符
+    """
+    if not model_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="模型ID不能为空"
+        )
+    
+    # 长度限制
+    if len(model_id) > 256:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="模型ID长度不能超过256个字符"
+        )
+    
+    # 检查危险字符（SQL注入特征）
+    dangerous_patterns = [
+        r"['\";–#/*\\]",  # SQL注释和引号
+        r"\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|OR|AND)\b",  # SQL关键字
+        r"--",  # SQL注释
+        r"<\s*script",  # XSS
+        r"javascript:",  # XSS
+        r"on\w+\s*=",  # XSS事件处理器
+    ]
+    
+    for pattern in dangerous_patterns:
+        if re.search(pattern, model_id, re.IGNORECASE):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="模型ID包含非法字符"
+            )
+    
+    return model_id
+
+
+def validate_search_query_format(query: str) -> str:
+    """验证搜索查询格式，防止注入攻击"""
+    if not query:
+        return query
+    
+    # 长度限制
+    if len(query) > 500:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="搜索查询长度不能超过500个字符"
+        )
+    
+    # 检查SQL注入特征
+    sql_patterns = [
+        r"'\s*;\s*--",
+        r"\b(DROP|DELETE|TRUNCATE|INSERT|UPDATE)\b.*\b(TABLE|FROM|INTO)\b",
+        r"UNION\s+SELECT",
+        r"1\s*=\s*1",
+        r"OR\s+1\s*=\s*1",
+    ]
+    
+    for pattern in sql_patterns:
+        if re.search(pattern, query, re.IGNORECASE):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="搜索查询包含非法字符"
+            )
+    
+    # 转义特殊字符
+    return html.escape(query)
+
+
+def sanitize_string(value: str) -> str:
+    """清理字符串，防止XSS"""
+    if not value:
+        return value
+    return html.escape(str(value))
+
+
 class CreateModelRequest(BaseModel):
     """创建模型请求"""
-    name: str
-    description: Optional[str] = ""
-    status: Optional[str] = "ready"
-    version: Optional[str] = "v1.0.0"
-    model_type: Optional[str] = "ai"
+    name: str = Field(..., min_length=1, max_length=256)
+    description: Optional[str] = Field("", max_length=2000)
+    status: Optional[str] = Field("ready", max_length=50)
+    version: Optional[str] = Field("v1.0.0", max_length=50)
+    model_type: Optional[str] = Field("ai", max_length=50)
     hyperparameters: Optional[Dict[str, Any]] = {}
-    model_id: Optional[str] = None
+    model_id: Optional[str] = Field(None, max_length=256)
+    
+    @validator('name', 'model_id', 'description', pre=True, always=True)
+    def sanitize_strings(cls, v):
+        if v is None:
+            return v
+        # XSS防护
+        return html.escape(str(v)) if v else v
+    
+    @validator('model_id', pre=True, always=True)
+    def validate_model_id_field(cls, v):
+        if v is None:
+            return v
+        # 检查危险模式
+        dangerous = ["'", '"', ';', '--', '/*', '*/', 'DROP', 'DELETE', 'UNION', 'SELECT']
+        v_upper = str(v).upper()
+        for d in dangerous:
+            if d.upper() in v_upper:
+                raise ValueError('模型ID包含非法字符')
+        return v
 
 
 class LoadPretrainedModelRequest(BaseModel):
@@ -166,9 +269,19 @@ async def create_model(request: CreateModelRequest):
 
 
 @router.get("/", response_model=List[ModelResponse])
-async def list_models():
-    """获取模型列表"""
+async def list_models(
+    search: Optional[str] = Query(None, max_length=500, description="搜索关键词")
+):
+    """获取模型列表
+    
+    可选参数:
+    - search: 搜索关键词（已进行安全验证）
+    """
     try:
+        # 验证搜索参数
+        if search:
+            search = validate_search_query_format(search)
+        
         result = await model_manager.list_models()
         
         if not result["success"]:
@@ -210,9 +323,16 @@ async def list_models():
 
 
 @router.get("/{model_id}", response_model=ModelResponse)
-async def get_model(model_id: str):
-    """获取模型详情"""
+async def get_model(model_id: str = Path(..., min_length=1, max_length=256)):
+    """获取模型详情
+    
+    路径参数:
+    - model_id: 模型ID（已进行安全验证）
+    """
     try:
+        # 安全验证模型ID
+        model_id = validate_model_id_format(model_id)
+        
         result = await model_manager.get_model_info(model_id)
         
         if not result["success"]:
@@ -251,9 +371,15 @@ async def get_model(model_id: str):
 
 
 @router.put("/{model_id}/metrics")
-async def update_model_metrics(model_id: str, metrics: Dict[str, float]):
+async def update_model_metrics(
+    model_id: str = Path(..., min_length=1, max_length=256),
+    metrics: Dict[str, float] = Body(...)
+):
     """更新模型指标"""
     try:
+        # 安全验证模型ID
+        model_id = validate_model_id_format(model_id)
+        
         # 直接更新模型元数据中的metrics字段
         if model_id not in model_manager.model_metadata:
             raise HTTPException(
@@ -283,9 +409,12 @@ async def update_model_metrics(model_id: str, metrics: Dict[str, float]):
 
 
 @router.delete("/{model_id}")
-async def delete_model(model_id: str):
+async def delete_model(model_id: str = Path(..., min_length=1, max_length=256)):
     """删除模型"""
     try:
+        # 安全验证模型ID
+        model_id = validate_model_id_format(model_id)
+        
         result = await model_manager.delete_model(model_id)
         
         if not result["success"]:

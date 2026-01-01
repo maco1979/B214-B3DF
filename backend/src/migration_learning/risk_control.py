@@ -351,14 +351,22 @@ class MigrationRiskController:
     
     def _determine_risk_level(self, risk_score: float) -> RiskLevel:
         """根据风险评分确定风险等级"""
-        if risk_score <= self.risk_thresholds[RiskLevel.LOW]:
+        # 输入校验与容错处理
+        if risk_score is None or not isinstance(risk_score, (int, float)):
             return RiskLevel.LOW
-        elif risk_score <= self.risk_thresholds[RiskLevel.MEDIUM]:
-            return RiskLevel.MEDIUM
-        elif risk_score <= self.risk_thresholds[RiskLevel.HIGH]:
-            return RiskLevel.HIGH
-        else:
-            return RiskLevel.CRITICAL
+        
+        # 确保风险评分在合理范围内
+        risk_score = max(0.0, min(1.0, risk_score))
+        
+        # 按阈值从高到低排序，支持动态扩展风险等级
+        sorted_thresholds = sorted(self.risk_thresholds.items(), key=lambda x: x[1], reverse=True)
+        
+        for risk_level, threshold in sorted_thresholds:
+            if risk_score >= threshold:
+                return risk_level
+        
+        # 默认返回最低风险等级
+        return RiskLevel.LOW
     
     def _identify_risk_factors(self, *risk_scores: float) -> List[str]:
         """识别主要风险因素"""

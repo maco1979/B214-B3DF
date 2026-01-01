@@ -15,6 +15,8 @@ import json
 import hashlib
 import numpy as np
 
+from src.core.utils import determine_risk_category_extended, RiskLevel
+
 from .technical_risk_controller import TechnicalRiskController, TechnicalRiskAssessment
 from .data_security_controller import DataSecurityController, DataSecurityAssessment
 from .algorithm_bias_controller import AlgorithmBiasController, BiasRiskAssessment
@@ -368,8 +370,28 @@ class AIRiskMonitoringSystem:
     
     def _determine_system_status(self, overall_risk_score: float) -> SystemStatus:
         """根据风险评分确定系统状态"""
-        thresholds = self.config["risk_thresholds"]
+        # 输入校验与容错处理
+        if overall_risk_score is None or not isinstance(overall_risk_score, (int, float)):
+            return SystemStatus.NORMAL
         
+        # 确保风险评分在合理范围内
+        overall_risk_score = max(0.0, min(1.0, overall_risk_score))
+        
+        # 使用通用风险类别判定工具
+        assessment = {}
+        determine_risk_category_extended(assessment, overall_risk_score)
+        risk_category = assessment.get('risk_category', 'low')
+        
+        # 将风险类别映射到系统状态
+        status_mapping = {
+            'critical': SystemStatus.EMERGENCY,
+            'high': SystemStatus.CRITICAL,
+            'medium': SystemStatus.ALERT,
+            'low': SystemStatus.NORMAL
+        }
+        
+        # 根据配置的阈值进行精确映射
+        thresholds = self.config["risk_thresholds"]
         if overall_risk_score >= thresholds["critical"]:
             return SystemStatus.EMERGENCY
         elif overall_risk_score >= thresholds["alert"]:

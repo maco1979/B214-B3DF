@@ -534,7 +534,7 @@ class ApiClient {
   }
 
   async createPlantingPlan(data: any): Promise<ApiResponse<any>> {
-    return this.request<any>('/api/agriculture/planting-plans', {
+    return this.request<any>('/api/agriculture/crop-planning', {
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -643,13 +643,13 @@ class ApiClient {
   }
 
   async getOptimizationStatus(): Promise<ApiResponse<any>> {
-    return this.request<any>('/api/performance/optimization-status', {
+    return this.request<any>('/api/performance/optimization/status', {
       method: 'GET'
     })
   }
 
   async getOptimizationRecommendations(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>('/api/performance/optimization-recommendations', {
+    return this.request<any[]>('/api/performance/optimization/recommendations', {
       method: 'GET'
     })
   }
@@ -750,7 +750,7 @@ class ApiClient {
   }
 
   async submitComment(streamId: number, content: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/community/live-streams/${streamId}/comments`, {
+    return this.request<any>(`/community/live-streams/${streamId}/comments`, {
       method: 'POST',
       body: JSON.stringify({ content }),
     })

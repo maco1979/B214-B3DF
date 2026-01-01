@@ -31,9 +31,13 @@ class ApiGatewayServer {
             allowedHeaders: ['Content-Type', 'X-API-KEY', 'Authorization']
         }));
         const limiter = rateLimit({
-            windowMs: 15 * 60 * 1000,
-            max: 1000,
-            message: '请求过于频繁，请稍后再试'
+            windowMs: 1 * 60 * 1000,
+            max: 500,
+            message: '请求过于频繁，请稍后重试',
+            standardHeaders: true,
+            legacyHeaders: false,
+            skipSuccessfulRequests: false,
+            skipFailedRequests: false,
         });
         this.app.use(limiter);
         this.app.use(compression());

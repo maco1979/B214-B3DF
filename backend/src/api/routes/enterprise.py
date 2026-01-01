@@ -58,6 +58,48 @@ class APIUsageStatsResponse(BaseModel):
     data: Dict[str, Any]
 
 # 企业相关API端点
+@router.get("/services", summary="获取可用服务列表")
+async def get_available_services() -> Dict[str, Any]:
+    """获取企业可用的服务列表"""
+    services = [
+        {
+            "service_id": "data_analytics",
+            "name": "数据分析服务",
+            "description": "提供全面的农业数据分析服务",
+            "monthly_cost": 99.0,
+            "features": ["数据分析", "可视化报表", "实时监控"]
+        },
+        {
+            "service_id": "api_integration",
+            "name": "API集成服务",
+            "description": "提供丰富API接口，支持系统集成",
+            "monthly_cost": 199.0,
+            "features": ["RESTful API", "WebSocket支持", "批量数据处理"]
+        },
+        {
+            "service_id": "custom_model",
+            "name": "定制模型服务",
+            "description": "提供定制AI模型训练服务",
+            "monthly_cost": 499.0,
+            "features": ["定制训练", "模型优化", "专属部署"]
+        },
+        {
+            "service_id": "premium_support",
+            "name": "高级支持服务",
+            "description": "7x24小时专业技术支持",
+            "monthly_cost": 299.0,
+            "features": ["24/7支持", "专属客户经理", "优先响应"]
+        }
+    ]
+    
+    return {
+        "success": True,
+        "data": {
+            "services": services,
+            "total_services": len(services)
+        }
+    }
+
 @router.post("/register", summary="注册企业用户")
 async def register_business(request: RegisterBusinessRequest) -> BusinessRegistrationResponse:
     """注册企业用户"""

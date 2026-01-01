@@ -21,6 +21,7 @@ import { apiClient, Device, JEPAData } from '@/services/api';
 import { cn } from '@/lib/utils';
 import { BentoCard } from '@/components/ui/BentoCard';
 import { DeviceCard } from '@/components/ui/DeviceCard';
+import { PTZControl } from '@/components/PTZControl';
 import { 
   LineChart, 
   Line, 
@@ -60,6 +61,15 @@ export function AIControl() {
   const [cameraFrame, setCameraFrame] = useState('');
   const [cameraError, setCameraError] = useState('');
   
+  // Tracking and Recognition state
+  const [isTrackingEnabled, setIsTrackingEnabled] = useState(false);
+  const [isRecognitionEnabled, setIsRecognitionEnabled] = useState(false);
+  const [trackingStatus, setTrackingStatus] = useState<any>(null);
+  const [recognitionStatus, setRecognitionStatus] = useState<any>(null);
+  
+  // 视觉控制标签页状态
+  const [visionTab, setVisionTab] = useState<'camera' | 'ptz'>('camera');  // camera: 基础摄像头 | ptz: 云台控制
+  
   const [isScanning, setIsScanning] = useState(false);
 
   // Lifecycle
@@ -67,7 +77,35 @@ export function AIControl() {
     fetchDevices();
     fetchJepaStatus();
     checkMasterStatus();
+    checkCameraStatus(); // 初始化时检查摄像头状态
   }, []);
+
+  // 检查并同步摄像头、跟踪和识别状态
+  const checkCameraStatus = async () => {
+    try {
+      // 检查摄像头状态
+      const camRes = await apiClient.get<{ is_open: boolean, camera_index: number }>('/api/camera/status');
+      if (camRes.success && camRes.data) {
+        setIsCameraOpen(camRes.data.is_open);
+      }
+      
+      // 检查跟踪状态
+      const trackRes = await apiClient.get<{ tracking_enabled: boolean, tracker_type?: string }>('/api/camera/tracking/status');
+      if (trackRes.success && trackRes.data) {
+        setIsTrackingEnabled(trackRes.data.tracking_enabled);
+        setTrackingStatus(trackRes.data);
+      }
+      
+      // 检查识别状态
+      const recogRes = await apiClient.get<{ recognizing_enabled: boolean, recognized_objects_count?: number }>('/api/camera/recognition/status');
+      if (recogRes.success && recogRes.data) {
+        setIsRecognitionEnabled(recogRes.data.recognizing_enabled);
+        setRecognitionStatus(recogRes.data);
+      }
+    } catch (error) {
+      console.error('检查摄像头状态失败:', error);
+    }
+  };
 
   const checkMasterStatus = async () => {
      try {
@@ -142,32 +180,201 @@ export function AIControl() {
   };
 
   const toggleCamera = async () => {
-    if (isCameraOpen) {
-      await apiClient.closeCamera();
-      setIsCameraOpen(false);
-      setCameraFrame('');
-    } else {
-      const res = await apiClient.openCamera();
-      if (res.success) setIsCameraOpen(true);
-      else setCameraError("Failed to access hardware");
+    try {
+      if (isCameraOpen) {
+        // 关闭摄像头前先停止跟踪和识别
+        if (isTrackingEnabled) {
+          await apiClient.stopTracking();
+          setIsTrackingEnabled(false);
+          setTrackingStatus(null);
+        }
+        if (isRecognitionEnabled) {
+          await apiClient.stopRecognition();
+          setIsRecognitionEnabled(false);
+          setRecognitionStatus(null);
+        }
+        
+        // 关闭摄像头
+        const res = await apiClient.closeCamera();
+        if (res.success) {
+          setIsCameraOpen(false);
+          setCameraFrame('');
+          console.log('摄像头已关闭');
+        } else {
+          console.error('关闭摄像头失败:', res);
+        }
+      } else {
+        // 打开摄像头
+        const res = await apiClient.openCamera();
+        if (res.success) {
+          setIsCameraOpen(true);
+          console.log('摄像头已打开');
+        } else {
+          setCameraError("打开摄像头失败");
+          console.error('打开摄像头失败:', res);
+        }
+      }
+    } catch (error) {
+      console.error('摄像头操作失败:', error);
+      setCameraError('摄像头操作失败');
     }
   };
 
-  // Camera Frame Loop
-  useEffect(() => {
-    let frameId: number;
-    const getFrame = async () => {
-      if (!isCameraOpen) return;
-      try {
-        const res = await apiClient.getCameraFrame();
-        if (res.success && res.data?.frame_base64) {
-          setCameraFrame(res.data.frame_base64);
+  // 切换跟踪功能
+  const toggleTracking = async () => {
+    // 检查摄像头是否开启
+    if (!isCameraOpen) {
+      console.warn('请先打开摄像头');
+      setCameraError('请先打开摄像头');
+      return;
+    }
+    
+    try {
+      if (isTrackingEnabled) {
+        const res = await apiClient.stopTracking();
+        if (res.success) {
+          setIsTrackingEnabled(false);
+          setTrackingStatus(null);
+          console.log('跟踪已停止');
         }
-      } catch (e) {}
-      frameId = requestAnimationFrame(getFrame);
+      } else {
+        const res = await apiClient.startTracking('CSRT');
+        if (res.success) {
+          setIsTrackingEnabled(true);
+          // 获取跟踪状态
+          const status = await apiClient.get<{ tracking_enabled: boolean, tracker_type?: string }>('/api/camera/tracking/status');
+          if (status.data) setTrackingStatus(status.data);
+          console.log('跟踪已启动');
+        }
+      }
+    } catch (error) {
+      console.error('跟踪切换失败:', error);
+    }
+  };
+
+  // 切换识别功能
+  const toggleRecognition = async () => {
+    // 检查摄像头是否开启
+    if (!isCameraOpen) {
+      console.warn('请先打开摄像头');
+      setCameraError('请先打开摄像头');
+      return;
+    }
+    
+    try {
+      if (isRecognitionEnabled) {
+        const res = await apiClient.stopRecognition();
+        if (res.success) {
+          setIsRecognitionEnabled(false);
+          setRecognitionStatus(null);
+          console.log('识别已停止');
+        }
+      } else {
+        const res = await apiClient.startRecognition('haar');
+        if (res.success) {
+          setIsRecognitionEnabled(true);
+          // 获取识别状态
+          const status = await apiClient.get<{ recognizing_enabled: boolean, recognized_objects_count?: number }>('/api/camera/recognition/status');
+          if (status.data) setRecognitionStatus(status.data);
+          console.log('识别已启动');
+        }
+      }
+    } catch (error) {
+      console.error('识别切换失败:', error);
+    }
+  };
+
+  // 处理设备连接切换
+  const handleToggleConnection = async (deviceId: number) => {
+    const device = devices.find(d => d.id === deviceId);
+    if (!device) return;
+
+    try {
+      const newConnectionState = !device.connected;
+      const res = await apiClient.toggleDeviceConnection(deviceId, newConnectionState);
+      
+      if (res.success) {
+        // 更新设备列表
+        setDevices(prev => prev.map(d => 
+          d.id === deviceId 
+            ? { ...d, connected: newConnectionState, status: newConnectionState ? 'online' : 'offline' }
+            : d
+        ));
+      }
+    } catch (error) {
+      console.error('切换设备连接失败:', error);
+    }
+  };
+
+  // 处理设备控制
+  const handleDeviceControl = async (deviceId: number) => {
+    const device = devices.find(d => d.id === deviceId);
+    if (!device || !device.connected) return;
+
+    try {
+      // 这里可以打开设备控制对话框或执行特定控制操作
+      console.log('控制设备:', device.name);
+      // 示例：发送控制命令
+      const res = await apiClient.controlDevice(deviceId, { action: 'status_check' });
+      if (res.success) {
+        console.log('设备控制成功:', res.data);
+      }
+    } catch (error) {
+      console.error('设备控制失败:', error);
+    }
+  };
+
+  // Camera Frame Loop - 使用 WebSocket 替代高频轮询（解决429限流问题）
+  useEffect(() => {
+    let ws: WebSocket | null = null;
+    
+    if (isCameraOpen) {
+      // 连接 WebSocket
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? '127.0.0.1:8005' 
+        : window.location.host;
+      
+      ws = new WebSocket(`${protocol}//${host}/api/camera/ws/frame`);
+      
+      ws.onopen = () => {
+        console.log('摄像头 WebSocket 连接成功');
+      };
+      
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.success && data.frame_base64) {
+            setCameraFrame(data.frame_base64);
+          } else if (!data.success) {
+            console.warn('摄像头帧获取失败:', data.message);
+          }
+        } catch (e) {
+          console.error('WebSocket 消息解析错误:', e);
+        }
+      };
+      
+      ws.onerror = (error) => {
+        console.error('摄像头 WebSocket 错误:', error);
+        setCameraError('摄像头连接错误');
+      };
+      
+      ws.onclose = () => {
+        console.log('摄像头 WebSocket 连接关闭');
+      };
+    } else {
+      // 摄像头关闭时清除画面
+      setCameraFrame('');
+      setCameraError('');
+    }
+    
+    // 清理函数：组件卸载或摄像头关闭时断开 WebSocket
+    return () => {
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
     };
-    if (isCameraOpen) getFrame();
-    return () => cancelAnimationFrame(frameId);
   }, [isCameraOpen]);
 
   // Voice Control logic (simplified for brevity but functional)
@@ -295,8 +502,8 @@ export function AIControl() {
                  device={device}
                  isSelected={selectedDevices.includes(device.id)}
                  onSelect={(id) => setSelectedDevices(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])}
-                 onToggleConnection={() => {}}
-                 onControl={() => {}}
+                 onToggleConnection={handleToggleConnection}
+                 onControl={handleDeviceControl}
                />
              ))}
              {devices.length === 0 && [1,2,3,4].map(i => (
@@ -309,43 +516,150 @@ export function AIControl() {
         <div className="lg:col-span-4 space-y-6">
            {/* Visual Feed */}
            <BentoCard title="视觉智能" description="神经流馈送" icon={Video}>
-              <div className="mt-4 relative rounded-xl overflow-hidden aspect-video bg-black border border-white/5 group">
-                 {isCameraOpen ? (
-                   cameraFrame ? (
-                     <img src={`data:image/jpeg;base64,${cameraFrame}`} className="w-full h-full object-cover" alt="Feed" />
-                   ) : (
-                     <div className="absolute inset-0 flex items-center justify-center text-xs text-cyber-cyan animate-pulse font-mono">建立上行链路...</div>
-                   )
-                 ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
-                       <Video size={40} className="mb-2 opacity-20" />
-                       <span className="text-[10px] uppercase font-bold tracking-widest">馈送离线</span>
+              {/* 标签页切换 */}
+              <div className="flex items-center space-x-2 mb-4">
+                <button
+                  onClick={() => setVisionTab('camera')}
+                  className={cn(
+                    "flex-1 px-3 py-2 rounded-lg text-xs font-bold transition-all",
+                    visionTab === 'camera'
+                      ? "bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30"
+                      : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-gray-700"
+                  )}
+                >
+                  📹 基础监控
+                </button>
+                <button
+                  onClick={() => setVisionTab('ptz')}
+                  className={cn(
+                    "flex-1 px-3 py-2 rounded-lg text-xs font-bold transition-all",
+                    visionTab === 'ptz'
+                      ? "bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30"
+                      : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-gray-700"
+                  )}
+                >
+                  🎯 PTZ云台
+                </button>
+              </div>
+              
+              {/* 基础摄像头监控 */}
+              {visionTab === 'camera' && (
+                <>
+                  <div className="mt-4 relative rounded-xl overflow-hidden aspect-video bg-black border border-white/5 group">
+                    {isCameraOpen ? (
+                      cameraFrame ? (
+                        <img src={`data:image/jpeg;base64,${cameraFrame}`} className="w-full h-full object-cover" alt="Feed" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-xs text-cyber-cyan animate-pulse font-mono">建立上行链路...</div>
+                      )
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
+                        <Video size={40} className="mb-2 opacity-20" />
+                        <span className="text-[10px] uppercase font-bold tracking-widest">馈送离线</span>
+                      </div>
+                    )}
+                    
+                    <div className="absolute bottom-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={toggleCamera} className="p-2 rounded-lg bg-cyber-black/80 backdrop-blur-md border border-white/10 text-white hover:bg-cyber-cyan hover:text-black transition-all">
+                        <Power size={14} />
+                      </button>
+                      <button className="p-2 rounded-lg bg-cyber-black/80 backdrop-blur-md border border-white/10 text-white hover:bg-cyber-cyan hover:text-black transition-all">
+                        <Maximize2 size={14} />
+                      </button>
                     </div>
-                 )}
-                 
-                 <div className="absolute bottom-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={toggleCamera} className="p-2 rounded-lg bg-cyber-black/80 backdrop-blur-md border border-white/10 text-white hover:bg-cyber-cyan hover:text-black transition-all">
-                       <Power size={14} />
-                    </button>
-                    <button className="p-2 rounded-lg bg-cyber-black/80 backdrop-blur-md border border-white/10 text-white hover:bg-cyber-cyan hover:text-black transition-all">
-                       <Maximize2 size={14} />
-                    </button>
-                 </div>
 
-                 {isCameraOpen && (
-                   <div className="absolute top-4 left-4 flex items-center space-x-2 px-2 py-1 rounded bg-black/60 backdrop-blur-sm border border-cyber-emerald/30">
-                      <div className="w-1.5 h-1.5 rounded-full bg-cyber-emerald animate-pulse" />
-                      <span className="text-[8px] font-bold text-cyber-emerald uppercase tracking-tighter">实时神经馈送</span>
-                   </div>
-                 )}
-              </div>
-              <div className="mt-4 space-y-2">
-                 <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">AI视觉状态</p>
-                 <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
-                    <span className="text-xs text-gray-400">对象跟踪</span>
-                    <span className="text-cyber-emerald font-bold text-xs uppercase">最佳</span>
-                 </div>
-              </div>
+                    {isCameraOpen && (
+                      <div className="absolute top-4 left-4 flex items-center space-x-2 px-2 py-1 rounded bg-black/60 backdrop-blur-sm border border-cyber-emerald/30">
+                        <div className="w-1.5 h-1.5 rounded-full bg-cyber-emerald animate-pulse" />
+                        <span className="text-[8px] font-bold text-cyber-emerald uppercase tracking-tighter">实时神经馈送</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">AI视觉控制</p>
+                    
+                    {/* 跟踪控制 */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-400">目标跟踪</span>
+                        {isTrackingEnabled && (
+                          <span className="text-[8px] px-2 py-0.5 rounded bg-green-500/20 text-green-400 border border-green-500/30">CSRT</span>
+                        )}
+                      </div>
+                      <button
+                        onClick={toggleTracking}
+                        className={cn(
+                          "px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all",
+                          isTrackingEnabled
+                            ? "bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30"
+                            : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-cyber-cyan/20 hover:text-cyber-cyan hover:border-cyber-cyan/30",
+                          !isCameraOpen && "opacity-70"
+                        )}
+                      >
+                        {isTrackingEnabled ? '停止' : '启动'}
+                      </button>
+                    </div>
+                    
+                    {/* 识别控制 */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-400">人脸识别</span>
+                        {isRecognitionEnabled && (
+                          <span className="text-[8px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Haar</span>
+                        )}
+                      </div>
+                      <button
+                        onClick={toggleRecognition}
+                        className={cn(
+                          "px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all",
+                          isRecognitionEnabled
+                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30"
+                            : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-cyber-cyan/20 hover:text-cyber-cyan hover:border-cyber-cyan/30",
+                          !isCameraOpen && "opacity-70"
+                        )}
+                      >
+                        {isRecognitionEnabled ? '停止' : '启动'}
+                      </button>
+                    </div>
+                    
+                    {/* 状态提示 */}
+                    {isTrackingEnabled && trackingStatus && (
+                      <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
+                        <p className="text-[10px] text-green-400">
+                          🎯 正在跟踪目标 | 算法: {trackingStatus.tracker_type}
+                        </p>
+                        <p className="text-[8px] text-green-300/70 mt-1">
+                          ℹ️ 画面中的绿色框会跟随目标移动（模拟摄像头转动）
+                        </p>
+                      </div>
+                    )}
+                    
+                    {isRecognitionEnabled && recognitionStatus && (
+                      <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                        <p className="text-[10px] text-blue-400">
+                          👤 正在识别人脸 | 检测到: {recognitionStatus.recognized_objects_count || 0} 个
+                        </p>
+                        <p className="text-[8px] text-blue-300/70 mt-1">
+                          ℹ️ 画面中的蓝色框显示识别到的人脸位置
+                        </p>
+                      </div>
+                    )}
+                    
+                    {!isCameraOpen && (
+                      <div className="p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                        <p className="text-[10px] text-yellow-400">
+                          ⚠️ 请先点击画面上的电源按钮打开摄像头
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+              
+              {/* PTZ云台控制 */}
+              {visionTab === 'ptz' && (
+                <PTZControl apiClient={apiClient} />
+              )}
            </BentoCard>
 
            {/* JEPA-DT-MPC Control */}

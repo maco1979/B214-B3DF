@@ -40,12 +40,18 @@
   }
   
   .glass-card {
-    @apply bg-cyber-deep/40 backdrop-blur-xl border border-white/5;
+    @apply bg-cyber-deep/40 border border-white/5;
+    /* 浏览器兼容性: backdrop-filter */
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.5);
   }
   
   .glass-morphism {
-    @apply bg-cyber-black/20 backdrop-blur-lg border border-white/10;
+    @apply bg-cyber-black/20 border border-white/10;
+    /* 浏览器兼容性: backdrop-filter */
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
   }
 
   .neon-glow-cyan {
@@ -84,6 +90,9 @@ body {
   color: hsl(var(--foreground));
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
+  /* 浏览器兼容性: text-size-adjust */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* Organic Background Animation */
@@ -101,7 +110,8 @@ body {
 
 .gradient-text {
   background: linear-gradient(135deg, #00f2ff 0%, #007BFF 50%, #bc13fe 100%);
+  /* 浏览器兼容性: background-clip顺序 */
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

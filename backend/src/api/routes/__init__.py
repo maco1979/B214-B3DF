@@ -21,6 +21,7 @@ from .ai_control import router as ai_control_router
 from .auth import router as auth_router
 from .jepa_dtmpc import router as jepa_dtmpc_router
 from .community import router as community_router
+from .monitoring import router as monitoring_router
 
 # 导入用户路由
 try:
@@ -42,7 +43,7 @@ try:
 except ImportError as e:
     blockchain_router = None
 
-__all__ = ["models_router", "inference_router", "training_router", "system_router", "edge_router", "blockchain_router", "federated_router", "agriculture_router", "decision_router", "model_training_decision_router", "resource_decision_router", "decision_monitoring_router", "camera_router", "performance_router", "ai_control_router", "auth_router", "jepa_dtmpc_router", "community_router"]
+__all__ = ["models_router", "inference_router", "training_router", "system_router", "edge_router", "blockchain_router", "federated_router", "agriculture_router", "decision_router", "model_training_decision_router", "resource_decision_router", "decision_monitoring_router", "camera_router", "performance_router", "ai_control_router", "auth_router", "jepa_dtmpc_router", "community_router", "monitoring_router"]
 
 # 动态添加user_router（如果导入成功）
 if user_router is not None:

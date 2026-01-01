@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Body
 from fastapi.responses import JSONResponse
 from typing import List, Dict, Any
 import datetime
@@ -58,6 +58,43 @@ router = APIRouter(prefix="/ai-control", tags=["AI控制"])
 
 # 配置日志记录
 logger = logging.getLogger(__name__)
+
+# AI控制系统状态端点
+@router.get("/status", response_model=Dict[str, Any], summary="获取AI控制系统状态")
+async def get_ai_control_status():
+    """获取AI控制系统的整体状态"""
+    try:
+        # 获取有机体AI核心状态
+        ai_core = await get_organic_ai_core()
+        ai_core_status = {
+            "state": ai_core.state.value if ai_core else "unknown",
+            "is_active": ai_core.iteration_task is not None if ai_core else False,
+            "iteration_enabled": ai_core.iteration_enabled if ai_core else False,
+            "iteration_interval": ai_core.iteration_interval if ai_core else 60
+        }
+        
+        return {
+            "success": True,
+            "status": "online",
+            "ai_core": ai_core_status,
+            "connected_devices": len(mock_devices),
+            "active_controls": 3,
+            "system_health": "healthy",
+            "capabilities": [
+                "device_control",
+                "master_control",
+                "fusion_prediction",
+                "auto_scan",
+                "device_authentication"
+            ]
+        }
+    except Exception as e:
+        logger.error(f"Error getting AI control status: {e}")
+        return {
+            "success": False,
+            "status": "error",
+            "error": str(e)
+        }
 
 # Mock设备数据
 mock_devices = [
@@ -611,84 +648,161 @@ async def authenticate_device(device_id: int, auth_params: Dict[str, Any]):
 
 
 @router.post("/device/{device_id}/connection", response_model=Dict[str, Any])
-async def toggle_device_connection(device_id: int, connect_params: Dict[str, Any]):
-    """设备认证接口"""
+async def toggle_device_connection(device_id: int, connect_params: Dict[str, Any] = Body(...)):
+    """
+    切换设备连接状态
+    支持的连接类型：wifi, bluetooth, infrared, app
+    """
     try:
-        logger.info(f"设备 {device_id} 认证请求: {auth_params}")
+        # 参数校验层：验证必需参数
+        if not isinstance(device_id, int) or device_id <= 0:
+            raise HTTPException(status_code=400, detail="设备ID必须为正整数")
         
-        # 使用设备认证管理器进行认证
-        result = device_auth_manager.authenticate_device(str(device_id), auth_params)
+        if not isinstance(connect_params, dict):
+            raise HTTPException(status_code=400, detail="连接参数必须为字典类型")
         
-        return {
-            "success": result["success"],
-            "message": result.get("message", "认证处理完成"),
-            "device_id": device_id,
-            "timestamp": datetime.datetime.now().isoformat()
-        }
-    except Exception as e:
-        logger.error(f"设备 {device_id} 认证失败: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"设备认证失败: {str(e)}")
-
-
-@router.post("/device/{device_id}/connection", response_model=Dict[str, Any])
-async def toggle_device_connection(device_id: int, connect_params: Dict[str, Any]):
-    """切换设备连接状态"""
-    try:
-        logger.info(f"切换设备 {device_id} 连接状态请求: {connect_params}")
+        if "connect" not in connect_params:
+            raise HTTPException(status_code=400, detail="缺少必需参数: connect(布尔值，表示连接/断开)")
         
-        # 查找设备
+        connect = connect_params.get("connect", False)
+        logger.info(f"设备 {device_id} 连接状态切换请求: {'connect' if connect else 'disconnect'}")
+        
+        # 对象判空层：查找设备
         device = next((d for d in mock_devices if d["id"] == device_id), None)
         if not device:
-            raise HTTPException(status_code=404, detail="设备不存在")
+            raise HTTPException(
+                status_code=404, 
+                detail=f"设备 ID {device_id} 不存在。请检查设备是否已注册或使用 GET /api/ai-control/devices 查看所有设备"
+            )
         
-        connection_type = device["connection_type"]
-        connect = connect_params.get("connect", False)
+        # 获取连接类型
+        connection_type = device.get("connection_type")
+        if not connection_type:
+            raise HTTPException(
+                status_code=500,
+                detail=f"设备 {device_id} 缺少连接类型配置"
+            )
         
-        # 检查是否支持该连接类型
+        # WiFi设备特殊处理（不需要控制器）
+        if connection_type == "wifi":
+            device["connected"] = connect
+            device["status"] = "online" if connect else "offline"
+            device["lastSeen"] = "刚刚"
+            logger.info(f"WiFi设备 {device_id} 状态已更新: {device['status']}")
+            return {
+                "success": True,
+                "device_id": device_id,
+                "connected": device["connected"],
+                "status": device["status"],
+                "connection_type": connection_type,
+                "message": f"WiFi设备已{'connect' if connect else '断开'}",
+                "timestamp": datetime.datetime.now().isoformat()
+            }
+        
+        # 全局异常层：检查控制器存在
         if connection_type not in controllers:
-            raise HTTPException(status_code=400, detail=f"不支持的连接类型: {connection_type}")
+            raise HTTPException(
+                status_code=400, 
+                detail=f"不支持的连接类型: {connection_type}。支持的类型: {', '.join(controllers.keys())}"
+            )
         
-        controller = controllers[connection_type]
+        # 判空检查
+        controller = controllers.get(connection_type)
+        if not controller:
+            raise HTTPException(
+                status_code=500,
+                detail=f"连接类型 {connection_type} 的控制器未初始化"
+            )
+        
         result = {}
         
-        if connect:
-            # 建立连接
-            connection_details = device.get("connection_details", {})
-            result = controller.connect(connection_details)
-            if result["success"]:
-                device["connected"] = True
-                device["status"] = "online"
-                device["lastSeen"] = "刚刚"
-                # 更新连接详情
-                if connection_type == "infrared":
-                    device["connection_details"]["infrared_channel"] = result.get("channel")
-                    device["connection_details"]["infrared_range"] = result.get("range")
-                elif connection_type == "app":
-                    device["connection_details"]["app_id"] = result.get("app_id")
-                    device["connection_details"]["app_version"] = result.get("app_version")
-                elif connection_type == "bluetooth":
-                    device["connection_details"]["bluetooth_address"] = result.get("bluetooth_address")
-                    device["connection_details"]["bluetooth_version"] = result.get("bluetooth_version")
-                    device["signal"] = result.get("signal_strength", device["signal"])
-        else:
-            # 断开连接
-            result = controller.disconnect()
-            if result["success"]:
-                device["connected"] = False
-                device["status"] = "offline"
-                device["lastSeen"] = "刚刚"
+        try:
+            if connect:
+                # 建立连接
+                connection_details = device.get("connection_details", {})
+                if not connection_details:
+                    logger.warning(f"设备 {device_id} 缺少连接详情，使用默认配置")
+                    connection_details = {}
+                
+                logger.info(f"尝试连接设备 {device_id} - 类型: {connection_type}")
+                result = controller.connect(connection_details)
+                
+                # 验证连接结果
+                if not isinstance(result, dict):
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"控制器返回结果格式错误，预期字典类型"
+                    )
+                
+                if result.get("success"):
+                    device["connected"] = True
+                    device["status"] = "online"
+                    device["lastSeen"] = "刚刚"
+                    
+                    # 更新连接详情
+                    if connection_type == "infrared":
+                        device["connection_details"]["infrared_channel"] = result.get("channel")
+                        device["connection_details"]["infrared_range"] = result.get("range")
+                    elif connection_type == "app":
+                        device["connection_details"]["app_id"] = result.get("app_id")
+                        device["connection_details"]["app_version"] = result.get("app_version")
+                    elif connection_type == "bluetooth":
+                        device["connection_details"]["bluetooth_address"] = result.get("bluetooth_address")
+                        device["connection_details"]["bluetooth_version"] = result.get("bluetooth_version")
+                        device["signal"] = result.get("signal_strength", device.get("signal", "unknown"))
+                    
+                    logger.info(f"设备 {device_id} 连接成功: {connection_type}")
+                else:
+                    error_msg = result.get("message", "未知错误")
+                    logger.error(f"设备 {device_id} 连接失败: {error_msg}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"设备连接失败: {error_msg}。请检查设备是否开启、信号是否正常"
+                    )
+            else:
+                # 断开连接
+                logger.info(f"尝试断开设备 {device_id} - 类型: {connection_type}")
+                result = controller.disconnect()
+                
+                if not isinstance(result, dict):
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"控制器返回结果格式错误"
+                    )
+                
+                if result.get("success"):
+                    device["connected"] = False
+                    device["status"] = "offline"
+                    device["lastSeen"] = "刚刚"
+                    logger.info(f"设备 {device_id} 已断开")
+                else:
+                    error_msg = result.get("message", "未知错误")
+                    logger.error(f"设备 {device_id} 断开失败: {error_msg}")
+        
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"设备 {device_id} 连接控制异常: {type(e).__name__} - {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"设备连接控制失败: {str(e)}"
+            )
         
         return {
-            "success": result["success"],
+            "success": result.get("success", False),
             "device_id": device_id,
             "connected": device["connected"],
             "status": device["status"],
             "connection_type": connection_type,
-            "message": result["message"],
+            "message": result.get("message", "操作完成"),
             "timestamp": datetime.datetime.now().isoformat()
         }
+    
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"切换设备 {device_id} 连接状态失败: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"切换设备连接状态失败: {str(e)}")
+        logger.error(f"设备 {device_id} 连接状态切换未捕获异常: {type(e).__name__} - {e}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"设备连接状态切换失败: {str(e)}"
+        )

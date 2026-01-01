@@ -310,7 +310,7 @@ async def get_decision_performance():
         await initialize_decision_services()
         
         # 获取有机体AI核心状态
-        organic_status = await organic_ai_core_instance.get_status()
+        organic_status = organic_ai_core_instance.get_status()
         
         # 获取传统决策引擎性能指标
         metrics = decision_engine.get_performance_metrics()
@@ -420,7 +420,7 @@ async def activate_organic_ai_iteration():
         return {
             "success": True,
             "message": "有机体AI核心主动迭代已激活",
-            "data": await organic_ai_core_instance.get_status()
+            "data": organic_ai_core_instance.get_status()
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -439,7 +439,7 @@ async def deactivate_organic_ai_iteration():
         return {
             "success": True,
             "message": "有机体AI核心主动迭代已停用",
-            "data": await organic_ai_core_instance.get_status()
+            "data": organic_ai_core_instance.get_status()
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -452,7 +452,7 @@ async def get_organic_ai_status():
         # 初始化决策服务
         await initialize_decision_services()
         
-        status = await organic_ai_core_instance.get_status()
+        status = organic_ai_core_instance.get_status()
         
         return {
             "success": True,
@@ -475,7 +475,7 @@ async def evolve_organic_ai_structure():
         return {
             "success": True,
             "message": "有机体AI核心网络结构演化完成",
-            "data": await organic_ai_core_instance.get_status()
+            "data": organic_ai_core_instance.get_status()
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

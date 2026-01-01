@@ -82,6 +82,29 @@ async def contribute_data(request: DataContributionRequest, user_id: str) -> Dat
         photon_points_earned=points_earned
     )
 
+@router.get("/profile", summary="获取用户个人资料")
+async def get_user_profile(user_id: str = "default_user") -> Dict[str, Any]:
+    """获取用户个人资料"""
+    profile = {
+        "user_id": user_id,
+        "username": f"user_{user_id[:8] if len(user_id) > 8 else user_id}",
+        "email": f"{user_id}@example.com",
+        "photon_points": 1500,
+        "tier": "premium",
+        "total_contributions": 25,
+        "verification_status": "verified",
+        "account_status": "active",
+        "preferences": {
+            "language": "zh-CN",
+            "notifications": True,
+            "theme": "dark"
+        },
+        "created_at": "2024-01-01T00:00:00Z",
+        "last_active": "2024-12-30T00:00:00Z"
+    }
+    
+    return {"success": True, "data": profile}
+
 @router.get("/stats", summary="获取用户统计信息")
 async def get_user_stats(user_id: str) -> UserStatsResponse:
     """获取用户统计信息"""

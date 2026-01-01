@@ -24,7 +24,8 @@ const SystemLogs: React.FC = () => {
       const response = await apiClient.get('/api/system/logs');
       
       if (response.success && response.data) {
-        setLogs(response.data.logs || []);
+        const data = response.data as { logs?: LogEntry[] };
+        setLogs(data.logs || []);
       } else {
         throw new Error(response.error || '获取日志失败');
       }
@@ -60,8 +61,8 @@ const SystemLogs: React.FC = () => {
   useEffect(() => {
     fetchLogs();
     
-    // 设置定时器定期刷新日志（每30秒）
-    const interval = setInterval(fetchLogs, 30000);
+    // 设置定时器定期刷新日志（优化：每60秒，减少请求频率）
+    const interval = setInterval(fetchLogs, 60000);
     
     return () => clearInterval(interval);
   }, []);

@@ -1,7 +1,9 @@
 // 应用配置
 
 // API基础URL
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8002';
+// 开发环境：使用空字符串，让请求通过Vite代理
+// 生产环境：通过环境变量配置实际后端URL
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 // API密钥
 export const API_KEY = import.meta.env.VITE_API_KEY || 'your-api-key-here'

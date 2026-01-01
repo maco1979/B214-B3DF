@@ -83,10 +83,10 @@ export function Dashboard() {
     const now = new Date();
     const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
     
-    // 先等到下一个整分钟，然后每分钟更新一次
+    // 先等到下一个整分钟，然后每5分钟更新一次（优化：减少请求频率）
     const initialTimeout = setTimeout(() => {
       updateChartData();
-      const interval = setInterval(updateChartData, 60 * 1000);
+      const interval = setInterval(updateChartData, 5 * 60 * 1000);
       return () => clearInterval(interval);
     }, msUntilNextMinute);
     

@@ -74,6 +74,8 @@ export const DeviceCard: React.FC<DeviceCardProps> = ({
         </div>
         
         <input 
+          id={`device-select-${device.id}`}
+          name={`device-select-${device.id}`}
           type="checkbox"
           checked={isSelected}
           onChange={() => onSelect(device.id)}
