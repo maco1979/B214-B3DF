@@ -7,3 +7,9 @@ AI农业决策系统是一个融合强化学习、区块链与边缘计算的前
 
 ### 整体架构
 ...
+
+## 联系方式
+
+- **项目主页**: https://gitee.com/Organism_AI/AI-Agricultural-Decision-System
+- **技术文档**: https://docs.ai-agri.com
+- **商务合作**: contact@ai-agri.com
