@@ -26,7 +26,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
   const [ptzStatus, setPtzStatus] = useState<PTZStatus>({ connected: false });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
-  
+
   // 连接配置
   const [protocol, setProtocol] = useState('pelco_d');
   const [connectionType, setConnectionType] = useState('serial');
@@ -37,12 +37,12 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
   const [httpUrl, setHttpUrl] = useState('http://192.168.1.100');
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('admin');
-  
+
   // 控制参数
   const [speed, setSpeed] = useState(50);
   const [presetId, setPresetId] = useState(1);
   const [presetName, setPresetName] = useState('');
-  
+
   // 位置控制
   const [targetPan, setTargetPan] = useState(0);
   const [targetTilt, setTargetTilt] = useState(0);
@@ -68,13 +68,13 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
   const connectPTZ = async () => {
     setLoading(true);
     setError('');
-    
+
     try {
       const params: any = {
         protocol,
-        connection_type: connectionType
+        connection_type: connectionType,
       };
-      
+
       if (connectionType === 'serial') {
         params.port = serialPort;
         params.baudrate = baudrate;
@@ -88,9 +88,9 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
         params.username = username;
         params.password = password;
       }
-      
+
       const res = await apiClient.post('/api/camera/ptz/connect', params);
-      
+
       if (res.success) {
         setError('');
         await checkPTZStatus();
@@ -126,16 +126,16 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
       setError('请先连接PTZ云台');
       return;
     }
-    
+
     try {
       const params: any = { action, speed };
-      
+
       if (action === 'preset_set' || action === 'preset_goto') {
         params.preset_id = presetId;
       }
-      
+
       const res = await apiClient.post('/api/camera/ptz/action', params);
-      
+
       if (res.success) {
         setError('');
         await checkPTZStatus();
@@ -153,15 +153,15 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
       setError('请先连接PTZ云台');
       return;
     }
-    
+
     try {
       const res = await apiClient.post('/api/camera/ptz/move', {
         pan: targetPan,
         tilt: targetTilt,
         zoom: targetZoom,
-        speed
+        speed,
       });
-      
+
       if (res.success) {
         setError('');
         await checkPTZStatus();
@@ -179,13 +179,13 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
       setError('请先连接PTZ云台');
       return;
     }
-    
+
     try {
       const res = await apiClient.post('/api/camera/ptz/preset/set', {
         preset_id: presetId,
-        name: presetName || `预置位${presetId}`
+        name: presetName || `预置位${presetId}`,
       });
-      
+
       if (res.success) {
         setError('');
         await checkPTZStatus();
@@ -208,10 +208,10 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold text-cyber-cyan">PTZ云台控制</h3>
         <div className={cn(
-          "px-3 py-1 rounded-lg text-xs font-bold",
-          ptzStatus.connected
-            ? "bg-green-500/20 text-green-400 border border-green-500/30"
-            : "bg-gray-700/50 text-gray-400 border border-gray-600/30"
+          'px-3 py-1 rounded-lg text-xs font-bold',
+          ptzStatus.connected ?
+            'bg-green-500/20 text-green-400 border border-green-500/30' :
+            'bg-gray-700/50 text-gray-400 border border-gray-600/30',
         )}>
           {ptzStatus.connected ? '已连接' : '未连接'}
         </div>
@@ -221,13 +221,13 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
       {!ptzStatus.connected && (
         <div className="space-y-3 p-4 rounded-xl bg-white/5 border border-white/10">
           <h4 className="text-sm font-bold text-gray-300">连接配置</h4>
-          
+
           {/* 协议选择 */}
           <div>
             <label className="text-xs text-gray-400 block mb-1">控制协议</label>
             <select
               value={protocol}
-              onChange={(e) => setProtocol(e.target.value)}
+              onChange={e => setProtocol(e.target.value)}
               className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
             >
               <option value="pelco_d">Pelco-D（最常用）</option>
@@ -243,7 +243,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
             <label className="text-xs text-gray-400 block mb-1">连接类型</label>
             <select
               value={connectionType}
-              onChange={(e) => setConnectionType(e.target.value)}
+              onChange={e => setConnectionType(e.target.value)}
               className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
             >
               <option value="serial">串口（RS-485/RS-232）</option>
@@ -260,7 +260,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                 <input
                   type="text"
                   value={serialPort}
-                  onChange={(e) => setSerialPort(e.target.value)}
+                  onChange={e => setSerialPort(e.target.value)}
                   placeholder="/dev/ttyUSB0 或 COM3"
                   className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                 />
@@ -269,7 +269,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                 <label className="text-xs text-gray-400 block mb-1">波特率</label>
                 <select
                   value={baudrate}
-                  onChange={(e) => setBaudrate(Number(e.target.value))}
+                  onChange={e => setBaudrate(Number(e.target.value))}
                   className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                 >
                   <option value={2400}>2400</option>
@@ -290,7 +290,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                 <input
                   type="text"
                   value={networkHost}
-                  onChange={(e) => setNetworkHost(e.target.value)}
+                  onChange={e => setNetworkHost(e.target.value)}
                   placeholder="192.168.1.100"
                   className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                 />
@@ -300,7 +300,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                 <input
                   type="number"
                   value={networkPort}
-                  onChange={(e) => setNetworkPort(Number(e.target.value))}
+                  onChange={e => setNetworkPort(Number(e.target.value))}
                   placeholder="5000"
                   className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                 />
@@ -316,7 +316,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                 <input
                   type="text"
                   value={httpUrl}
-                  onChange={(e) => setHttpUrl(e.target.value)}
+                  onChange={e => setHttpUrl(e.target.value)}
                   placeholder="http://192.168.1.100"
                   className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                 />
@@ -327,7 +327,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                   <input
                     type="text"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={e => setUsername(e.target.value)}
                     placeholder="admin"
                     className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                   />
@@ -337,7 +337,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                   <input
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     placeholder="admin"
                     className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                   />
@@ -350,10 +350,10 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
             onClick={connectPTZ}
             disabled={loading}
             className={cn(
-              "w-full px-4 py-2 rounded-lg font-bold text-sm transition-all",
-              "bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30",
-              "hover:bg-cyber-cyan/30 hover:border-cyber-cyan/50",
-              loading && "opacity-50 cursor-not-allowed"
+              'w-full px-4 py-2 rounded-lg font-bold text-sm transition-all',
+              'bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30',
+              'hover:bg-cyber-cyan/30 hover:border-cyber-cyan/50',
+              loading && 'opacity-50 cursor-not-allowed',
             )}
           >
             {loading ? '连接中...' : '连接PTZ云台'}
@@ -395,37 +395,37 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
             <div className="flex flex-col items-center space-y-2">
               {/* 上 */}
               <button
-                onClick={() => executeAction('tilt_up')}
+                onClick={async () => executeAction('tilt_up')}
                 className="px-6 py-3 rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/30 font-bold"
               >
                 ▲
               </button>
-              
+
               {/* 左右 */}
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => executeAction('pan_left')}
+                  onClick={async () => executeAction('pan_left')}
                   className="px-6 py-3 rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/30 font-bold"
                 >
                   ◄
                 </button>
                 <button
-                  onClick={() => executeAction('stop')}
+                  onClick={async () => executeAction('stop')}
                   className="px-6 py-3 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 font-bold"
                 >
                   停止
                 </button>
                 <button
-                  onClick={() => executeAction('pan_right')}
+                  onClick={async () => executeAction('pan_right')}
                   className="px-6 py-3 rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/30 font-bold"
                 >
                   ►
                 </button>
               </div>
-              
+
               {/* 下 */}
               <button
-                onClick={() => executeAction('tilt_down')}
+                onClick={async () => executeAction('tilt_down')}
                 className="px-6 py-3 rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/30 font-bold"
               >
                 ▼
@@ -438,13 +438,13 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
             <h4 className="text-sm font-bold text-gray-300 mb-3">变焦控制</h4>
             <div className="flex items-center justify-center space-x-2">
               <button
-                onClick={() => executeAction('zoom_out')}
+                onClick={async () => executeAction('zoom_out')}
                 className="px-6 py-2 rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/30 font-bold"
               >
                 拉远 -
               </button>
               <button
-                onClick={() => executeAction('zoom_in')}
+                onClick={async () => executeAction('zoom_in')}
                 className="px-6 py-2 rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/30 font-bold"
               >
                 拉近 +
@@ -460,7 +460,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
               min="0"
               max="100"
               value={speed}
-              onChange={(e) => setSpeed(Number(e.target.value))}
+              onChange={e => setSpeed(Number(e.target.value))}
               className="w-full"
             />
           </div>
@@ -475,7 +475,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                   <input
                     type="number"
                     value={presetId}
-                    onChange={(e) => setPresetId(Number(e.target.value))}
+                    onChange={e => setPresetId(Number(e.target.value))}
                     min="1"
                     max="256"
                     className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
@@ -486,7 +486,7 @@ export const PTZControl: React.FC<PTZControlProps> = ({ apiClient }) => {
                   <input
                     type="text"
                     value={presetName}
-                    onChange={(e) => setPresetName(e.target.value)}
+                    onChange={e => setPresetName(e.target.value)}
                     placeholder="如：大门"
                     className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-white text-sm"
                   />

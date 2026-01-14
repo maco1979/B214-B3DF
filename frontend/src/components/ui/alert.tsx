@@ -3,12 +3,12 @@
  */
 
 import React, { useEffect } from 'react';
-import { 
-  X, 
-  CheckCircle, 
-  AlertCircle, 
-  Info, 
-  AlertTriangle 
+import {
+  X,
+  CheckCircle,
+  AlertCircle,
+  Info,
+  AlertTriangle,
 } from 'lucide-react';
 
 interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -47,23 +47,23 @@ const getAlertIcon = (variant: AlertProps['variant']) => {
 };
 
 export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
-  ({ 
-    className, 
-    variant = 'default', 
-    title, 
-    children, 
-    closable = false, 
-    onClose, 
-    autoClose = false, 
+  ({
+    className,
+    variant = 'default',
+    title,
+    children,
+    closable = false,
+    onClose,
+    autoClose = false,
     autoCloseDuration = 5000,
-    ...props 
+    ...props
   }, ref) => {
     const variantClasses = {
       default: 'bg-gray-900/50 border-gray-700 text-gray-200',
       success: 'bg-green-900/30 border-green-700 text-green-300',
       warning: 'bg-yellow-900/30 border-yellow-700 text-yellow-300',
       danger: 'bg-red-900/30 border-red-700 text-red-300',
-      info: 'bg-blue-900/30 border-blue-700 text-blue-300'
+      info: 'bg-blue-900/30 border-blue-700 text-blue-300',
     }[variant];
 
     // 自动关闭功能
@@ -113,13 +113,12 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 Alert.displayName = 'Alert';
 
 export const AlertTitle = React.forwardRef<HTMLHeadingElement, AlertTitleProps>(
-  ({ className, children, ...props }, ref) => {
-    return (
+  ({ className, children, ...props }, ref) => (
       <h3
         ref={ref}
         className={`mb-1 font-medium text-sm ${className}`}
@@ -127,14 +126,12 @@ export const AlertTitle = React.forwardRef<HTMLHeadingElement, AlertTitleProps>(
       >
         {children}
       </h3>
-    );
-  }
+    ),
 );
 AlertTitle.displayName = 'AlertTitle';
 
 export const AlertDescription = React.forwardRef<HTMLParagraphElement, AlertDescriptionProps>(
-  ({ className, children, ...props }, ref) => {
-    return (
+  ({ className, children, ...props }, ref) => (
       <p
         ref={ref}
         className={`text-sm ${className}`}
@@ -142,7 +139,6 @@ export const AlertDescription = React.forwardRef<HTMLParagraphElement, AlertDesc
       >
         {children}
       </p>
-    );
-  }
+    ),
 );
 AlertDescription.displayName = 'AlertDescription';

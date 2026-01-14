@@ -3,10 +3,13 @@
 提供物理世界、人类社会和上下文理解的基本常识
 支持知识的存储、检索和推理
 """
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 import logging
 from dataclasses import dataclass
 from datetime import datetime
+import requests
+import json
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -56,10 +59,20 @@ class CommonKnowledgeBase:
         self.relation_index: Dict[str, List[KnowledgeRelation]] = {}  # 按关系类型索引
         self.source_relation_index: Dict[str, List[KnowledgeRelation]] = {}  # 按源知识ID索引
         self.target_relation_index: Dict[str, List[KnowledgeRelation]] = {}  # 按目标知识ID索引
-        self.category_index: Dict[str, List[str]] = {}
-        self.type_index: Dict[str, List[str]] = {}
+        self.category_index: Dict[str, List[str]] = {}  # 按知识类别索引
+        self.type_index: Dict[str, List[str]] = {}  # 按知识类型索引
         self.abstraction_index: Dict[int, List[str]] = {}  # 按抽象级别索引
         self.hierarchy_index: Dict[str, List[str]] = {}  # 按父知识ID索引
+        self.external_knowledge_sources: Dict[str, Dict[str, Any]] = {
+            "conceptnet": {
+                "enabled": True,
+                "endpoint": "http://api.conceptnet.io/c/en/"
+            },
+            "wordnet": {
+                "enabled": False,  # 需要本地安装nltk
+                "path": None
+            }
+        }
         self._initialize_default_knowledge()
         logger.info("常识知识库初始化完成，包含 %d 条默认知识", len(self.knowledge_graph))
     
@@ -621,6 +634,261 @@ class CommonKnowledgeBase:
             return [exercise_knowledge] if exercise_knowledge else []
         
         return []
+    
+    def get_conceptnet_knowledge(self, concept: str, limit: int = 5) -> List[Dict[str, Any]]:
+        """从ConceptNet获取概念相关知识
+        
+        Args:
+            concept: 概念名称
+            limit: 返回结果数量
+            
+        Returns:
+            从ConceptNet获取的知识列表
+        """
+        if not self.external_knowledge_sources["conceptnet"]["enabled"]:
+            return []
+        
+        try:
+            endpoint = self.external_knowledge_sources["conceptnet"]["endpoint"]
+            url = f"{endpoint}{concept}"
+            response = requests.get(url, timeout=5)
+            
+            if response.status_code == 200:
+                data = response.json()
+                edges = data.get("edges", [])[:limit]
+                conceptnet_knowledge = []
+                
+                for edge in edges:
+                    rel = edge.get("rel", {})
+                    start = edge.get("start", {})
+                    end = edge.get("end", {})
+                    
+                    if rel and start and end:
+                        conceptnet_knowledge.append({
+                            "relation": rel.get("label", "related_to"),
+                            "start_concept": start.get("label", ""),
+                            "end_concept": end.get("label", ""),
+                            "weight": edge.get("weight", 0.0),
+                            "source": edge.get("sources", [{}])[0].get("name", "conceptnet")
+                        })
+                
+                return conceptnet_knowledge
+            else:
+                logger.warning(f"ConceptNet API请求失败，状态码: {response.status_code}")
+                return []
+        except Exception as e:
+            logger.error(f"从ConceptNet获取知识失败: {str(e)}")
+            return []
+    
+    def search_with_external_knowledge(self, query: str, include_external: bool = True) -> List[Dict[str, Any]]:
+        """搜索知识，可选包含外部知识库
+        
+        Args:
+            query: 搜索查询
+            include_external: 是否包含外部知识库
+            
+        Returns:
+            搜索结果列表
+        """
+        # 内部知识库搜索结果
+        internal_results = self.search_knowledge(query)
+        
+        results = [
+            {
+                "type": "internal",
+                "knowledge": knowledge
+            } for knowledge in internal_results
+        ]
+        
+        # 添加外部知识库结果
+        if include_external:
+            conceptnet_results = self.get_conceptnet_knowledge(query)
+            
+            for result in conceptnet_results:
+                results.append({
+                    "type": "external",
+                    "source": "conceptnet",
+                    "knowledge": result
+                })
+        
+        return results
+    
+    def get_knowledge_by_abstraction_range(self, min_level: int, max_level: int) -> List[KnowledgeEntry]:
+        """获取指定抽象级别范围内的知识
+        
+        Args:
+            min_level: 最小抽象级别
+            max_level: 最大抽象级别
+            
+        Returns:
+            知识列表
+        """
+        knowledge_ids = []
+        
+        for level in range(min_level, max_level + 1):
+            if level in self.abstraction_index:
+                knowledge_ids.extend(self.abstraction_index[level])
+        
+        # 去重
+        unique_ids = list(set(knowledge_ids))
+        return [self.knowledge_graph[id] for id in unique_ids if id in self.knowledge_graph]
+    
+    def get_highest_abstraction(self, knowledge_id: str) -> Optional[KnowledgeEntry]:
+        """获取知识的最高抽象级别
+        
+        Args:
+            knowledge_id: 知识ID
+            
+        Returns:
+            最高抽象级别的知识
+        """
+        ancestors = self.get_hierarchy_above(knowledge_id)
+        if not ancestors:
+            return self.get_knowledge_by_id(knowledge_id)
+        
+        # 返回抽象级别最高的祖先
+        highest = max(ancestors, key=lambda k: k.abstraction_level)
+        return highest
+    
+    def get_lowest_abstraction(self, knowledge_id: str) -> List[KnowledgeEntry]:
+        """获取知识的最低抽象级别（叶子节点）
+        
+        Args:
+            knowledge_id: 知识ID
+            
+        Returns:
+            最低抽象级别的知识列表
+        """
+        descendants = self.get_hierarchy_below(knowledge_id)
+        
+        if not descendants:
+            knowledge = self.get_knowledge_by_id(knowledge_id)
+            return [knowledge] if knowledge else []
+        
+        # 找出所有叶子节点
+        leaf_nodes = []
+        
+        def _find_leaves(descendants_list: List[KnowledgeEntry]):
+            for desc in descendants_list:
+                if not desc.children_ids:
+                    leaf_nodes.append(desc)
+                else:
+                    grandchildren = self.get_hierarchy_below(desc.id)
+                    if not grandchildren:
+                        leaf_nodes.append(desc)
+                    else:
+                        _find_leaves(grandchildren)
+        
+        _find_leaves(descendants)
+        return leaf_nodes
+    
+    def adapt_knowledge_to_domain(self, knowledge_id: str, target_domain: str) -> Optional[KnowledgeEntry]:
+        """将知识适应到目标领域
+        
+        Args:
+            knowledge_id: 知识ID
+            target_domain: 目标领域
+            
+        Returns:
+            适应后的知识
+        """
+        knowledge = self.get_knowledge_by_id(knowledge_id)
+        if not knowledge:
+            return None
+        
+        # 简单的领域适应示例
+        adapted_content = f"[{target_domain}] {knowledge.content}"
+        
+        # 创建适应后的知识条目
+        adapted_id = f"{knowledge.id}_adapted_{target_domain}"
+        adapted_knowledge = KnowledgeEntry(
+            id=adapted_id,
+            type=knowledge.type,
+            content=adapted_content,
+            confidence=knowledge.confidence * 0.9,  # 领域适应后置信度略有降低
+            source=f"adapted_from_{knowledge.source}",
+            relations=knowledge.relations + [knowledge.id],  # 添加与原始知识的关系
+            timestamp=datetime.now(),
+            category=target_domain,
+            subcategory=knowledge.subcategory,
+            parent_id=knowledge.id,  # 设置父知识为原始知识
+            abstraction_level=knowledge.abstraction_level,
+            attributes={**knowledge.attributes, "adapted_domain": target_domain}
+        )
+        
+        # 添加到知识库
+        self.knowledge_graph[adapted_id] = adapted_knowledge
+        
+        # 更新索引
+        if adapted_knowledge.category not in self.category_index:
+            self.category_index[adapted_knowledge.category] = []
+        self.category_index[adapted_knowledge.category].append(adapted_id)
+        
+        logger.debug(f"知识已适应到领域 {target_domain}: {adapted_id}")
+        return adapted_knowledge
+    
+    def integrate_cross_domain_knowledge(self, source_domain: str, target_domain: str, knowledge_ids: List[str]) -> List[KnowledgeEntry]:
+        """整合跨领域知识
+        
+        Args:
+            source_domain: 源领域
+            target_domain: 目标领域
+            knowledge_ids: 要整合的知识ID列表
+            
+        Returns:
+            整合后的知识列表
+        """
+        integrated_knowledge = []
+        
+        for knowledge_id in knowledge_ids:
+            knowledge = self.get_knowledge_by_id(knowledge_id)
+            if knowledge:
+                # 适应知识到目标领域
+                adapted_knowledge = self.adapt_knowledge_to_domain(knowledge_id, target_domain)
+                if adapted_knowledge:
+                    integrated_knowledge.append(adapted_knowledge)
+        
+        return integrated_knowledge
+    
+    def get_abstraction_hierarchy(self, knowledge_id: str) -> Dict[str, Any]:
+        """获取知识的抽象层次结构
+        
+        Args:
+            knowledge_id: 知识ID
+            
+        Returns:
+            抽象层次结构
+        """
+        knowledge = self.get_knowledge_by_id(knowledge_id)
+        if not knowledge:
+            return {}
+        
+        # 获取所有祖先（更抽象的概念）
+        ancestors = self.get_hierarchy_above(knowledge_id)
+        ancestors.sort(key=lambda k: k.abstraction_level, reverse=True)  # 从抽象到具体
+        
+        # 获取所有后代（更具体的概念）
+        descendants = self.get_hierarchy_below(knowledge_id)
+        descendants.sort(key=lambda k: k.abstraction_level)  # 从具体到抽象
+        
+        return {
+            "current": {
+                "knowledge": knowledge,
+                "abstraction_level": knowledge.abstraction_level
+            },
+            "more_abstract": [
+                {
+                    "knowledge": ancestor,
+                    "abstraction_level": ancestor.abstraction_level
+                } for ancestor in ancestors
+            ],
+            "more_concrete": [
+                {
+                    "knowledge": descendant,
+                    "abstraction_level": descendant.abstraction_level
+                } for descendant in descendants
+            ]
+        }
 
 
 # 创建全局常识知识库实例

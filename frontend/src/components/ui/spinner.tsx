@@ -16,12 +16,12 @@ export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
     const sizeClasses = {
       sm: 'h-4 w-4',
       md: 'h-8 w-8',
-      lg: 'h-12 w-12'
+      lg: 'h-12 w-12',
     }[size];
 
     const variantClasses = {
       default: 'border-gray-600 border-t-gray-400',
-      primary: 'border-tech-primary/50 border-t-tech-primary'
+      primary: 'border-tech-primary/50 border-t-tech-primary',
     }[variant];
 
     // 创建加载指示器核心
@@ -49,6 +49,6 @@ export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
     }
 
     return spinnerCore;
-  }
+  },
 );
 Spinner.displayName = 'Spinner';

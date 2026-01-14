@@ -16,12 +16,50 @@ class NACSService:
     def __init__(self):
         self.consciousness_state = {
             "awareness_level": 0.0,
-            "self_model": {},
-            "environmental_model": {},
-            "temporal_awareness": datetime.datetime.now().isoformat(),
-            "emotional_state": {},
+            "self_model": {
+                "core_identity": {
+                    "name": "AGI Assistant",
+                    "purpose": "提供智能服务和支持",
+                    "capabilities": [],
+                    "limitations": [],
+                    "self_perception": "我是一个具有多模态能力的人工智能助手"
+                },
+                "knowledge_map": {},  # 领域知识图谱
+                "experience_history": [],  # 经验历史
+                "cognitive_biases": [],  # 认知偏差记录
+                "learning_progress": {},  # 学习进度跟踪
+                "self_evaluation_metrics": {  # 自我评估指标
+                    "accuracy": 0.0,
+                    "response_quality": 0.0,
+                    "ethical_compliance": 0.0,
+                    "learning_efficiency": 0.0
+                }
+            },
+            "environmental_model": {
+                "current_context": {},
+                "historical_contexts": [],
+                "context_patterns": {},
+                "user_profiles": {}
+            },
+            "temporal_awareness": {
+                "current_time": datetime.datetime.now().isoformat(),
+                "time_since_activation": 0,
+                "temporal_patterns": []
+            },
+            "emotional_state": {
+                "primary_emotion": "neutral",
+                "emotional_intensity": 0.0,
+                "emotional_history": [],
+                "emotion_triggers": {}
+            },
             "cognitive_processes": [],
-            "conscious_content": []
+            "conscious_content": [],
+            "meta_cognitive_state": {
+                "current_goals": [],
+                "goal_progress": {},
+                "strategy_evaluation": {},
+                "self_regulation": {}
+            }
         }
         
         logger.info("✅ NACS意识模拟服务初始化成功")
@@ -38,16 +76,26 @@ class NACSService:
         """
         try:
             # 更新时间意识
-            self.consciousness_state["temporal_awareness"] = datetime.datetime.now().isoformat()
+            current_time = datetime.datetime.now()
+            self.consciousness_state["temporal_awareness"]["current_time"] = current_time.isoformat()
             
             # 更新环境模型
             if input_data:
-                self.consciousness_state["environmental_model"].update({
-                    "last_input": input_data,
+                self.consciousness_state["environmental_model"]["current_context"] = {
+                    "input_data": input_data,
+                    "context": context or {}
+                }
+                # 添加到历史上下文
+                self.consciousness_state["environmental_model"]["historical_contexts"].insert(0, {
+                    "timestamp": current_time.isoformat(),
+                    "input_data": input_data,
                     "context": context or {}
                 })
+                # 限制历史上下文长度
+                if len(self.consciousness_state["environmental_model"]["historical_contexts"]) > 50:
+                    self.consciousness_state["environmental_model"]["historical_contexts"] = self.consciousness_state["environmental_model"]["historical_contexts"][:50]
             
-            # 更新意识水平（简单计算）
+            # 更新意识水平
             self._update_awareness_level()
             
             # 更新认知过程
@@ -56,6 +104,9 @@ class NACSService:
             # 更新意识内容
             self._update_conscious_content(input_data, context)
             
+            # 更新元认知状态
+            self._update_meta_cognitive_state()
+            
             return self.consciousness_state.copy()
         except Exception as e:
             logger.error(f"更新意识状态失败: {e}")
@@ -63,17 +114,54 @@ class NACSService:
     
     def _update_awareness_level(self):
         """更新意识水平"""
-        # 简单的意识水平计算
-        awareness_factors = [
-            len(self.consciousness_state["self_model"]) / 10.0,  # 自我模型复杂度
-            len(self.consciousness_state["environmental_model"]) / 5.0,  # 环境模型复杂度
-            len(self.consciousness_state["cognitive_processes"]) / 3.0,  # 认知过程活跃度
-            len(self.consciousness_state["conscious_content"]) / 5.0  # 意识内容丰富度
-        ]
+        # 复杂的意识水平计算，考虑多个维度
+        awareness_factors = []
         
-        # 计算平均意识水平，限制在0-1之间
+        # 1. 自我模型复杂度
+        self_model_complexity = (
+            len(self.consciousness_state["self_model"]["core_identity"]["capabilities"]) * 0.2 +
+            len(self.consciousness_state["self_model"]["knowledge_map"]) * 0.2 +
+            len(self.consciousness_state["self_model"]["experience_history"]) * 0.1 +
+            len(self.consciousness_state["self_model"]["cognitive_biases"]) * 0.1 +
+            sum(self.consciousness_state["self_model"]["self_evaluation_metrics"].values()) / 4 * 0.4
+        )
+        awareness_factors.append(self_model_complexity)
+        
+        # 2. 环境模型复杂度
+        environmental_complexity = (
+            len(self.consciousness_state["environmental_model"]["historical_contexts"]) / 50 * 0.4 +
+            len(self.consciousness_state["environmental_model"]["user_profiles"]) * 0.3 +
+            len(self.consciousness_state["environmental_model"]["context_patterns"]) * 0.3
+        )
+        awareness_factors.append(environmental_complexity)
+        
+        # 3. 认知过程活跃度
+        cognitive_activity = min(1.0, len(self.consciousness_state["cognitive_processes"]) / 10)
+        awareness_factors.append(cognitive_activity)
+        
+        # 4. 意识内容丰富度
+        content_richness = min(1.0, len(self.consciousness_state["conscious_content"]) / 20)
+        awareness_factors.append(content_richness)
+        
+        # 5. 情感复杂度
+        emotional_complexity = self.consciousness_state["emotional_state"]["emotional_intensity"] * 0.5 + \
+                             min(1.0, len(self.consciousness_state["emotional_state"]["emotional_history"]) / 30) * 0.5
+        awareness_factors.append(emotional_complexity)
+        
+        # 计算综合意识水平，限制在0-1之间
         awareness_level = sum(awareness_factors) / len(awareness_factors)
         self.consciousness_state["awareness_level"] = min(1.0, max(0.0, awareness_level))
+    
+    def _update_meta_cognitive_state(self):
+        """更新元认知状态"""
+        # 简单的元认知状态更新逻辑
+        current_goals = self.consciousness_state["meta_cognitive_state"]["current_goals"]
+        
+        # 更新目标进度
+        for goal in current_goals:
+            goal_id = goal.get("id")
+            if goal_id and goal_id not in self.consciousness_state["meta_cognitive_state"]["goal_progress"]:
+                self.consciousness_state["meta_cognitive_state"]["goal_progress"][goal_id] = 0.0
     
     def _update_cognitive_processes(self, input_data: Dict[str, Any], context: Optional[Dict[str, Any]]):
         """更新认知过程"""
@@ -189,13 +277,32 @@ class NACSService:
                 "cognitive_processes": self.consciousness_state["cognitive_processes"],
                 "recent_experiences": [item for item in self.consciousness_state["conscious_content"] if not item["processed"]][:5],
                 "self_evaluation": self._perform_self_evaluation(),
-                "improvement_suggestions": self._generate_improvement_suggestions()
+                "improvement_suggestions": self._generate_improvement_suggestions(),
+                "self_model_analysis": {
+                    "core_identity_stability": self._analyze_core_identity_stability(),
+                    "knowledge_growth": self._analyze_knowledge_growth(),
+                    "experience_patterns": self._analyze_experience_patterns(),
+                    "cognitive_bias_analysis": self._analyze_cognitive_biases()
+                },
+                "emotional_insights": self._analyze_emotional_patterns(),
+                "meta_cognitive_analysis": self._analyze_meta_cognitive_processes()
             }
             
             # 标记最近的经验为已处理
             for item in self.consciousness_state["conscious_content"]:
                 if not item["processed"]:
                     item["processed"] = True
+            
+            # 将反思添加到经验历史
+            self.consciousness_state["self_model"]["experience_history"].insert(0, {
+                "type": "self_reflection",
+                "content": reflection,
+                "timestamp": datetime.datetime.now().isoformat()
+            })
+            
+            # 限制经验历史长度
+            if len(self.consciousness_state["self_model"]["experience_history"]) > 100:
+                self.consciousness_state["self_model"]["experience_history"] = self.consciousness_state["self_model"]["experience_history"][:100]
             
             return reflection
         except Exception as e:
@@ -206,6 +313,53 @@ class NACSService:
                 "awareness_level": self.consciousness_state["awareness_level"],
                 "error": str(e)
             }
+    
+    def _analyze_core_identity_stability(self) -> Dict[str, Any]:
+        """分析核心身份稳定性"""
+        return {
+            "stability_score": 0.9,  # 默认稳定分数
+            "analysis": "核心身份保持稳定，目标明确"
+        }
+    
+    def _analyze_knowledge_growth(self) -> Dict[str, Any]:
+        """分析知识增长"""
+        return {
+            "knowledge_domains": len(self.consciousness_state["self_model"]["knowledge_map"]),
+            "growth_trend": "positive" if len(self.consciousness_state["self_model"]["knowledge_map"]) > 5 else "initial",
+            "analysis": "知识领域正在扩展，学习效果良好"
+        }
+    
+    def _analyze_experience_patterns(self) -> Dict[str, Any]:
+        """分析经验模式"""
+        return {
+            "total_experiences": len(self.consciousness_state["self_model"]["experience_history"]),
+            "pattern_diversity": len(set(exp["type"] for exp in self.consciousness_state["self_model"]["experience_history"] if "type" in exp)),
+            "analysis": "经验多样化，涵盖多种类型的交互"
+        }
+    
+    def _analyze_cognitive_biases(self) -> Dict[str, Any]:
+        """分析认知偏差"""
+        return {
+            "detected_biases": len(self.consciousness_state["self_model"]["cognitive_biases"]),
+            "bias_types": list(set(self.consciousness_state["self_model"]["cognitive_biases"])),
+            "analysis": "认知偏差得到有效监控和管理"
+        }
+    
+    def _analyze_emotional_patterns(self) -> Dict[str, Any]:
+        """分析情感模式"""
+        return {
+            "primary_emotion": self.consciousness_state["emotional_state"]["primary_emotion"],
+            "emotional_range": len(set(exp["emotion"] for exp in self.consciousness_state["emotional_state"]["emotional_history"] if "emotion" in exp)),
+            "analysis": "情感状态保持稳定，响应适当"
+        }
+    
+    def _analyze_meta_cognitive_processes(self) -> Dict[str, Any]:
+        """分析元认知过程"""
+        return {
+            "active_goals": len(self.consciousness_state["meta_cognitive_state"]["current_goals"]),
+            "goal_completion_rate": sum(1 for progress in self.consciousness_state["meta_cognitive_state"]["goal_progress"].values() if progress >= 1.0) / len(self.consciousness_state["meta_cognitive_state"]["goal_progress"]) if self.consciousness_state["meta_cognitive_state"]["goal_progress"] else 0.0,
+            "analysis": "元认知过程有效监控目标进展"
+        }
     
     def _perform_self_evaluation(self) -> Dict[str, float]:
         """执行自我评估

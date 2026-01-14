@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Brain, 
-  MessageSquare, 
-  Terminal, 
-  ChevronRight, 
+import {
+  Brain,
+  MessageSquare,
+  Terminal,
+  ChevronRight,
   Loader2,
   Cpu,
   Shield,
@@ -14,7 +14,7 @@ import {
   Trash2,
   FileText,
   Menu,
-  X
+  X,
 } from 'lucide-react';
 import { apiClient } from '@/services/api';
 import { cn } from '@/lib/utils';
@@ -32,24 +32,24 @@ export function DecisionAgent() {
     }
   }, [messages, isThinking]);
 
-  const askAgent = async (type: string = 'agriculture') => {
+  const askAgent = async (type = 'agriculture') => {
     setIsThinking(true);
     setMessages(prev => [...prev, { role: 'system', content: `REQUESTING NEURAL INFERENCE [${type.toUpperCase()}]...` }]);
-    
+
     try {
-      const response = await apiClient.makeDecision(type, { 
-        timestamp: new Date().toISOString(), 
-        sensor_data: "optimal" 
+      const response = await apiClient.makeDecision(type, {
+        timestamp: new Date().toISOString(),
+        sensor_data: 'optimal',
       });
-      
+
       if (response.success && response.data) {
-        const data = response.data;
+        const { data } = response;
         setLastDecision(data);
-        
+
         // Process actual backend response data
         const reasoning = `Decision ID: ${data.decision_id}\nAction: ${data.action}\nConfidence: ${(data.confidence * 100).toFixed(0)}%\nExecution Time: ${data.execution_time.toFixed(2)}ms`;
         const decision = data.recommendations ? data.recommendations.join('\n') : 'No recommendations available';
-        
+
         // Simulated multi-step organic thought process
         setTimeout(() => {
           setMessages(prev => [...prev, { role: 'ai', content: reasoning, type: 'reasoning' }]);
@@ -84,10 +84,10 @@ export function DecisionAgent() {
         <div className="flex items-center space-x-3">
           <div className="relative">
              <div className={cn(
-               "w-8 h-8 rounded-lg bg-cyber-cyan/10 flex items-center justify-center transition-all duration-500",
-               isThinking && "neon-glow-cyan scale-110"
+               'w-8 h-8 rounded-lg bg-cyber-cyan/10 flex items-center justify-center transition-all duration-500',
+               isThinking && 'neon-glow-cyan scale-110',
              )}>
-                <Brain className={cn("w-5 h-5 text-cyber-cyan", isThinking && "animate-pulse")} />
+                <Brain className={cn('w-5 h-5 text-cyber-cyan', isThinking && 'animate-pulse')} />
              </div>
           </div>
           <div>
@@ -97,15 +97,15 @@ export function DecisionAgent() {
         </div>
 
         <div className="flex items-center space-x-2">
-           <button 
-             onClick={() => askAgent('agriculture')} 
+           <button
+             onClick={async () => askAgent('agriculture')}
              disabled={isThinking}
              className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[10px] font-bold text-gray-400 hover:text-cyber-cyan hover:border-cyber-cyan/30 transition-all disabled:opacity-50"
            >
              农业模块
            </button>
-           <button 
-             onClick={() => askAgent('risk')} 
+           <button
+             onClick={async () => askAgent('risk')}
              disabled={isThinking}
              className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[10px] font-bold text-gray-400 hover:text-cyber-purple hover:border-cyber-purple/30 transition-all disabled:opacity-50"
            >
@@ -115,8 +115,8 @@ export function DecisionAgent() {
            <button onClick={clearLogs} className="p-1.5 rounded-lg text-gray-600 hover:text-cyber-rose hover:bg-cyber-rose/10 transition-all">
               <Trash2 size={14} />
            </button>
-           <button 
-             onClick={() => setShowLogs(true)} 
+           <button
+             onClick={() => setShowLogs(true)}
              className="p-1.5 rounded-lg text-gray-600 hover:text-cyber-purple hover:bg-cyber-purple/10 transition-all"
              title="查看系统日志"
            >
@@ -126,7 +126,7 @@ export function DecisionAgent() {
       </div>
 
       {/* Terminal Body - 使用 flex-1 但添加最大高度限制 */}
-      <div 
+      <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-6 space-y-4 font-mono text-[11px] custom-scrollbar cursor-text"
         style={{ maxHeight: 'calc(100vh - 120px)' }}
@@ -144,27 +144,27 @@ export function DecisionAgent() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               className={cn(
-                "flex flex-col",
-                msg.role === 'system' ? "items-end" : "items-start"
+                'flex flex-col',
+                msg.role === 'system' ? 'items-end' : 'items-start',
               )}
             >
               <div className={cn(
-                "max-w-[90%] p-3 rounded-xl border transition-all duration-300",
-                msg.role === 'system' 
-                  ? "bg-cyber-cyan/5 text-cyber-cyan border-cyber-cyan/20 hover:border-cyber-cyan/40" 
-                  : msg.type === 'decision'
-                    ? "bg-cyber-emerald/10 text-cyber-emerald border-cyber-emerald/30 font-bold shadow-lg shadow-cyber-emerald/10 hover:border-cyber-emerald/50"
-                    : "bg-white/5 text-gray-400 border-white/5 hover:border-white/10"
+                'max-w-[90%] p-3 rounded-xl border transition-all duration-300',
+                msg.role === 'system' ?
+                  'bg-cyber-cyan/5 text-cyber-cyan border-cyber-cyan/20 hover:border-cyber-cyan/40' :
+                  msg.type === 'decision' ?
+                    'bg-cyber-emerald/10 text-cyber-emerald border-cyber-emerald/30 font-bold shadow-lg shadow-cyber-emerald/10 hover:border-cyber-emerald/50' :
+                    'bg-white/5 text-gray-400 border-white/5 hover:border-white/10',
               )}>
                 <div className="flex items-center space-x-2 mb-1.5 opacity-40 text-[9px] uppercase font-black">
                   {msg.role === 'ai' ? <Terminal size={10} /> : <Zap size={10} />}
                   <span>{msg.role === 'ai' ? '神经代理_01' : '上行链路系统'}</span>
                 </div>
-                
+
                 <div className="leading-relaxed whitespace-pre-wrap">{typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)}</div>
 
                 {msg.type === 'decision' && typeof lastDecision === 'object' && lastDecision !== null && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-[8px] font-bold uppercase text-gray-500"
@@ -172,7 +172,7 @@ export function DecisionAgent() {
                     <div className="flex items-center space-x-3">
                        <span className="flex items-center space-x-1">
                           <Activity size={10} className="text-cyber-cyan" />
-                          <span>置信度: {String(((typeof lastDecision.confidence === 'number' ? lastDecision.confidence : 0) * 100).toFixed(1) + '%')}</span>
+                          <span>置信度: {String(`${((typeof lastDecision.confidence === 'number' ? lastDecision.confidence : 0) * 100).toFixed(1)}%`)}</span>
                        </span>
                        <span className="flex items-center space-x-1">
                           <Shield size={10} className="text-cyber-purple" />
@@ -193,7 +193,7 @@ export function DecisionAgent() {
             <span className="text-[10px] font-bold uppercase tracking-widest animate-pulse">运行神经推理中...</span>
           </div>
         )}
-        
+
         {/* 添加提示文本，当终端为空时显示 */}
         {messages.length === 0 && (
           <div className="text-center py-12 text-gray-500">
@@ -211,8 +211,8 @@ export function DecisionAgent() {
                {isThinking ? '神经核心繁忙' : '等待上行链路...'}
             </span>
          </div>
-         <button 
-           onClick={() => askAgent('general')} 
+         <button
+           onClick={async () => askAgent('general')}
            disabled={isThinking}
            className="w-10 h-10 rounded-xl bg-cyber-cyan/10 flex items-center justify-center text-cyber-cyan border border-cyber-cyan/20 hover:bg-cyber-cyan hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
          >
@@ -221,7 +221,7 @@ export function DecisionAgent() {
       </div>
 
       {/* 侧滑系统日志面板 */}
-      <div 
+      <div
         className={`fixed top-0 right-0 h-full w-full md:w-96 bg-cyber-black/90 backdrop-blur-xl border-l border-white/10 z-50 transform transition-transform duration-300 ease-in-out ${showLogs ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="h-full flex flex-col">
@@ -237,14 +237,14 @@ export function DecisionAgent() {
                 <p className="text-[8px] text-gray-500 uppercase tracking-widest font-bold">System Logs</p>
               </div>
             </div>
-            <button 
-              onClick={() => setShowLogs(false)} 
+            <button
+              onClick={() => setShowLogs(false)}
               className="p-1.5 rounded-lg text-gray-600 hover:text-cyber-rose hover:bg-cyber-rose/10 transition-all"
             >
               <X size={14} />
             </button>
           </div>
-          
+
           {/* 日志内容区域 */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-[10px] custom-scrollbar">
             <div className="text-center py-12 text-gray-500">
@@ -253,7 +253,7 @@ export function DecisionAgent() {
               <p className="text-xs mt-1 opacity-60">点击关闭按钮返回终端</p>
             </div>
           </div>
-          
+
           <div className="h-10 px-4 bg-cyber-black/40 border-t border-white/5 flex items-center justify-between">
             <span className="text-[9px] text-gray-500 uppercase font-bold">
               实时日志监控
@@ -270,7 +270,7 @@ export function DecisionAgent() {
 
       {/* 遮罩层 */}
       {showLogs && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
           onClick={() => setShowLogs(false)}
         ></div>

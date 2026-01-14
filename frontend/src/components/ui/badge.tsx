@@ -16,12 +16,12 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       primary: 'bg-tech-primary text-white',
       success: 'bg-green-600 text-white',
       warning: 'bg-yellow-600 text-white',
-      danger: 'bg-red-600 text-white'
+      danger: 'bg-red-600 text-white',
     }[variant];
 
     const sizeClasses = {
       sm: 'h-4 min-w-[1rem] text-xs',
-      md: 'h-6 min-w-[1.5rem] text-sm'
+      md: 'h-6 min-w-[1.5rem] text-sm',
     }[size];
 
     return (
@@ -31,6 +31,6 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         {...props}
       />
     );
-  }
+  },
 );
 Badge.displayName = 'Badge';

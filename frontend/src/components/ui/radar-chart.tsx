@@ -20,7 +20,7 @@ ChartJS.register(
   Filler,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 interface RadarChartProps {
@@ -95,7 +95,7 @@ export const RadarChart: React.FC<RadarChartProps> = ({ data, options, className
       pointBorderColor: dataset.pointBorderColor || '#ffffff',
       pointHoverBackgroundColor: dataset.pointHoverBackgroundColor || '#ffffff',
       pointHoverBorderColor: dataset.pointHoverBorderColor || dataset.borderColor,
-    }))
+    })),
   };
 
   return (

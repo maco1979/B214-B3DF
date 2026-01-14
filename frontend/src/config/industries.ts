@@ -58,7 +58,5 @@ export const industries: Industry[] = [
   },
 ];
 
-export const getIndustryByValue = (value: string): Industry | undefined => {
-  return industries.find(industry => industry.value === value);
-};
+export const getIndustryByValue = (value: string): Industry | undefined => industries.find(industry => industry.value === value);
 

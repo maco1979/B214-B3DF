@@ -1,20 +1,20 @@
-import React, { useState } from 'react'
-import { API_BASE_URL } from '@/config'
-import { apiClient } from '@/services/api'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { 
-  Settings as SettingsIcon, 
-  Save, 
+import React, { useState } from 'react';
+import { API_BASE_URL } from '@/config';
+import { apiClient } from '@/services/api';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Settings as SettingsIcon,
+  Save,
   RefreshCw,
   Shield,
   Database,
   Cpu,
   Link2,
   Bell,
-  User
-} from 'lucide-react'
+  User,
+} from 'lucide-react';
 
 // 类型定义
 interface SettingOption {
@@ -56,29 +56,29 @@ export function Settings() {
     autoSaveInterval: 30,
     notificationEnabled: true,
     darkMode: true,
-    language: 'zh-CN'
-  })
+    language: 'zh-CN',
+  });
 
   const handleSettingChange = (key: keyof SettingsState, value: any) => {
     setSettings(prev => ({
       ...prev,
-      [key]: value
-    }))
-  }
+      [key]: value,
+    }));
+  };
 
   const saveSettings = async () => {
     try {
-      const response = await apiClient.saveSettings(settings)
+      const response = await apiClient.saveSettings(settings);
       if (response.success) {
-        alert('设置已成功保存')
+        alert('设置已成功保存');
       } else {
-        alert(`保存失败: ${response.error || '未知错误'}`)
+        alert(`保存失败: ${response.error || '未知错误'}`);
       }
     } catch (error) {
-      console.error('保存设置失败:', error)
-      alert('保存设置时发生错误')
+      console.error('保存设置失败:', error);
+      alert('保存设置时发生错误');
     }
-  }
+  };
 
   const settingSections: SettingSection[] = [
     {
@@ -90,16 +90,16 @@ export function Settings() {
           label: 'API端点',
           key: 'apiEndpoint',
           type: 'text',
-          placeholder: '输入API端点地址'
+          placeholder: '输入API端点地址',
         },
         {
           label: '最大并发任务数',
           key: 'maxConcurrentJobs',
           type: 'number',
           min: 1,
-          max: 20
-        }
-      ]
+          max: 20,
+        },
+      ],
     },
     {
       title: 'AI模型设置',
@@ -111,9 +111,9 @@ export function Settings() {
           key: 'autoSaveInterval',
           type: 'number',
           min: 5,
-          max: 60
-        }
-      ]
+          max: 60,
+        },
+      ],
     },
     {
       title: '区块链设置',
@@ -124,9 +124,9 @@ export function Settings() {
           label: '区块链节点地址',
           key: 'blockchainNode',
           type: 'text',
-          placeholder: '输入区块链节点地址'
-        }
-      ]
+          placeholder: '输入区块链节点地址',
+        },
+      ],
     },
     {
       title: '通知设置',
@@ -136,9 +136,9 @@ export function Settings() {
         {
           label: '启用通知',
           key: 'notificationEnabled',
-          type: 'checkbox'
-        }
-      ]
+          type: 'checkbox',
+        },
+      ],
     },
     {
       title: '界面设置',
@@ -148,7 +148,7 @@ export function Settings() {
         {
           label: '深色模式',
           key: 'darkMode',
-          type: 'checkbox'
+          type: 'checkbox',
         },
         {
           label: '语言',
@@ -156,12 +156,12 @@ export function Settings() {
           type: 'select',
           options: [
             { value: 'zh-CN', label: '简体中文' },
-            { value: 'en-US', label: 'English' }
-          ]
-        }
-      ]
-    }
-  ]
+            { value: 'en-US', label: 'English' },
+          ],
+        },
+      ],
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -186,7 +186,7 @@ export function Settings() {
       {/* 设置卡片 */}
       <div className="space-y-6">
         {settingSections.map((section, index) => {
-          const Icon = section.icon
+          const Icon = section.icon;
           return (
             <Card key={index} className="glass-effect">
               <CardHeader>
@@ -197,7 +197,7 @@ export function Settings() {
                 <CardDescription>{section.description}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {section.settings.map((setting) => (
+                {section.settings.map(setting => (
                   <div key={setting.key} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <label className="text-sm font-medium text-gray-300 sm:w-1/3">
                       {setting.label}
@@ -207,7 +207,7 @@ export function Settings() {
                         <Input
                           type="text"
                           value={settings[setting.key as keyof SettingsState] as string || ''}
-                          onChange={(e) => handleSettingChange(setting.key as keyof SettingsState, e.target.value)}
+                          onChange={e => handleSettingChange(setting.key as keyof SettingsState, e.target.value)}
                           placeholder={setting.placeholder}
                           className="w-full"
                         />
@@ -216,7 +216,7 @@ export function Settings() {
                         <Input
                           type="number"
                           value={settings[setting.key as keyof SettingsState] as number}
-                          onChange={(e) => handleSettingChange(setting.key as keyof SettingsState, parseInt(e.target.value))}
+                          onChange={e => handleSettingChange(setting.key as keyof SettingsState, parseInt(e.target.value))}
                           min={setting.min}
                           max={setting.max}
                           className="w-full"
@@ -226,14 +226,14 @@ export function Settings() {
                         <input
                           type="checkbox"
                           checked={settings[setting.key as keyof SettingsState] as boolean}
-                          onChange={(e) => handleSettingChange(setting.key as keyof SettingsState, e.target.checked)}
+                          onChange={e => handleSettingChange(setting.key as keyof SettingsState, e.target.checked)}
                           className="w-4 h-4 text-tech-primary bg-gray-700 border-gray-600 rounded focus:ring-tech-primary focus:ring-offset-gray-800"
                         />
                       )}
                       {setting.type === 'select' && (
                         <select
                           value={settings[setting.key as keyof SettingsState] as string}
-                          onChange={(e) => handleSettingChange(setting.key as keyof SettingsState, e.target.value)}
+                          onChange={e => handleSettingChange(setting.key as keyof SettingsState, e.target.value)}
                           className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:border-tech-primary"
                         >
                           {setting.options?.map((option: SettingOption) => (
@@ -248,7 +248,7 @@ export function Settings() {
                 ))}
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -301,5 +301,5 @@ export function Settings() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

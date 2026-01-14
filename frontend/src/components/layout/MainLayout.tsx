@@ -9,15 +9,15 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ 
-  children 
+export const MainLayout: React.FC<MainLayoutProps> = ({
+  children,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  
+
   // 使用useContext直接检查AuthContext是否存在
   const authContext = useContext(AuthContext);
-  
+
   // 如果AuthContext不可用，显示加载状态
   if (!authContext) {
     return (
@@ -26,9 +26,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       </div>
     );
   }
-  
+
   const { isAuthenticated } = authContext;
-  
+
   // 认证检查
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -41,14 +41,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       <div className="organic-blob bottom-[-10%] right-[-10%] opacity-20 bg-cyber-purple" style={{ background: 'radial-gradient(circle, rgba(188, 19, 254, 0.08) 0%, transparent 70%)' }} />
       <div className="cyber-grid fixed inset-0 z-0 pointer-events-none" />
 
-      <Sidebar 
-        collapsed={collapsed} 
-        setCollapsed={setCollapsed} 
+      <Sidebar
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
       />
 
       <div className="flex-1 flex flex-col relative z-10 overflow-hidden">
         <Header />
-        
+
         <main className="flex-1 overflow-y-auto custom-scrollbar p-8">
           <AnimatePresence mode="wait">
             <motion.div
@@ -56,7 +56,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
               className="h-full"
             >
               {children}

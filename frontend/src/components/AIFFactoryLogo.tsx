@@ -16,8 +16,7 @@ export const AIFFactoryLogo: React.FC<AIFFactoryLogoProps> = ({
   color = '#0099ff',
   className = '',
   showText = false,
-}) => {
-  return (
+}) => (
     <div className={`flex items-center justify-center ${className}`}>
       <div className="flex items-center">
         {/* 神经网络结构 - 延伸到文字的设计 */}
@@ -36,12 +35,12 @@ export const AIFFactoryLogo: React.FC<AIFFactoryLogoProps> = ({
               <stop offset="100%" stopColor={color} stopOpacity="0.6" />
             </linearGradient>
           </defs>
-          
+
           {/* 背景光晕 */}
           <circle cx="45" cy="50" r="45" fill={color} opacity="0.1" />
-          
+
           {/* 神经网络 - 垂直多层结构 */}
-          
+
           {/* 输入层 - 左侧 */}
           <g id="input-layer">
             <circle cx="20" cy="20" r="4" fill="url(#neuralGradient)" />
@@ -49,34 +48,32 @@ export const AIFFactoryLogo: React.FC<AIFFactoryLogoProps> = ({
             <circle cx="20" cy="60" r="4" fill="url(#neuralGradient)" />
             <circle cx="20" cy="80" r="4" fill="url(#neuralGradient)" />
           </g>
-          
+
           {/* 隐藏层1 - 中间偏左 */}
           <g id="hidden-layer-1">
             <circle cx="35" cy="25" r="3" fill="url(#neuralGradient)" opacity="0.8" />
             <circle cx="35" cy="45" r="3" fill="url(#neuralGradient)" opacity="0.8" />
             <circle cx="35" cy="65" r="3" fill="url(#neuralGradient)" opacity="0.8" />
           </g>
-          
+
           {/* 隐藏层2 - 中间 */}
           <g id="hidden-layer-2">
             <circle cx="50" cy="30" r="3" fill="url(#neuralGradient)" opacity="0.7" />
             <circle cx="50" cy="50" r="3" fill="url(#neuralGradient)" opacity="0.7" />
             <circle cx="50" cy="70" r="3" fill="url(#neuralGradient)" opacity="0.7" />
           </g>
-          
+
           {/* 输出层 - 右侧 */}
           <g id="output-layer">
             <circle cx="65" cy="25" r="3.5" fill="url(#neuralGradient)" />
             <circle cx="65" cy="50" r="3.5" fill="url(#neuralGradient)" />
             <circle cx="65" cy="75" r="3.5" fill="url(#neuralGradient)" />
           </g>
-          
+
           {/* 密集连接线 - 典型神经网络特征 */}
-          
+
           {/* 输入层到隐藏层1 - 密集连接 */}
-          {[20, 40, 60, 80].map((y, i) => {
-            return [25, 45, 65].map((hy, j) => {
-              return (
+          {[20, 40, 60, 80].map((y, i) => [25, 45, 65].map((hy, j) => (
                 <path
                   key={`input-hidden1-${i}-${j}`}
                   d={`M24 ${y} L32 ${hy}`}
@@ -85,14 +82,10 @@ export const AIFFactoryLogo: React.FC<AIFFactoryLogoProps> = ({
                   strokeLinecap="round"
                   opacity="0.4"
                 />
-              );
-            });
-          })}
-          
+              )))}
+
           {/* 隐藏层1到隐藏层2 - 密集连接 */}
-          {[25, 45, 65].map((y, i) => {
-            return [30, 50, 70].map((hy, j) => {
-              return (
+          {[25, 45, 65].map((y, i) => [30, 50, 70].map((hy, j) => (
                 <path
                   key={`hidden1-hidden2-${i}-${j}`}
                   d={`M38 ${y} L47 ${hy}`}
@@ -101,14 +94,10 @@ export const AIFFactoryLogo: React.FC<AIFFactoryLogoProps> = ({
                   strokeLinecap="round"
                   opacity="0.3"
                 />
-              );
-            });
-          })}
-          
+              )))}
+
           {/* 隐藏层2到输出层 - 密集连接 */}
-          {[30, 50, 70].map((y, i) => {
-            return [25, 50, 75].map((hy, j) => {
-              return (
+          {[30, 50, 70].map((y, i) => [25, 50, 75].map((hy, j) => (
                 <path
                   key={`hidden2-output-${i}-${j}`}
                   d={`M53 ${y} L62 ${hy}`}
@@ -117,16 +106,14 @@ export const AIFFactoryLogo: React.FC<AIFFactoryLogoProps> = ({
                   strokeLinecap="round"
                   opacity="0.4"
                 />
-              );
-            });
-          })}
-          
+              )))}
+
           {/* 从输出层延伸到文字的连接线 */}
           <path d="M68.5 25 L75 30" stroke={color} strokeWidth="1" strokeLinecap="round" />
           <path d="M68.5 50 L75 40" stroke={color} strokeWidth="1" strokeLinecap="round" />
           <path d="M68.5 75 L75 50" stroke={color} strokeWidth="1" strokeLinecap="round" />
         </svg>
-        
+
         {/* AI-Factory文字 - 与神经网络融为一体 */}
         {showText && (
           <div className="relative ml-1">
@@ -150,6 +137,5 @@ export const AIFFactoryLogo: React.FC<AIFFactoryLogoProps> = ({
       </div>
     </div>
   );
-};
 
 export default AIFFactoryLogo;

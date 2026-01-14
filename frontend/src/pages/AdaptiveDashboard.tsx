@@ -8,13 +8,14 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart3, Cpu, Database, LineChart, Settings, Shield, TrendingUp } from 'lucide-react';
 import { Industry } from '@/config/industries';
-import { getAdaptiveModels, getModelDeployments, ModelGenerationTask, ModelDeployment, generateAdaptiveModel, getModelGenerationStatus } from '@/services/modelService';
+import type { ModelGenerationTask, ModelDeployment } from '@/services/modelService';
+import { getAdaptiveModels, getModelDeployments, generateAdaptiveModel, getModelGenerationStatus } from '@/services/modelService';
 import { useIndustry } from '@/contexts/IndustryContext';
 
 const AdaptiveDashboard: React.FC = () => {
   // 使用行业上下文
   const { currentIndustry, setCurrentIndustry, industryList } = useIndustry();
-  
+
   // 状态管理
   const [adaptiveModels, setAdaptiveModels] = useState<any[]>([]);
   const [modelDeployments, setModelDeployments] = useState<ModelDeployment[]>([]);
@@ -41,7 +42,9 @@ const AdaptiveDashboard: React.FC = () => {
 
   // 加载模型部署
   const loadModelDeployments = async () => {
-    if (!selectedModel) return;
+    if (!selectedModel) {
+ return;
+}
     try {
       const deployments = await getModelDeployments(selectedModel);
       setModelDeployments(deployments);
@@ -56,7 +59,7 @@ const AdaptiveDashboard: React.FC = () => {
     try {
       const task = await generateAdaptiveModel(currentIndustry, {});
       setGenerationTasks([task, ...generationTasks]);
-      
+
       // 定期检查任务状态
       const checkStatusInterval = setInterval(async () => {
         try {
@@ -81,8 +84,10 @@ const AdaptiveDashboard: React.FC = () => {
   // 部署模型 - 暂时注释，因为deployModel函数未定义
   const handleDeployModel = async (modelId: string) => {
     try {
-      // const deployment = await deployModel(modelId, environment);
-      // setGenerationTasks([deployment, ...generationTasks]);
+      /*
+       * const deployment = await deployModel(modelId, environment);
+       * setGenerationTasks([deployment, ...generationTasks]);
+       */
       alert('部署功能暂未实现');
     } catch (error) {
       console.error('部署模型失败:', error);
@@ -176,7 +181,8 @@ const AdaptiveDashboard: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* 模型列表 */}
             <div className="lg:col-span-2 space-y-4">
-              {adaptiveModels.length > 0 ? (
+              {adaptiveModels.length > 0 ?
+(
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {adaptiveModels.map(model => (
                     <motion.div
@@ -228,7 +234,7 @@ const AdaptiveDashboard: React.FC = () => {
                               </Button>
                               <Button
                                 size="sm"
-                                onClick={() => handleDeployModel(model.id)}
+                                onClick={async () => handleDeployModel(model.id)}
                                 className="flex items-center gap-2"
                               >
                                 <BarChart3 className="w-4 h-4" />
@@ -241,7 +247,8 @@ const AdaptiveDashboard: React.FC = () => {
                     </motion.div>
                   ))}
                 </div>
-              ) : (
+              ) :
+(
                 <Card className="h-full glass-card">
                   <CardContent className="h-full flex flex-col items-center justify-center py-10">
                     <Database className="w-12 h-12 text-gray-500 mb-4" />
@@ -325,7 +332,8 @@ const AdaptiveDashboard: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {modelDeployments.length > 0 ? (
+                    {modelDeployments.length > 0 ?
+(
                       modelDeployments.map(deployment => (
                         <tr key={deployment.id} className="border-b border-gray-200 hover:bg-gray-800/50 transition-colors">
                           <td className="py-3 px-4">
@@ -349,7 +357,8 @@ const AdaptiveDashboard: React.FC = () => {
                           </td>
                         </tr>
                       ))
-                    ) : (
+                    ) :
+(
                       <tr>
                         <td colSpan={5} className="py-10 text-center">
                           <Database className="w-12 h-12 text-gray-500 mx-auto mb-4" />
@@ -376,7 +385,8 @@ const AdaptiveDashboard: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {generationTasks.length > 0 ? (
+                    {generationTasks.length > 0 ?
+(
                       generationTasks.map(task => (
                         <div key={task.id} className="border border-gray-200 rounded-lg p-4 hover:border-primary/50 transition-all duration-300">
                           <div className="flex justify-between items-start mb-2">
@@ -416,7 +426,8 @@ const AdaptiveDashboard: React.FC = () => {
                           </div>
                         </div>
                       ))
-                    ) : (
+                    ) :
+(
                       <div className="text-center py-10">
                         <TrendingUp className="w-12 h-12 text-gray-500 mx-auto mb-4" />
                         <h3 className="text-lg font-medium mb-2">暂无生成任务</h3>

@@ -1,4 +1,8 @@
-import { http } from '@/lib/api-client'
+import { http } from '@/lib/api-client';
+import { getCache, setCache, createCacheKey } from '../utils/cache';
+import { DataProcessor } from '../utils/dataProcessor';
+import { Validator } from '../utils/validator';
+import { resilienceManager } from '../utils/resilience';
 
 
 // API响应类型定义
@@ -144,53 +148,95 @@ export interface BlockchainStatus {
 
 // API客户端类
 class ApiClient {
-
   async get<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { ...options, method: 'GET' })
+    return this.request<T>(endpoint, { ...options, method: 'GET' });
   }
 
   private async request<T>(
     endpoint: string,
-    options: { method?: string; body?: any; headers?: any } = {}
+    options: { method?: string; body?: any; headers?: any; cacheConfig?: any; precision?: number } = {},
   ): Promise<ApiResponse<T>> {
     try {
-      const { method = 'GET', body } = options
-      // 直接使用body作为axios的data参数，让axios自动处理序列化
-      const requestData = body
+      const { method = 'GET', body, cacheConfig, precision = 3 } = options;
       // 处理headers类型问题
-      const headers = options.headers as any
+      const { headers } = options;
       let axiosHeaders: any = {
-        'Content-Type': 'application/json'
-      }
-      
+        'Content-Type': 'application/json',
+      };
+
       // 转换headers为axios接受的格式
       if (headers) {
         if (Array.isArray(headers)) {
           headers.forEach(([key, value]) => {
-            axiosHeaders[key] = value
-          })
+            axiosHeaders[key] = value;
+          });
         } else {
-          axiosHeaders = { ...axiosHeaders, ...headers }
+          axiosHeaders = { ...axiosHeaders, ...headers };
         }
       }
-      
-      const response = await http.request({
-        url: endpoint,
-        method: method as any,
-        data: requestData,
-        headers: axiosHeaders,
-      })
 
-      return response as unknown as ApiResponse<T>
+      // 检查是否可以缓存（GET请求）
+      const isCacheable = method === 'GET';
+      let cacheKey: string | null = null;
+
+      if (isCacheable) {
+        // 创建缓存键
+        cacheKey = createCacheKey(endpoint, JSON.stringify(headers));
+
+        // 尝试获取缓存
+        const cachedResponse = getCache<ApiResponse<T>>(cacheKey, {
+          prefix: 'api',
+          ...cacheConfig,
+        });
+
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+      }
+
+      // 直接使用body作为axios的data参数，让axios自动处理序列化
+      const requestData = body;
+
+      // 使用韧性管理器执行请求，添加重试和熔断保护
+      const response = await resilienceManager.execute(async () =>
+        http.request({
+          url: endpoint,
+          method: method as any,
+          data: requestData,
+          headers: axiosHeaders,
+        }),
+      );
+
+      const apiResponse = response as unknown as ApiResponse<T>;
+
+      // 处理响应数据，裁剪精度
+      if (apiResponse.success && apiResponse.data && typeof apiResponse.data === 'object') {
+        // 只对注意力相关的端点进行数据裁剪
+        if (endpoint.includes('/attention/')) {
+          apiResponse.data = DataProcessor.clipData(apiResponse.data, {
+            precision,
+          }) as T;
+        }
+      }
+
+      // 缓存响应
+      if (isCacheable && cacheKey && apiResponse.success) {
+        setCache(cacheKey, apiResponse, {
+          prefix: 'api',
+          ...cacheConfig,
+        });
+      }
+
+      return apiResponse;
     } catch (error) {
-      console.error(`API request failed for ${endpoint}:`, error)
+      console.error(`API request failed for ${endpoint}:`, error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-      }
+      };
     }
   }
 
@@ -198,41 +244,41 @@ class ApiClient {
   // 模型管理API
   async getModels(): Promise<ApiResponse<Model[]>> {
     return this.request<Model[]>('/api/models', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async getModel(id: string): Promise<ApiResponse<Model>> {
     return this.request<Model>(`/api/models/${id}`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async createModel(modelData: Partial<Model>): Promise<ApiResponse<Model>> {
     return this.request<Model>('/api/models/', {
       method: 'POST',
       body: JSON.stringify(modelData),
-    })
+    });
   }
 
   // 模型版本API
   async getModelVersions(modelId: string): Promise<ApiResponse<Model[]>> {
     return this.request<Model[]>(`/api/models/${modelId}/versions`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async createModelVersion(modelId: string, versionData: { [key: string]: any }): Promise<ApiResponse<Model>> {
     return this.request<Model>(`/api/models/${modelId}/versions`, {
       method: 'POST',
       body: JSON.stringify(versionData),
-    })
+    });
   }
 
   async importModel(modelData: { name: string }, file: File): Promise<ApiResponse<Model>> {
-    const formData = new FormData()
-    formData.append('name', modelData.name)
-    formData.append('file', file)
+    const formData = new FormData();
+    formData.append('name', modelData.name);
+    formData.append('file', file);
 
     try {
       const response = await http.request({
@@ -241,15 +287,15 @@ class ApiClient {
         data: formData,
         // 让浏览器自动设置 multipart 边界
         headers: {},
-      })
+      });
 
-      return response as unknown as ApiResponse<Model>
+      return response as unknown as ApiResponse<Model>;
     } catch (error) {
-      console.error('API request failed for /api/models/import/', error)
+      console.error('API request failed for /api/models/import/', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   }
 
@@ -264,32 +310,32 @@ class ApiClient {
     return this.request<Model>('/api/models/pretrained', {
       method: 'POST',
       body: JSON.stringify(modelData),
-    })
+    });
   }
 
   async updateModel(id: string, modelData: Partial<Model>): Promise<ApiResponse<Model>> {
     return this.request<Model>(`/api/models/${id}`, {
       method: 'PUT',
       body: JSON.stringify(modelData),
-    })
+    });
   }
 
   async deleteModel(id: string): Promise<ApiResponse<void>> {
     return this.request<void>(`/api/models/${id}`, {
       method: 'DELETE',
-    })
+    });
   }
 
   async startModel(modelId: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/models/${modelId}/start`, {
       method: 'POST',
-    })
+    });
   }
 
   async pauseModel(modelId: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/models/${modelId}/pause`, {
       method: 'POST',
-    })
+    });
   }
 
   // 推理服务API
@@ -297,33 +343,33 @@ class ApiClient {
     return this.request<InferenceResponse>('/api/inference', {
       method: 'POST',
       body: JSON.stringify(request),
-    })
+    });
   }
 
   async getInferenceHistory(): Promise<ApiResponse<any[]>> {
     return this.request<any[]>('/api/inference/history', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   // 训练任务API
   async getTrainingTasks(): Promise<ApiResponse<TrainingTask[]>> {
     return this.request<TrainingTask[]>('/api/training/tasks', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async createTrainingTask(taskData: Partial<TrainingTask>): Promise<ApiResponse<TrainingTask>> {
     return this.request<TrainingTask>('/api/training/tasks', {
       method: 'POST',
       body: JSON.stringify(taskData),
-    })
+    });
   }
 
   async getTrainingTask(id: string): Promise<ApiResponse<TrainingTask>> {
     return this.request<TrainingTask>(`/api/training/tasks/${id}`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   // 模型训练API
@@ -331,33 +377,33 @@ class ApiClient {
     return this.request<any>(`/api/models/${modelId}/train`, {
       method: 'POST',
       body: JSON.stringify({ training_data: trainingData }),
-    })
+    });
   }
 
   async getModelTrainingStatus(taskId: string): Promise<ApiResponse<TrainingStatusResponse>> {
     return this.request<TrainingStatusResponse>(`/api/models/training/${taskId}`, {
       method: 'GET',
-    })
+    });
   }
 
   // 区块链API
   async getBlockchainStatus(): Promise<ApiResponse<BlockchainStatus>> {
     return this.request<BlockchainStatus>('/api/blockchain/status', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async verifyModelIntegrity(modelId: string, modelHash: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/blockchain/models/${modelId}/verify`, {
       method: 'POST',
       body: JSON.stringify({ model_hash: modelHash }),
-    })
+    });
   }
 
   async getModelHistory(modelId: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/blockchain/models/${modelId}/history`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   // 权限管理API
@@ -370,10 +416,10 @@ class ApiClient {
   }): Promise<ApiResponse<any>> {
     return this.request<any>('/api/blockchain/access/grant', {
       method: 'POST',
-      body: permissionData
+      body: permissionData,
     });
   }
-  
+
   async revokePermission(permissionData: {
     resource_id: string,
     permission: string,
@@ -381,10 +427,10 @@ class ApiClient {
   }): Promise<ApiResponse<any>> {
     return this.request<any>('/api/blockchain/access/revoke', {
       method: 'POST',
-      body: permissionData
+      body: permissionData,
     });
   }
-  
+
   async checkPermission(permissionData: {
     resource_id: string,
     permission: string,
@@ -392,10 +438,10 @@ class ApiClient {
   }): Promise<ApiResponse<boolean>> {
     return this.request<boolean>('/api/blockchain/access/check', {
       method: 'POST',
-      body: permissionData
+      body: permissionData,
     });
   }
-  
+
   async createRole(roleData: {
     role_id: string,
     role_name: string,
@@ -404,10 +450,10 @@ class ApiClient {
   }): Promise<ApiResponse<any>> {
     return this.request<any>('/api/blockchain/roles/create', {
       method: 'POST',
-      body: roleData
+      body: roleData,
     });
   }
-  
+
   async assignRole(roleData: {
     user_id: string,
     role_id: string,
@@ -415,10 +461,10 @@ class ApiClient {
   }): Promise<ApiResponse<any>> {
     return this.request<any>('/api/blockchain/roles/assign', {
       method: 'POST',
-      body: roleData
+      body: roleData,
     });
   }
-  
+
   async getContractStatus(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/blockchain/contracts/status', {
       method: 'GET',
@@ -428,66 +474,72 @@ class ApiClient {
   // 联邦学习API
   async getFederatedClients(): Promise<ApiResponse<any[]>> {
     return this.request<any[]>('/api/federated/clients', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async registerFederatedClient(clientInfo: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/federated/clients', {
       method: 'POST',
       body: JSON.stringify(clientInfo),
-    })
+    });
   }
 
   async getFederatedRounds(): Promise<ApiResponse<any[]>> {
     return this.request<any[]>('/api/federated/rounds', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async startFederatedRound(config: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/federated/rounds', {
       method: 'POST',
       body: JSON.stringify(config),
-    })
+    });
   }
 
   async aggregateFederatedRound(roundId: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/federated/rounds/${roundId}/aggregate`, {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   async getFederatedStatus(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/federated/status', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async getFederatedPrivacyStatus(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/federated/privacy/status', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async updateFederatedPrivacyConfig(config: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/federated/privacy/config', {
       method: 'PUT',
       body: JSON.stringify(config),
-    })
+    });
   }
 
   // 系统监控API
   async getSystemMetrics(): Promise<ApiResponse<SystemMetrics>> {
     return this.request<SystemMetrics>('/api/system/metrics', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async getHealthStatus(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/system/health', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
+  }
+
+  async getBackendLoad(): Promise<ApiResponse<any>> {
+    return this.request<any>('/api/system/load', {
+      method: 'GET',
+    });
   }
 
   // 通用API方法
@@ -496,73 +548,73 @@ class ApiClient {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
-    })
+    });
   }
 
   // 边缘计算API
   async getEdgeDevices(): Promise<ApiResponse<any[]>> {
     return this.request<any[]>('/api/edge/devices', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async syncEdgeDevice(deviceId: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/edge/devices/${deviceId}/sync`, {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   // 农业相关API
   async getCropConfigs(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/agriculture/crop-configs', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async generateLightRecipe(data: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/agriculture/light-recipe', {
       method: 'POST',
       body: JSON.stringify(data),
-    })
+    });
   }
 
   async predictGrowth(data: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/agriculture/growth-prediction', {
       method: 'POST',
       body: JSON.stringify(data),
-    })
+    });
   }
 
   async createPlantingPlan(data: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/agriculture/crop-planning', {
       method: 'POST',
       body: JSON.stringify(data),
-    })
+    });
   }
 
   async contributeAgricultureData(data: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/agriculture/contribute-data', {
       method: 'POST',
       body: JSON.stringify(data),
-    })
+    });
   }
 
   // 性能监控API
   async getPerformanceMetrics(): Promise<ApiResponse<any>> {
-    return this.request<any>('/api/performance/summary')
+    return this.request<any>('/api/performance/summary');
   }
 
   // JEPA-DT-MPC集成API
   async getJepaDtmpcStatus(): Promise<ApiResponse<{ is_active: boolean; model_status: string }>> {
     return this.request<{ is_active: boolean; model_status: string }>('/api/jepa-dtmpc/status', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async getJepaPrediction(): Promise<ApiResponse<JEPAData>> {
     return this.request<JEPAData>('/api/jepa-dtmpc/prediction', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async activateJepaDtmpc(params: {
@@ -575,185 +627,185 @@ class ApiClient {
     return this.request<void>('/api/jepa-dtmpc/activate', {
       method: 'POST',
       body: JSON.stringify(params),
-    })
+    });
   }
 
   async trainJepaModel(): Promise<ApiResponse<{ task_id: string }>> {
     return this.request<{ task_id: string }>('/api/jepa-dtmpc/train', {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   async getJepaTrainingStatus(taskId: string): Promise<ApiResponse<TrainingStatusResponse>> {
     return this.request<TrainingStatusResponse>(`/api/jepa-dtmpc/train/${taskId}`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
-  async getPerformanceSummary(timeRange: string = "1h"): Promise<ApiResponse<any>> {
+  async getPerformanceSummary(timeRange = '1h'): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/performance/summary?time_range=${timeRange}`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   // 设备控制API
   async getDevices(): Promise<ApiResponse<Device[]>> {
     return this.request<Device[]>('/api/ai-control/devices', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async scanDevices(): Promise<ApiResponse<Device[]>> {
     return this.request<Device[]>('/api/ai-control/scan-devices', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async controlDevice(deviceId: number, controlParams: any): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/ai-control/device/${deviceId}`, {
       method: 'POST',
       body: JSON.stringify(controlParams),
-    })
+    });
   }
 
   async getDeviceStatus(deviceId: number): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/ai-control/device/${deviceId}/status`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async activateMasterControl(activate: boolean): Promise<ApiResponse<any>> {
     return this.request<any>('/api/ai-control/master-control', {
       method: 'POST',
       body: JSON.stringify({ activate }),
-    })
+    });
   }
 
   async toggleDeviceConnection(deviceId: number, connect: boolean): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/ai-control/device/${deviceId}/connection`, {
       method: 'POST',
       body: JSON.stringify({ connect }),
-    })
+    });
   }
 
   async getIntegrationPerformanceSummary(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/integration-summary', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async getOptimizationStatus(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/optimization/status', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async getOptimizationRecommendations(): Promise<ApiResponse<any[]>> {
     return this.request<any[]>('/api/performance/optimization/recommendations', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async applyOptimization(component: string, recommendationType: string): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/optimization/apply', {
       method: 'POST',
       body: JSON.stringify({ component, recommendation_type: recommendationType }),
-    })
+    });
   }
 
   async getPerformanceAlerts(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/alerts', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async acknowledgeAlert(alertId: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/performance/alerts/${alertId}/acknowledge`, {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   async getBenchmarkReport(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/benchmark/report', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async runBenchmarkTest(testType: string, parameters: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/benchmark/run', {
       method: 'POST',
       body: JSON.stringify({ test_type: testType, parameters }),
-    })
+    });
   }
 
   async enableAutoOptimization(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/auto-optimization/enable', {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   async disableAutoOptimization(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/auto-optimization/disable', {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   async runAutoOptimization(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/optimization/auto/run', {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
-  async getMetricDetails(metricType: string, timeRange: string = "1h"): Promise<ApiResponse<any>> {
+  async getMetricDetails(metricType: string, timeRange = '1h'): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/performance/metrics/${metricType}?time_range=${timeRange}`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async recordPerformanceMetric(metricData: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/metrics', {
       method: 'POST',
       body: JSON.stringify(metricData),
-    })
+    });
   }
 
   async recordIntegrationPerformance(performanceData: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/integration-metrics', {
       method: 'POST',
       body: JSON.stringify(performanceData),
-    })
+    });
   }
 
   async recordMigrationLearningPerformance(performanceData: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/migration-learning-metrics', {
       method: 'POST',
       body: JSON.stringify(performanceData),
-    })
+    });
   }
 
   async recordEdgeComputingPerformance(performanceData: any): Promise<ApiResponse<any>> {
     return this.request<any>('/api/performance/edge-computing-metrics', {
       method: 'POST',
       body: JSON.stringify(performanceData),
-    })
+    });
   }
 
   // 社区API
   async getCommunityLiveStreams(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>('/api/community/live-streams')
+    return this.request<any[]>('/api/community/live-streams');
   }
 
   async likePost(postId: number): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/community/posts/${postId}/like`, {
       method: 'POST',
-    })
+    });
   }
 
   async submitComment(streamId: number, content: string): Promise<ApiResponse<any>> {
     return this.request<any>(`/community/live-streams/${streamId}/comments`, {
       method: 'POST',
       body: JSON.stringify({ content }),
-    })
+    });
   }
 
   // 设置API
@@ -761,7 +813,7 @@ class ApiClient {
     return this.request<any>('/api/system/settings', {
       method: 'POST',
       body: JSON.stringify(settings),
-    })
+    });
   }
 
   // 推理服务控制API
@@ -769,30 +821,34 @@ class ApiClient {
     return this.request<any>('/api/ai-control/device/5', {
       method: 'POST',
       body: JSON.stringify({ action: active ? 'start_inference' : 'stop_inference' }),
-    })
+    });
   }
 
   async testInferenceService(serviceId: number): Promise<ApiResponse<any>> {
     return this.request<any>('/api/ai-control/device/5', {
       method: 'POST',
       body: JSON.stringify({ action: 'test_inference', service_id: serviceId }),
-    })
+    });
   }
 
   // 决策API
   async makeDecision(type: string, inputData: any): Promise<ApiResponse<any>> {
     // 根据类型选择不同的端点
     const endpoint = type === 'agriculture' ? '/api/decision/agriculture' : '/api/decision/risk';
-    
-    // 转换请求格式以匹配后端DecisionRequest模型
-    // 根据type设置不同的任务类型和目标
+
+    /*
+     * 转换请求格式以匹配后端DecisionRequest模型
+     * 根据type设置不同的任务类型和目标
+     */
     const isRiskAnalysis = type === 'risk';
-    
+
     // 从inputData中提取需要的字段，过滤掉不应该传递给后端的字段
     const filteredInputData = inputData?.data || inputData || {};
-    
-    // 确保requestBody只包含后端DecisionRequest模型定义的字段
-    // 注意：当task_type为'routine_monitoring'时，risk_level必须为'low'
+
+    /*
+     * 确保requestBody只包含后端DecisionRequest模型定义的字段
+     * 注意：当task_type为'routine_monitoring'时，risk_level必须为'low'
+     */
     const requestBody = {
       // 默认值作为回退
       temperature: filteredInputData.temperature || 25.5,
@@ -803,7 +859,7 @@ class ApiClient {
         uv_380nm: 0.05,
         far_red_720nm: 0.1,
         white_light: 0.7,
-        red_660nm: 0.15
+        red_660nm: 0.15,
       },
       crop_type: filteredInputData.crop_type || 'tomato',
       growth_day: filteredInputData.growth_day || 30,
@@ -814,34 +870,383 @@ class ApiClient {
       resource_utilization: filteredInputData.resource_utilization || 0.75,
       objective: filteredInputData.objective || (isRiskAnalysis ? 'enhance_resistance' : 'maximize_yield'),
       task_type: filteredInputData.task_type || (isRiskAnalysis ? 'high_priority' : 'routine_monitoring'),
-      risk_level: filteredInputData.risk_level || (isRiskAnalysis ? 'high' : 'low')
+      risk_level: filteredInputData.risk_level || (isRiskAnalysis ? 'high' : 'low'),
     };
-    
+
     return this.request<any>(endpoint, {
       method: 'POST',
-      body: requestBody
+      body: requestBody,
     });
   }
-  
+
+  // 注意力权重相关API
+  async getAttentionWeights(params: {
+    sample_id: string;
+    layer: number;
+    head: number;
+    domain_type?: 'intra' | 'inter';
+    seq_len?: number;
+    precision?: number;
+  }): Promise<ApiResponse<any>> {
+    // 参数验证
+    const validationErrors = Validator.validate(params, {
+      sample_id: Validator.getAttentionValidationRules().sampleId,
+      layer: Validator.getAttentionValidationRules().layer,
+      head: Validator.getAttentionValidationRules().head,
+      domain_type: Validator.getAttentionValidationRules().domainType,
+      seq_len: Validator.getAttentionValidationRules().seqLen,
+      precision: Validator.getAttentionValidationRules().precision,
+    });
+
+    if (validationErrors.length > 0) {
+      console.error('Invalid parameters for getAttentionWeights:', validationErrors);
+      return {
+        success: false,
+        error: 'Invalid parameters',
+        message: `Validation failed: ${validationErrors.map(e => e.message).join(', ')}`,
+      };
+    }
+
+    // 设置默认值
+    const defaultParams = {
+      seq_len: 512,
+      precision: 3,
+      ...params,
+    };
+
+    // 构建查询参数
+    const queryParams = new URLSearchParams();
+    queryParams.append('sample_id', defaultParams.sample_id);
+    queryParams.append('layer', defaultParams.layer.toString());
+    queryParams.append('head', defaultParams.head.toString());
+    if (defaultParams.domain_type) {
+ queryParams.append('domain_type', defaultParams.domain_type);
+}
+    if (defaultParams.seq_len) {
+ queryParams.append('seq_len', defaultParams.seq_len.toString());
+}
+    if (defaultParams.precision) {
+ queryParams.append('precision', defaultParams.precision.toString());
+}
+
+    // 创建缓存键，包含所有参数
+    const cacheKey = createCacheKey('attention_weights',
+      defaultParams.sample_id,
+      defaultParams.layer,
+      defaultParams.head,
+      defaultParams.domain_type || 'all',
+      defaultParams.seq_len,
+      defaultParams.precision,
+    );
+
+    // 构建请求URL
+    const url = `/api/attention/weights?${queryParams.toString()}`;
+
+    // 尝试获取缓存
+    const cachedResponse = getCache<ApiResponse<any>>(cacheKey, {
+      prefix: 'attention',
+      type: 'session',
+      ttl: 30 * 60 * 1000, // 30分钟缓存
+    });
+
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    // 发送请求
+    const response = await this.request<any>(url, {
+      method: 'GET',
+      cacheConfig: {
+        type: 'session',
+        ttl: 30 * 60 * 1000, // 30分钟缓存
+      },
+      precision: defaultParams.precision,
+    });
+
+    // 缓存结果
+    if (response.success) {
+      setCache(cacheKey, response, {
+        prefix: 'attention',
+        type: 'session',
+        ttl: 30 * 60 * 1000, // 30分钟缓存
+      });
+    }
+
+    return response;
+  }
+
+  async getDomainFeatures(params: {
+    sample_id: string;
+    domain_id: number;
+    seq_len?: number;
+    precision?: number;
+  }): Promise<ApiResponse<any>> {
+    // 参数验证
+    const validationErrors = Validator.validate(params, Validator.getDomainFeaturesValidationRules());
+
+    if (validationErrors.length > 0) {
+      console.error('Invalid parameters for getDomainFeatures:', validationErrors);
+      return {
+        success: false,
+        error: 'Invalid parameters',
+        message: `Validation failed: ${validationErrors.map(e => e.message).join(', ')}`,
+      };
+    }
+
+    // 设置默认值
+    const defaultParams = {
+      seq_len: 512,
+      precision: 3,
+      ...params,
+    };
+
+    // 构建查询参数
+    const queryParams = new URLSearchParams();
+    queryParams.append('sample_id', defaultParams.sample_id);
+    queryParams.append('domain_id', defaultParams.domain_id.toString());
+    if (defaultParams.seq_len) {
+ queryParams.append('seq_len', defaultParams.seq_len.toString());
+}
+    if (defaultParams.precision) {
+ queryParams.append('precision', defaultParams.precision.toString());
+}
+
+    // 创建缓存键
+    const cacheKey = createCacheKey('domain_features',
+      defaultParams.sample_id,
+      defaultParams.domain_id,
+      defaultParams.seq_len,
+      defaultParams.precision,
+    );
+
+    // 尝试获取缓存
+    const cachedResponse = getCache<ApiResponse<any>>(cacheKey, {
+      prefix: 'attention',
+      type: 'session',
+      ttl: 30 * 60 * 1000, // 30分钟缓存
+    });
+
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    // 构建请求URL
+    const url = `/api/attention/domain-features?${queryParams.toString()}`;
+
+    // 发送请求
+    const response = await this.request<any>(url, {
+      method: 'GET',
+      cacheConfig: {
+        type: 'session',
+        ttl: 30 * 60 * 1000, // 30分钟缓存
+      },
+      precision: defaultParams.precision,
+    });
+
+    // 缓存结果
+    if (response.success) {
+      setCache(cacheKey, response, {
+        prefix: 'attention',
+        type: 'session',
+        ttl: 30 * 60 * 1000, // 30分钟缓存
+      });
+    }
+
+    return response;
+  }
+
+  async getTransferMatrix(params: {
+    source_domain_id: number;
+    target_domain_id: number;
+    precision?: number;
+  }): Promise<ApiResponse<any>> {
+    // 参数验证
+    const validationErrors = Validator.validate(params, Validator.getTransferMatrixValidationRules());
+
+    if (validationErrors.length > 0) {
+      console.error('Invalid parameters for getTransferMatrix:', validationErrors);
+      return {
+        success: false,
+        error: 'Invalid parameters',
+        message: `Validation failed: ${validationErrors.map(e => e.message).join(', ')}`,
+      };
+    }
+
+    // 设置默认值
+    const defaultParams = {
+      precision: 3,
+      ...params,
+    };
+
+    // 构建查询参数
+    const queryParams = new URLSearchParams();
+    queryParams.append('source_domain_id', defaultParams.source_domain_id.toString());
+    queryParams.append('target_domain_id', defaultParams.target_domain_id.toString());
+    if (defaultParams.precision) {
+ queryParams.append('precision', defaultParams.precision.toString());
+}
+
+    // 创建缓存键
+    const cacheKey = createCacheKey('transfer_matrix',
+      defaultParams.source_domain_id,
+      defaultParams.target_domain_id,
+      defaultParams.precision,
+    );
+
+    // 尝试获取缓存
+    const cachedResponse = getCache<ApiResponse<any>>(cacheKey, {
+      prefix: 'attention',
+      type: 'local',
+      ttl: 24 * 60 * 60 * 1000, // 24小时缓存，因为迁移矩阵变化较少
+    });
+
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    // 构建请求URL
+    const url = `/api/attention/transfer-matrix?${queryParams.toString()}`;
+
+    // 发送请求
+    const response = await this.request<any>(url, {
+      method: 'GET',
+      cacheConfig: {
+        type: 'local',
+        ttl: 24 * 60 * 60 * 1000, // 24小时缓存
+      },
+      precision: defaultParams.precision,
+    });
+
+    // 缓存结果
+    if (response.success) {
+      setCache(cacheKey, response, {
+        prefix: 'attention',
+        type: 'local',
+        ttl: 24 * 60 * 60 * 1000, // 24小时缓存
+      });
+    }
+
+    return response;
+  }
+
+  async getAttentionVisualization(params: {
+    sample_id: string;
+    layer: number;
+    head: number;
+    visualization_type: 'heatmap' | 'distribution' | 'graph';
+    domain_type?: 'intra' | 'inter';
+    seq_len?: number;
+    precision?: number;
+  }): Promise<ApiResponse<any>> {
+    // 参数验证
+    const validationErrors = Validator.validate(params, {
+      sample_id: Validator.getAttentionValidationRules().sampleId,
+      layer: Validator.getAttentionValidationRules().layer,
+      head: Validator.getAttentionValidationRules().head,
+      visualization_type: Validator.getAttentionValidationRules().visualization_type,
+      domain_type: Validator.getAttentionValidationRules().domainType,
+      seq_len: Validator.getAttentionValidationRules().seqLen,
+      precision: Validator.getAttentionValidationRules().precision,
+    });
+
+    if (validationErrors.length > 0) {
+      console.error('Invalid parameters for getAttentionVisualization:', validationErrors);
+      return {
+        success: false,
+        error: 'Invalid parameters',
+        message: `Validation failed: ${validationErrors.map(e => e.message).join(', ')}`,
+      };
+    }
+
+    // 设置默认值
+    const defaultParams = {
+      seq_len: 512,
+      precision: 3,
+      ...params,
+    };
+
+    // 构建查询参数
+    const queryParams = new URLSearchParams();
+    queryParams.append('sample_id', defaultParams.sample_id);
+    queryParams.append('layer', defaultParams.layer.toString());
+    queryParams.append('head', defaultParams.head.toString());
+    queryParams.append('visualization_type', defaultParams.visualization_type);
+    if (defaultParams.domain_type) {
+ queryParams.append('domain_type', defaultParams.domain_type);
+}
+    if (defaultParams.seq_len) {
+ queryParams.append('seq_len', defaultParams.seq_len.toString());
+}
+    if (defaultParams.precision) {
+ queryParams.append('precision', defaultParams.precision.toString());
+}
+
+    // 创建缓存键
+    const cacheKey = createCacheKey('attention_visualization',
+      defaultParams.sample_id,
+      defaultParams.layer,
+      defaultParams.head,
+      defaultParams.visualization_type,
+      defaultParams.domain_type || 'all',
+      defaultParams.seq_len,
+      defaultParams.precision,
+    );
+
+    // 尝试获取缓存
+    const cachedResponse = getCache<ApiResponse<any>>(cacheKey, {
+      prefix: 'attention',
+      type: 'memory',
+      ttl: 10 * 60 * 1000, // 10分钟缓存
+    });
+
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    // 构建请求URL
+    const url = `/api/attention/visualization?${queryParams.toString()}`;
+
+    // 发送请求
+    const response = await this.request<any>(url, {
+      method: 'GET',
+      cacheConfig: {
+        type: 'memory',
+        ttl: 10 * 60 * 1000, // 10分钟缓存
+      },
+      precision: defaultParams.precision,
+    });
+
+    // 缓存结果
+    if (response.success) {
+      setCache(cacheKey, response, {
+        prefix: 'attention',
+        type: 'memory',
+        ttl: 10 * 60 * 1000, // 10分钟缓存
+      });
+    }
+
+    return response;
+  }
+
   // 有机体AI核心API
   async activateOrganicAIIteration(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/decision/organic-core/activate-iteration', {
       method: 'POST',
     });
   }
-  
+
   async deactivateOrganicAIIteration(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/decision/organic-core/deactivate-iteration', {
       method: 'POST',
     });
   }
-  
+
   async getOrganicAIStatus(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/decision/organic-core/status', {
       method: 'GET',
     });
   }
-  
+
   async evolveOrganicAIStructure(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/decision/organic-core/evolve-structure', {
       method: 'POST',
@@ -853,82 +1258,82 @@ class ApiClient {
     return this.request<User>('/api/auth/register/code', {
       method: 'POST',
       body: JSON.stringify({ code, email, password }),
-    })
+    });
   }
 
   async login(email: string, password: string): Promise<ApiResponse<LoginResponse>> {
     return this.request<LoginResponse>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
-    })
+    });
   }
 
   // 摄像头控制API
-  async openCamera(cameraIndex: number = 0): Promise<ApiResponse<any>> {
+  async openCamera(cameraIndex = 0): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/open', {
       method: 'POST',
       body: JSON.stringify({ camera_index: cameraIndex }),
-    })
+    });
   }
 
   async closeCamera(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/close', {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   async getCameraStatus(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/status', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   // 系统日志API
-  async getSystemLogs(limit: number = 100): Promise<ApiResponse<any>> {
+  async getSystemLogs(limit = 100): Promise<ApiResponse<any>> {
     return this.request<any>(`/api/system/logs?limit=${limit}`, {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
   async getCameraFrame(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/frame', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 
-  async startTracking(trackerType: string = 'CSRT'): Promise<ApiResponse<any>> {
+  async startTracking(trackerType = 'CSRT'): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/tracking/start', {
       method: 'POST',
       body: JSON.stringify({ tracker_type: trackerType }),
-    })
+    });
   }
 
   async stopTracking(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/tracking/stop', {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
-  async startRecognition(modelType: string = 'haar'): Promise<ApiResponse<any>> {
+  async startRecognition(modelType = 'haar'): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/recognition/start', {
       method: 'POST',
       body: JSON.stringify({ model_type: modelType }),
-    })
+    });
   }
 
   async stopRecognition(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/recognition/stop', {
-      method: 'POST'
-    })
+      method: 'POST',
+    });
   }
 
   async listCameras(): Promise<ApiResponse<any>> {
     return this.request<any>('/api/camera/list', {
-      method: 'GET'
-    })
+      method: 'GET',
+    });
   }
 }
 
 // 创建全局API客户端实例
-export const apiClient = new ApiClient()
+export const apiClient = new ApiClient();
 

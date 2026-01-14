@@ -12,7 +12,7 @@ import { useTheme } from '../../hooks/useTheme';
 ChartJS.register(
   ArcElement,
   Tooltip,
-  Legend
+  Legend,
 );
 
 interface PieChartProps {

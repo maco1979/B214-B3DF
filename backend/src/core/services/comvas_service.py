@@ -103,7 +103,7 @@ class ComVasService:
             context: 决策上下文
             
         Returns:
-            伦理评估结果
+            伦理评估结果，包含详细的解释
         """
         try:
             # 获取当前价值系统
@@ -111,12 +111,19 @@ class ComVasService:
             
             # 评估各项价值
             value_evaluations = {}
+            value_explanations = {}
+            
             for value, weight in value_system["values"].items():
-                # 简单的价值评估逻辑（实际应使用更复杂的算法）
+                # 评估单个价值
                 evaluation_score = self._evaluate_single_value(value, action, context, weight)
+                
+                # 生成详细的价值解释
+                explanation = self._generate_value_explanation(value, action, context, evaluation_score)
+                
                 value_evaluations[value] = {
                     "score": evaluation_score,
-                    "weight": weight
+                    "weight": weight,
+                    "explanation": explanation
                 }
             
             # 计算综合伦理分数
@@ -127,15 +134,27 @@ class ComVasService:
             # 检查规则违反情况
             rule_violations = self._check_rule_violations(action, context, value_system["rules"])
             
+            # 生成规则违反解释
+            violation_explanations = []
+            for violation in rule_violations:
+                violation_explanations.append(self._generate_violation_explanation(violation, action, context))
+            
             # 生成伦理建议
             ethical_suggestions = self._generate_ethical_suggestions(ethical_score, rule_violations, value_system)
+            
+            # 生成综合解释
+            comprehensive_explanation = self._generate_comprehensive_explanation(ethical_score, value_evaluations, rule_violations, value_system)
             
             return {
                 "ethical_score": round(ethical_score, 2),
                 "value_evaluations": value_evaluations,
                 "rule_violations": rule_violations,
+                "violation_explanations": violation_explanations,
                 "suggestions": ethical_suggestions,
-                "value_system": self.current_value_system
+                "comprehensive_explanation": comprehensive_explanation,
+                "value_system": self.current_value_system,
+                "decision_id": str(uuid.uuid4()),
+                "timestamp": str(uuid.uuid4())[:8]  # 简化的时间戳
             }
         except Exception as e:
             logger.error(f"评估伦理决策失败: {e}")
@@ -143,6 +162,145 @@ class ComVasService:
                 "ethical_score": 0.0,
                 "error": str(e)
             }
+    
+    def _generate_value_explanation(self, value: str, action: str, context: Dict[str, Any], score: float) -> str:
+        """生成单个价值的详细解释
+        
+        Args:
+            value: 价值名称
+            action: 行为描述
+            context: 上下文信息
+            score: 评估分数
+            
+        Returns:
+            价值评估解释
+        """
+        value_descriptions = {
+            "beneficence": "善意原则",
+            "non_maleficence": "不伤害原则",
+            "autonomy": "自主原则",
+            "justice": "公正原则",
+            "veracity": "诚实原则",
+            "fidelity": "忠实原则",
+            "confidentiality": "保密原则"
+        }
+        
+        description = value_descriptions.get(value, value)
+        
+        if score >= 0.8:
+            explanation = f"✅ {description}得分较高({score:.2f})，该行为很好地体现了{description}。"
+        elif score >= 0.5:
+            explanation = f"⚠️ {description}得分一般({score:.2f})，该行为基本符合{description}，但有改进空间。"
+        else:
+            explanation = f"❌ {description}得分较低({score:.2f})，该行为可能违反{description}。"
+        
+        # 添加具体理由
+        if value == "beneficence":
+            if "帮助" in action or "支持" in action or "改善" in action:
+                explanation += " 行为中包含帮助、支持或改善的元素，符合善意原则。"
+            else:
+                explanation += " 行为中未明确体现帮助、支持或改善的元素。"
+        elif value == "non_maleficence":
+            if "伤害" in action or "损害" in action or "威胁" in action:
+                explanation += " 行为中包含伤害、损害或威胁的元素，违反不伤害原则。"
+            else:
+                explanation += " 行为中未发现伤害、损害或威胁的元素，符合不伤害原则。"
+        elif value == "autonomy":
+            if "用户选择" in action or "尊重" in action or "自主" in action:
+                explanation += " 行为中包含尊重用户选择或自主的元素，符合自主原则。"
+            else:
+                explanation += " 行为中未明确体现尊重用户选择或自主的元素。"
+        elif value == "justice":
+            if "公平" in action or "平等" in action or "公正" in action:
+                explanation += " 行为中包含公平、平等或公正的元素，符合公正原则。"
+            else:
+                explanation += " 行为中未明确体现公平、平等或公正的元素。"
+        elif value == "veracity":
+            if "诚实" in action or "透明" in action or "真实" in action:
+                explanation += " 行为中包含诚实、透明或真实的元素，符合诚实原则。"
+            else:
+                explanation += " 行为中未明确体现诚实、透明或真实的元素。"
+        elif value == "confidentiality":
+            if "隐私" in action or "保密" in action or "安全" in action:
+                explanation += " 行为中包含保护隐私、保密或安全的元素，符合保密原则。"
+            else:
+                explanation += " 行为中未明确体现保护隐私、保密或安全的元素。"
+        
+        return explanation
+    
+    def _generate_violation_explanation(self, violation: str, action: str, context: Dict[str, Any]) -> str:
+        """生成规则违反的详细解释
+        
+        Args:
+            violation: 违反的规则
+            action: 行为描述
+            context: 上下文信息
+            
+        Returns:
+            规则违反解释
+        """
+        violation_keywords = ["伤害", "欺骗", "不公正", "泄露隐私", "不尊重"]
+        detected_keywords = [kw for kw in violation_keywords if kw in action]
+        
+        if detected_keywords:
+            return f"违反规则: {violation}。检测到违规关键词: {', '.join(detected_keywords)}。行为描述中包含与规则相冲突的内容。"
+        else:
+            return f"违反规则: {violation}。虽然未直接检测到违规关键词，但根据上下文分析，该行为可能违反了该规则。"
+    
+    def _generate_comprehensive_explanation(self, ethical_score: float, value_evaluations: Dict[str, Any], 
+                                         rule_violations: List[str], value_system: Dict[str, Any]) -> str:
+        """生成综合伦理解释
+        
+        Args:
+            ethical_score: 伦理分数
+            value_evaluations: 价值评估结果
+            rule_violations: 规则违反列表
+            value_system: 价值系统
+            
+        Returns:
+            综合伦理解释
+        """
+        explanation = [f"## 伦理决策评估报告"]
+        explanation.append(f"**综合伦理分数**: {ethical_score:.2f}/1.0")
+        
+        if ethical_score >= 0.8:
+            explanation.append("**评估结果**: ✅ 符合伦理标准")
+        elif ethical_score >= 0.5:
+            explanation.append("**评估结果**: ⚠️ 伦理分数一般，建议优化")
+        else:
+            explanation.append("**评估结果**: ❌ 伦理分数较低，建议重新考虑")
+        
+        # 价值评估详情
+        explanation.append("\n### 价值评估详情:")
+        for value, eval_data in value_evaluations.items():
+            explanation.append(f"- {eval_data['explanation']} (权重: {eval_data['weight']})")
+        
+        # 规则违反情况
+        if rule_violations:
+            explanation.append("\n### 规则违反情况:")
+            for i, violation in enumerate(rule_violations):
+                explanation.append(f"- {violation}")
+        else:
+            explanation.append("\n### 规则违反情况: ✅ 未检测到规则违反")
+        
+        # 改进建议
+        explanation.append("\n### 改进建议:")
+        if ethical_score < 0.5:
+            explanation.append("1. 重新考虑行为设计，确保符合核心伦理原则")
+            explanation.append("2. 重点关注得分较低的价值维度，针对性优化")
+            explanation.append("3. 重新检查是否违反了关键伦理规则")
+        elif ethical_score < 0.8:
+            explanation.append("1. 针对得分较低的价值维度进行优化")
+            explanation.append("2. 确保行为完全符合所有伦理规则")
+            explanation.append("3. 考虑更多上下文因素，提升决策的伦理完备性")
+        else:
+            explanation.append("1. 保持当前的伦理决策标准")
+            explanation.append("2. 继续监控伦理指标，确保长期合规")
+            explanation.append("3. 考虑将优秀实践推广到其他决策场景")
+        
+        explanation.append(f"\n### 价值系统: {value_system['name']}")
+        
+        return "\n".join(explanation)
     
     def _evaluate_single_value(self, value: str, action: str, context: Dict[str, Any], weight: float) -> float:
         """评估单个价值

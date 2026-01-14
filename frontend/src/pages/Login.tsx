@@ -1,67 +1,67 @@
-import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useAuth } from '@/hooks/useAuth'
-import { useNavigate } from 'react-router-dom'
-import { WeChatLogin, AlipayLogin } from '@/components/auth/QRCodeLogin'
-import { Mail, Lock, User, Github, ExternalLink, AlertCircle } from 'lucide-react'
-import { apiClient } from '@/services/api'
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { WeChatLogin, AlipayLogin } from '@/components/auth/QRCodeLogin';
+import { Mail, Lock, User, Github, ExternalLink, AlertCircle } from 'lucide-react';
+import { apiClient } from '@/services/api';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [registrationCode, setRegistrationCode] = useState('')
-  const [isQRLogin, setIsQRLogin] = useState(false)
-  const [isRegistering, setIsRegistering] = useState(false)
-  const [selectedProvider, setSelectedProvider] = useState<'wechat' | 'alipay'>('wechat')
-  const [error, setError] = useState<string | null>(null)
-  const { login } = useAuth()
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [registrationCode, setRegistrationCode] = useState('');
+  const [isQRLogin, setIsQRLogin] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<'wechat' | 'alipay'>('wechat');
+  const [error, setError] = useState<string | null>(null);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   // 检测移动设备并自动切换到二维码登录
   useEffect(() => {
     const isMobile = () => {
       // 检测屏幕宽度
-      const screenWidth = window.innerWidth < 768
+      const screenWidth = window.innerWidth < 768;
       // 检测用户代理
-      const userAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-      return screenWidth || userAgent
-    }
+      const userAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      return screenWidth || userAgent;
+    };
 
     if (isMobile()) {
-      setIsQRLogin(true)
+      setIsQRLogin(true);
     }
-  }, [])
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('handleLogin called with email:', email, 'password:', password)
+    e.preventDefault();
+    console.log('handleLogin called with email:', email, 'password:', password);
     try {
-      console.log('Attempting login...')
-      await login(email, password)
-      console.log('Login successful, navigating to home')
-      navigate('/')
+      console.log('Attempting login...');
+      await login(email, password);
+      console.log('Login successful, navigating to home');
+      navigate('/');
     } catch (error) {
-      console.error('Login failed:', error)
+      console.error('Login failed:', error);
     }
-  }
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('handleRegister called with code:', registrationCode, 'email:', email, 'password:', password)
+    e.preventDefault();
+    console.log('handleRegister called with code:', registrationCode, 'email:', email, 'password:', password);
     try {
-      console.log('Attempting registration...')
-      const response = await apiClient.registerWithCode(registrationCode, email, password)
+      console.log('Attempting registration...');
+      const response = await apiClient.registerWithCode(registrationCode, email, password);
       if (response.success) {
-        console.log('Registration successful, logging in...')
-        await login(email, password)
-        navigate('/')
+        console.log('Registration successful, logging in...');
+        await login(email, password);
+        navigate('/');
       }
     } catch (error) {
-      console.error('Registration failed:', error)
+      console.error('Registration failed:', error);
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-gradient-to-br from-tech-dark via-tech-gray to-tech-light">
@@ -79,7 +79,8 @@ const LoginPage = () => {
               <span>{error}</span>
             </div>
           )}
-          {!isQRLogin ? (
+          {!isQRLogin ?
+(
             <form onSubmit={isRegistering ? handleRegister : handleLogin} className="space-y-4">
               {isRegistering && (
                 <div className="space-y-2">
@@ -93,7 +94,7 @@ const LoginPage = () => {
                       type="text"
                       placeholder="输入您的产品注册码"
                       value={registrationCode}
-                      onChange={(e) => setRegistrationCode(e.target.value)}
+                      onChange={e => setRegistrationCode(e.target.value)}
                       className="pl-10 bg-cyber-black border-tech-light text-white"
                       required
                     />
@@ -111,7 +112,7 @@ const LoginPage = () => {
                     type="email"
                     placeholder="example@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     className="pl-10 bg-cyber-black border-tech-light text-white"
                     required
                   />
@@ -135,7 +136,7 @@ const LoginPage = () => {
                     type="password"
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     className="pl-10 bg-cyber-black border-tech-light text-white"
                     required
                   />
@@ -147,7 +148,7 @@ const LoginPage = () => {
               >
                 {isRegistering ? '注册' : '登录'}
               </Button>
-              
+
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-tech-light"></div>
@@ -156,7 +157,7 @@ const LoginPage = () => {
                   <span className="bg-tech-dark px-2 text-gray-400">或者使用其他方式登录</span>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Button
                   variant="ghost"
@@ -174,7 +175,7 @@ const LoginPage = () => {
                   GitHub登录
                 </Button>
               </div>
-              
+
               <div className="flex justify-center">
                 <Button
                   variant="link"
@@ -190,7 +191,8 @@ const LoginPage = () => {
                 </div>
               </div>
             </form>
-          ) : (
+          ) :
+(
             <div className="space-y-4">
               <div className="flex justify-center space-x-4">
                 <Button
@@ -210,13 +212,15 @@ const LoginPage = () => {
                   <ExternalLink className="h-4 w-4" />
                 </Button>
               </div>
-              
-              {selectedProvider === 'wechat' ? (
+
+              {selectedProvider === 'wechat' ?
+(
                 <WeChatLogin onLoginSuccess={() => console.log('微信登录成功')} />
-              ) : (
+              ) :
+(
                 <AlipayLogin onLoginSuccess={() => console.log('支付宝登录成功')} />
               )}
-              
+
               <Button
                 variant="ghost"
                 className="w-full border border-tech-light hover:bg-tech-gray text-white"
@@ -229,7 +233,7 @@ const LoginPage = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

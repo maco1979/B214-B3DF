@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { industries, Industry } from '@/config/industries';
+import type { ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import type { Industry } from '@/config/industries';
+import { industries } from '@/config/industries';
 
 interface IndustryContextType {
   currentIndustry: string;

@@ -19,10 +19,10 @@ const SystemLogs: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // 从后端API获取系统日志
       const response = await apiClient.get('/api/system/logs');
-      
+
       if (response.success && response.data) {
         const data = response.data as { logs?: LogEntry[] };
         setLogs(data.logs || []);
@@ -38,20 +38,20 @@ const SystemLogs: React.FC = () => {
           timestamp: new Date().toISOString(),
           level: 'INFO',
           message: '系统启动完成',
-          component: 'system'
+          component: 'system',
         },
         {
           timestamp: new Date(Date.now() - 300000).toISOString(), // 5分钟前
           level: 'INFO',
           message: 'API服务已就绪',
-          component: 'api'
+          component: 'api',
         },
         {
           timestamp: new Date(Date.now() - 600000).toISOString(), // 10分钟前
           level: 'WARNING',
           message: '内存使用率超过80%',
-          component: 'monitoring'
-        }
+          component: 'monitoring',
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -60,10 +60,10 @@ const SystemLogs: React.FC = () => {
 
   useEffect(() => {
     fetchLogs();
-    
+
     // 设置定时器定期刷新日志（优化：每60秒，减少请求频率）
     const interval = setInterval(fetchLogs, 60000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -82,15 +82,13 @@ const SystemLogs: React.FC = () => {
     }
   };
 
-  const formatTimestamp = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString('zh-CN', {
+  const formatTimestamp = (timestamp: string) => new Date(timestamp).toLocaleString('zh-CN', {
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
     });
-  };
 
   return (
     <div className="flex flex-col h-full bg-cyber-black/40 border border-white/5 rounded-2xl overflow-hidden group">
@@ -113,7 +111,7 @@ const SystemLogs: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-2">
-          <button 
+          <button
             onClick={fetchLogs}
             disabled={isLoading}
             className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[10px] font-bold text-gray-400 hover:text-cyber-purple hover:border-cyber-purple/30 transition-all disabled:opacity-50"
@@ -138,14 +136,17 @@ const SystemLogs: React.FC = () => {
           </div>
         )}
 
-        {isLoading ? (
+        {isLoading ?
+(
           <div className="flex items-center space-x-3 text-cyber-purple/80 py-8">
             <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             <span className="text-[10px] font-bold uppercase tracking-widest">加载日志中...</span>
           </div>
-        ) : logs.length === 0 ? (
+        ) :
+logs.length === 0 ?
+(
           <div className="text-center py-12 text-gray-500">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2 opacity-50">
               <path d="M12 12h.01"></path>
@@ -154,7 +155,8 @@ const SystemLogs: React.FC = () => {
             </svg>
             <p className="text-sm">暂无系统日志</p>
           </div>
-        ) : (
+        ) :
+(
           <AnimatePresence initial={false}>
             {logs.map((log, i) => (
               <motion.div
@@ -165,8 +167,8 @@ const SystemLogs: React.FC = () => {
                 className="flex flex-col items-start"
               >
                 <div className={cn(
-                  "max-w-full p-3 rounded-xl border transition-all duration-300 w-full",
-                  getLevelColor(log.level)
+                  'max-w-full p-3 rounded-xl border transition-all duration-300 w-full',
+                  getLevelColor(log.level),
                 )}>
                   <div className="flex justify-between items-start mb-1.5">
                     <div className="flex items-center space-x-2 opacity-40 text-[9px] uppercase font-black">
@@ -175,11 +177,11 @@ const SystemLogs: React.FC = () => {
                       <span>{formatTimestamp(log.timestamp)}</span>
                     </div>
                     <span className={cn(
-                      "text-[8px] font-bold uppercase px-2 py-0.5 rounded-full",
+                      'text-[8px] font-bold uppercase px-2 py-0.5 rounded-full',
                       log.level.toUpperCase() === 'ERROR' && 'bg-cyber-rose/20 text-cyber-rose',
                       log.level.toUpperCase() === 'WARNING' && 'bg-cyber-yellow/20 text-cyber-yellow',
                       log.level.toUpperCase() === 'INFO' && 'bg-cyber-cyan/20 text-cyber-cyan',
-                      log.level.toUpperCase() === 'DEBUG' && 'bg-gray-400/20 text-gray-400'
+                      log.level.toUpperCase() === 'DEBUG' && 'bg-gray-400/20 text-gray-400',
                     )}>
                       {log.level}
                     </span>

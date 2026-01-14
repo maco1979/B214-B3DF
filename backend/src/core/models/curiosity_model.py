@@ -9,22 +9,74 @@ import random
 
 
 class MultiModalCuriosity(nn.Module):
-    """多模态好奇心评估模型
+    """多模态好奇心评估模型 - 增强版
     实现了技术文档中描述的多模态好奇心评估算法，综合视觉、语音、文本等多种信息源
+    增强：支持更复杂的模态融合和自适应好奇心调整
     """
     def __init__(self, state_dim, action_dim, modality_dims):
         super(MultiModalCuriosity, self).__init__()
         
-        # 简化实现：使用一个简单的神经网络作为预测模型
-        # 避免复杂的多模态编码器和维度匹配问题
         self.state_dim = state_dim
         self.action_dim = action_dim
+        self.modality_dims = modality_dims
         
-        # 简单的预测网络：直接处理状态和动作
-        self.prediction_net = nn.Sequential(
-            nn.Linear(state_dim + action_dim, 256),
+        # 新增：模态编码器，为每个模态设计专用编码器
+        self.modality_encoders = nn.ModuleDict()
+        for modality, dim in modality_dims.items():
+            if modality == 'vision':
+                # 视觉模态编码器
+                self.modality_encoders[modality] = nn.Sequential(
+                    nn.Linear(dim, 512),
+                    nn.ReLU(),
+                    nn.Linear(512, 256),
+                    nn.ReLU(),
+                    nn.Linear(256, 128)
+                )
+            elif modality == 'speech':
+                # 语音模态编码器
+                self.modality_encoders[modality] = nn.Sequential(
+                    nn.Linear(dim, 256),
+                    nn.ReLU(),
+                    nn.Linear(256, 128)
+                )
+            elif modality == 'text':
+                # 文本模态编码器
+                self.modality_encoders[modality] = nn.Sequential(
+                    nn.Linear(dim, 512),
+                    nn.ReLU(),
+                    nn.Linear(512, 256),
+                    nn.ReLU(),
+                    nn.Linear(256, 128)
+                )
+            else:
+                # 默认模态编码器
+                self.modality_encoders[modality] = nn.Sequential(
+                    nn.Linear(dim, 128),
+                    nn.ReLU()
+                )
+        
+        # 模态融合层
+        self.fusion_layer = nn.Sequential(
+            nn.Linear(128 * len(modality_dims), 256),
             nn.ReLU(),
             nn.Linear(256, state_dim)
+        )
+        
+        # 预测网络：处理融合后的状态和动作
+        self.prediction_net = nn.Sequential(
+            nn.Linear(state_dim + action_dim, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, state_dim)
+        )
+        
+        # 新增：好奇心权重调整网络
+        self.curiosity_adjuster = nn.Sequential(
+            nn.Linear(state_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1),
+            nn.Sigmoid()  # 输出0-1之间的好奇心权重
         )
     
     def forward(self, observations, actions):
@@ -35,13 +87,37 @@ class MultiModalCuriosity(nn.Module):
             actions: 动作输入
             
         Returns:
-            预测的下一状态
+            预测的下一状态和好奇心权重
         """
-        # 简化实现：处理不同类型的观察输入
         if isinstance(observations, dict):
             # 多模态观察输入
-            # 简化处理：使用随机状态张量
-            state_tensor = torch.randn(actions.shape[0], self.state_dim)
+            modality_features = []
+            for modality, data in observations.items():
+                if modality in self.modality_encoders:
+                    # 确保数据是张量形式
+                    if not isinstance(data, torch.Tensor):
+                        data = torch.tensor(data, dtype=torch.float32)
+                    # 添加批次维度（如果没有）
+                    if data.dim() == 1:
+                        data = data.unsqueeze(0)
+                    # 适配模态维度
+                    if data.shape[-1] != self.modality_dims[modality]:
+                        # 调整维度（简化处理）
+                        data = data[:, :self.modality_dims[modality]]
+                        if data.shape[-1] < self.modality_dims[modality]:
+                            pad = torch.zeros(data.shape[0], self.modality_dims[modality] - data.shape[-1])
+                            data = torch.cat([data, pad], dim=-1)
+                    # 编码模态特征
+                    encoded = self.modality_encoders[modality](data)
+                    modality_features.append(encoded)
+            
+            # 融合模态特征
+            if modality_features:
+                fused_features = torch.cat(modality_features, dim=-1)
+                state_tensor = self.fusion_layer(fused_features)
+            else:
+                # 默认状态张量
+                state_tensor = torch.randn(actions.shape[0], self.state_dim)
         else:
             # 状态张量直接作为输入
             state_tensor = observations
@@ -52,7 +128,10 @@ class MultiModalCuriosity(nn.Module):
         # 预测下一状态
         predicted_next_state = self.prediction_net(combined)
         
-        return predicted_next_state
+        # 计算好奇心权重
+        curiosity_weight = self.curiosity_adjuster(state_tensor)
+        
+        return predicted_next_state, curiosity_weight
 
 
 def calculate_entropy(states: torch.Tensor) -> float:
@@ -77,21 +156,23 @@ def calculate_entropy(states: torch.Tensor) -> float:
 
 
 def calculate_intrinsic_reward(current_state: torch.Tensor, action: torch.Tensor, 
-                             next_state: torch.Tensor, model: MultiModalCuriosity) -> torch.Tensor:
-    """计算内在奖励
-    结合预测误差和信息增益两个维度
+                             next_state: torch.Tensor, model: MultiModalCuriosity, 
+                             curiosity_type: str = "combined") -> torch.Tensor:
+    """计算内在奖励 - 增强版
+    结合预测误差、信息增益和自适应好奇心权重
     
     Args:
         current_state: 当前状态
         action: 执行的动作
         next_state: 实际的下一状态
         model: 好奇心模型
+        curiosity_type: 好奇心类型 (combined, prediction, information_gain)
         
     Returns:
         内在奖励值
     """
     # 1. 计算预测误差（Prediction Error）
-    predicted_next_state = model(current_state, action)
+    predicted_next_state, curiosity_weight = model(current_state, action)
     prediction_error = F.mse_loss(predicted_next_state, next_state, reduction='mean')
     
     # 2. 计算信息增益（Information Gain）
@@ -104,13 +185,23 @@ def calculate_intrinsic_reward(current_state: torch.Tensor, action: torch.Tensor
     information_gain_tensor = torch.tensor(information_gain, dtype=torch.float32, device=current_state.device)
     
     # 3. 结合预测误差和信息增益
-    # 预测误差越大，好奇心越高
-    # 信息增益越大，好奇心越高
-    prediction_error_weight = 0.6
-    information_gain_weight = 0.4
+    # 自适应权重调整
+    if curiosity_type == "prediction":
+        # 仅使用预测误差
+        intrinsic_reward = prediction_error
+    elif curiosity_type == "information_gain":
+        # 仅使用信息增益
+        intrinsic_reward = information_gain_tensor
+    else:
+        # 结合两种奖励成分，使用自适应权重
+        prediction_error_weight = 0.6 + (curiosity_weight.item() * 0.2)  # 0.6-0.8
+        information_gain_weight = 0.4 - (curiosity_weight.item() * 0.2)  # 0.2-0.4
+        
+        # 结合两种奖励成分
+        intrinsic_reward = (prediction_error_weight * prediction_error) + (information_gain_weight * information_gain_tensor)
     
-    # 结合两种奖励成分
-    intrinsic_reward = (prediction_error_weight * prediction_error) + (information_gain_weight * information_gain_tensor)
+    # 4. 应用好奇心权重
+    intrinsic_reward = intrinsic_reward * curiosity_weight
     
     # 确保奖励为正数
     intrinsic_reward = F.relu(intrinsic_reward)

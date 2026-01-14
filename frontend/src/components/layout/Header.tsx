@@ -2,17 +2,16 @@ import React from 'react';
 import { Bell, Search, User, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export const Header: React.FC = () => {
-  return (
+export const Header: React.FC = () => (
     <header className="h-20 glass-morphism border-b border-white/5 px-8 flex items-center justify-between sticky top-0 z-40">
       {/* Search Section */}
       <div className="flex items-center bg-white/5 rounded-full px-4 py-2 w-96 border border-white/5 focus-within:border-cyber-cyan/50 transition-all">
         <Search className="text-gray-400 w-5 h-5" />
-        <input 
+        <input
           id="neural-pattern-search"
           name="neural-pattern-search"
-          type="text" 
-          placeholder="搜索神经模式..." 
+          type="text"
+          placeholder="搜索神经模式..."
           className="bg-transparent border-none outline-none ml-3 text-sm text-white w-full placeholder:text-gray-500"
         />
       </div>
@@ -48,4 +47,3 @@ export const Header: React.FC = () => {
       </div>
     </header>
   );
-};

@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { 
-  Activity, 
-  Server, 
-  Cpu, 
-  Database, 
-  Network, 
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Activity,
+  Server,
+  Cpu,
+  Database,
+  Network,
   Users,
   TrendingUp,
   AlertTriangle,
   CheckCircle,
   RefreshCw,
   BarChart3,
-  Clock
-} from 'lucide-react'
-import { useSystemMetricsRealtime, useBlockchainStatusQuery, useEdgeDevicesQuery } from '@/hooks/useSystemQueries'
-
+  Clock,
+} from 'lucide-react';
+import { useSystemMetricsRealtime, useBlockchainStatusQuery, useEdgeDevicesQuery } from '@/hooks/useSystemQueries';
 
 
 // 图表组件（简化实现）
 const SimpleChart = ({ data, color = '#3b82f6' }: { data: number[], color?: string }) => {
-  const maxValue = Math.max(...data, 1)
-  
+  const maxValue = Math.max(...data, 1);
+
   return (
     <div className="flex items-end h-16 space-x-1">
       {data.map((value, index) => (
@@ -31,52 +30,52 @@ const SimpleChart = ({ data, color = '#3b82f6' }: { data: number[], color?: stri
           className="flex-1 bg-gradient-to-t from-blue-500 to-blue-600 rounded-t"
           style={{
             height: `${(value / maxValue) * 100}%`,
-            backgroundColor: color
+            backgroundColor: color,
           }}
         />
       ))}
     </div>
-  )
-}
+  );
+};
 
 export function MonitoringDashboard() {
-  const { data: metrics, isFetching: metricsLoading, refetch: refetchMetrics, error: metricsError } = useSystemMetricsRealtime()
+  const { data: metrics, isFetching: metricsLoading, refetch: refetchMetrics, error: metricsError } = useSystemMetricsRealtime();
 
-  const { data: blockchainStatus, refetch: refetchBlockchain, error: blockchainError } = useBlockchainStatusQuery()
-  const { data: edgeDevices, refetch: refetchEdge, isFetching: edgeLoading, error: edgeError } = useEdgeDevicesQuery()
-  
-  const [lastUpdate, setLastUpdate] = useState(new Date())
+  const { data: blockchainStatus, refetch: refetchBlockchain, error: blockchainError } = useBlockchainStatusQuery();
+  const { data: edgeDevices, refetch: refetchEdge, isFetching: edgeLoading, error: edgeError } = useEdgeDevicesQuery();
 
-  const [cpuUsage, setCpuUsage] = useState<number[]>([45, 52, 48, 60, 55, 58, 62, 50])
-  const [memoryUsage, setMemoryUsage] = useState<number[]>([65, 68, 72, 70, 75, 78, 80, 76])
-  const [networkTraffic, setNetworkTraffic] = useState<number[]>([120, 135, 110, 145, 160, 140, 155, 130])
+  const [lastUpdate, setLastUpdate] = useState(new Date());
+
+  const [cpuUsage, setCpuUsage] = useState<number[]>([45, 52, 48, 60, 55, 58, 62, 50]);
+  const [memoryUsage, setMemoryUsage] = useState<number[]>([65, 68, 72, 70, 75, 78, 80, 76]);
+  const [networkTraffic, setNetworkTraffic] = useState<number[]>([120, 135, 110, 145, 160, 140, 155, 130]);
 
   // 模拟实时数据更新
   useEffect(() => {
     const interval = setInterval(() => {
-      setCpuUsage(prev => [...prev.slice(1), Math.random() * 40 + 40])
-      setMemoryUsage(prev => [...prev.slice(1), Math.random() * 20 + 60])
-      setNetworkTraffic(prev => [...prev.slice(1), Math.random() * 100 + 100])
-    }, 5000)
+      setCpuUsage(prev => [...prev.slice(1), Math.random() * 40 + 40]);
+      setMemoryUsage(prev => [...prev.slice(1), Math.random() * 20 + 60]);
+      setNetworkTraffic(prev => [...prev.slice(1), Math.random() * 100 + 100]);
+    }, 5000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   const refreshAll = () => {
-    refetchMetrics()
-    refetchBlockchain()
-    refetchEdge()
-    setLastUpdate(new Date())
-  }
+    refetchMetrics();
+    refetchBlockchain();
+    refetchEdge();
+    setLastUpdate(new Date());
+  };
 
   if (metricsError || blockchainError || edgeError) {
     return (
       <div className="flex flex-col items-center justify-center h-96 space-y-3">
         <div className="text-red-400 text-lg">数据加载失败</div>
-        <div className="text-gray-400 text-sm">{(metricsError as Error)?.message || (blockchainError as Error)?.message || (edgeError as Error)?.message}</div>
+        <div className="text-gray-400 text-sm">{(metricsError!).message || (blockchainError!).message || (edgeError!).message}</div>
         <Button variant="tech" onClick={refreshAll}>重试</Button>
       </div>
-    )
+    );
   }
 
 
@@ -86,113 +85,113 @@ export function MonitoringDashboard() {
       value: `${cpuUsage[cpuUsage.length - 1].toFixed(1)}%`,
       icon: Cpu,
       color: 'text-blue-400',
-      trend: 'up'
+      trend: 'up',
     },
     {
       label: '内存使用',
       value: `${memoryUsage[memoryUsage.length - 1].toFixed(1)}%`,
       icon: Database,
       color: 'text-green-400',
-      trend: 'stable'
+      trend: 'stable',
     },
     {
       label: '网络流量',
       value: `${networkTraffic[networkTraffic.length - 1].toFixed(0)} MB/s`,
       icon: Network,
       color: 'text-purple-400',
-      trend: 'up'
+      trend: 'up',
     },
     {
       label: '活跃连接',
       value: metrics?.active_connections || '0',
       icon: Users,
       color: 'text-yellow-400',
-      trend: 'stable'
-    }
-  ]
+      trend: 'stable',
+    },
+  ];
 
   const serviceStatus = [
     {
       name: 'AI推理服务',
       status: metrics?.ai_service_status === 'healthy' ? 'healthy' : 'degraded',
       responseTime: '45ms',
-      uptime: '99.8%'
+      uptime: '99.8%',
     },
     {
       name: '区块链节点',
       status: blockchainStatus?.status === 'healthy' ? 'healthy' : 'degraded',
       responseTime: '120ms',
-      uptime: '99.5%'
+      uptime: '99.5%',
     },
     {
       name: '数据库服务',
       status: metrics?.database_status === 'healthy' ? 'healthy' : 'degraded',
       responseTime: '25ms',
-      uptime: '99.9%'
+      uptime: '99.9%',
     },
     {
       name: '边缘计算网关',
       status: edgeDevices && edgeDevices.length > 0 ? 'healthy' : 'degraded',
       responseTime: '80ms',
-      uptime: '98.7%'
-    }
-  ]
+      uptime: '98.7%',
+    },
+  ];
 
   const recentAlerts = [
-    { 
-      type: 'warning', 
-      message: 'CPU使用率超过80%', 
+    {
+      type: 'warning',
+      message: 'CPU使用率超过80%',
       time: '5分钟前',
-      service: '计算节点-01'
+      service: '计算节点-01',
     },
-    { 
-      type: 'info', 
-      message: '区块链同步完成', 
+    {
+      type: 'info',
+      message: '区块链同步完成',
       time: '10分钟前',
-      service: '区块链网络'
+      service: '区块链网络',
     },
-    { 
-      type: 'error', 
-      message: '边缘设备连接超时', 
+    {
+      type: 'error',
+      message: '边缘设备连接超时',
       time: '15分钟前',
-      service: '边缘网关-02'
-    }
-  ]
+      service: '边缘网关-02',
+    },
+  ];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <CheckCircle className="w-4 h-4 text-green-400" />
+        return <CheckCircle className="w-4 h-4 text-green-400" />;
       case 'degraded':
-        return <AlertTriangle className="w-4 h-4 text-yellow-400" />
+        return <AlertTriangle className="w-4 h-4 text-yellow-400" />;
       default:
-        return <AlertTriangle className="w-4 h-4 text-red-400" />
+        return <AlertTriangle className="w-4 h-4 text-red-400" />;
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'healthy':
-        return 'text-green-400'
+        return 'text-green-400';
       case 'degraded':
-        return 'text-yellow-400'
+        return 'text-yellow-400';
       default:
-        return 'text-red-400'
+        return 'text-red-400';
     }
-  }
+  };
 
   const getAlertColor = (type: string) => {
     switch (type) {
       case 'error':
-        return 'bg-red-500/20 border-red-500/30'
+        return 'bg-red-500/20 border-red-500/30';
       case 'warning':
-        return 'bg-yellow-500/20 border-yellow-500/30'
+        return 'bg-yellow-500/20 border-yellow-500/30';
       case 'info':
-        return 'bg-blue-500/20 border-blue-500/30'
+        return 'bg-blue-500/20 border-blue-500/30';
       default:
-        return 'bg-gray-500/20 border-gray-500/30'
+        return 'bg-gray-500/20 border-gray-500/30';
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -206,8 +205,8 @@ export function MonitoringDashboard() {
           <div className="text-sm text-gray-400">
             最后更新: {lastUpdate.toLocaleTimeString()}
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={refreshAll}
             disabled={metricsLoading || edgeLoading}
             className="flex items-center space-x-2"
@@ -222,7 +221,7 @@ export function MonitoringDashboard() {
       {/* 系统统计卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {systemStats.map((stat, index) => {
-          const Icon = stat.icon
+          const Icon = stat.icon;
           return (
             <Card key={index} className="glass-effect hover:neon-glow transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -236,7 +235,7 @@ export function MonitoringDashboard() {
                 <SimpleChart data={index === 0 ? cpuUsage : index === 1 ? memoryUsage : networkTraffic} />
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -282,8 +281,8 @@ export function MonitoringDashboard() {
           </CardHeader>
           <CardContent className="space-y-3">
             {recentAlerts.map((alert, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`p-3 rounded-lg border ${getAlertColor(alert.type)}`}
               >
                 <div className="flex justify-between items-start mb-1">
@@ -379,5 +378,5 @@ export function MonitoringDashboard() {
         </Card>
       )}
     </div>
-  )
+  );
 }

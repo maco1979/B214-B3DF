@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Cpu, 
-  Play, 
-  Pause, 
+import {
+  Cpu,
+  Play,
+  Pause,
   RefreshCw,
   TrendingUp,
   Clock,
@@ -11,18 +11,18 @@ import {
   Activity,
   ArrowUpRight,
   Shield,
-  Zap
+  Zap,
 } from 'lucide-react';
 import { apiClient } from '@/services/api';
 import { BentoCard } from '@/components/ui/BentoCard';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
 } from 'recharts';
 import { cn } from '@/lib/utils';
 
@@ -39,7 +39,7 @@ const chartData = [
 export function InferenceService() {
   const [isRunning, setIsRunning] = useState(true);
   const [loading, setLoading] = useState(false);
-  
+
   const services = [
     { id: 1, name: 'Vision_Classifier', endpoint: '/inf/v1/classify', status: '活跃', latency: '42ms', requests: '1.2K', rate: '99.8%', color: 'text-cyber-cyan' },
     { id: 2, name: 'Object_Detector_V3', endpoint: '/inf/v3/detect', status: '活跃', latency: '65ms', requests: '840', rate: '98.5%', color: 'text-cyber-purple' },
@@ -57,7 +57,9 @@ export function InferenceService() {
     setLoading(true);
     const newState = !isRunning;
     const res = await apiClient.toggleInferenceService(newState);
-    if (res.success) setIsRunning(newState);
+    if (res.success) {
+ setIsRunning(newState);
+}
     setLoading(false);
   };
 
@@ -71,20 +73,20 @@ export function InferenceService() {
           </h1>
           <p className="text-gray-500 font-medium tracking-tight uppercase text-xs">实时神经计算与节点管理</p>
         </div>
-        
+
         <div className="flex items-center space-x-3">
-          <button 
+          <button
             onClick={toggleService}
             disabled={loading}
             className={cn(
-              "px-6 py-3 rounded-xl font-bold flex items-center space-x-2 transition-all",
-              isRunning 
-                ? "bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/20 neon-glow-cyan" 
-                : "bg-cyber-rose/10 text-cyber-rose border border-cyber-rose/20"
+              'px-6 py-3 rounded-xl font-bold flex items-center space-x-2 transition-all',
+              isRunning ?
+                'bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/20 neon-glow-cyan' :
+                'bg-cyber-rose/10 text-cyber-rose border border-cyber-rose/20',
             )}
           >
             {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : (isRunning ? <Pause size={18} /> : <Play size={18} />)}
-            <span>{isRunning ? "暂停管道" : "恢复管道"}</span>
+            <span>{isRunning ? '暂停管道' : '恢复管道'}</span>
           </button>
         </div>
       </div>
@@ -112,15 +114,15 @@ export function InferenceService() {
               <Cpu size={14} className="text-cyber-cyan" />
               <span>神经微服务</span>
            </h3>
-           
-           {services.map((s) => (
-             <motion.div 
+
+           {services.map(s => (
+             <motion.div
                key={s.id}
                whileHover={{ x: 4 }}
                className="glass-card rounded-2xl p-5 border border-white/5 flex items-center justify-between group"
              >
                 <div className="flex items-center space-x-4">
-                   <div className={cn("p-3 rounded-xl bg-white/5 border border-white/5 group-hover:neon-glow-cyan transition-all", s.color)}>
+                   <div className={cn('p-3 rounded-xl bg-white/5 border border-white/5 group-hover:neon-glow-cyan transition-all', s.color)}>
                       <Cpu size={24} />
                    </div>
                    <div>
@@ -139,8 +141,8 @@ export function InferenceService() {
                       <p className="text-xs font-black text-white">{s.latency}</p>
                    </div>
                    <div className={cn(
-                     "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border",
-                     s.status === 'Active' ? "bg-cyber-emerald/10 text-cyber-emerald border-cyber-emerald/20" : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                     'px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border',
+                     s.status === 'Active' ? 'bg-cyber-emerald/10 text-cyber-emerald border-cyber-emerald/20' : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
                    )}>
                       {s.status}
                    </div>
@@ -153,9 +155,9 @@ export function InferenceService() {
         </div>
 
         {/* Load Analysis Chart */}
-        <BentoCard 
-          className="lg:col-span-5" 
-          title="计算负载" 
+        <BentoCard
+          className="lg:col-span-5"
+          title="计算负载"
           description="神经集群压力"
           icon={Activity}
         >
@@ -171,7 +173,7 @@ export function InferenceService() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
                 <XAxis dataKey="time" stroke="#ffffff20" fontSize={10} axisLine={false} tickLine={false} />
                 <YAxis hide />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: '#09090b', border: '1px solid #ffffff10', borderRadius: '8px' }}
                   itemStyle={{ color: '#bc13fe' }}
                 />

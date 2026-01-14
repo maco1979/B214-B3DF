@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
-  Activity, 
+  Activity,
   TrendingUp,
   AlertTriangle,
   CheckCircle,
@@ -16,46 +16,46 @@ import {
   Target,
   Shield,
   Cloud,
-  Server
-} from 'lucide-react'
-import { usePerformanceMetricsQuery, useOptimizationStatusQuery } from '@/hooks/useSystemQueries'
-import { AreaChart } from '@/components/ui/area-chart'
-import { apiClient } from '@/services/api'
+  Server,
+} from 'lucide-react';
+import { usePerformanceMetricsQuery, useOptimizationStatusQuery } from '@/hooks/useSystemQueries';
+import { AreaChart } from '@/components/ui/area-chart';
+import { apiClient } from '@/services/api';
 
 
 // 简化图表组件
-const SimpleChart = ({ data, color = '#3b82f6', height = '60px' }: { 
-  data: number[], 
+const SimpleChart = ({ data, color = '#3b82f6', height = '60px' }: {
+  data: number[],
   color?: string,
-  height?: string 
+  height?: string
 }) => {
-  const maxValue = Math.max(...data, 1)
-  
+  const maxValue = Math.max(...data, 1);
+
   return (
-    <div className={`flex items-end space-x-1`} style={{ height }}>
+    <div className={'flex items-end space-x-1'} style={{ height }}>
       {data.map((value, index) => (
         <div
           key={index}
           className="flex-1 bg-gradient-to-t rounded-t transition-all duration-300 hover:opacity-80"
           style={{
             height: `${(value / maxValue) * 100}%`,
-            backgroundColor: color
+            backgroundColor: color,
           }}
         />
       ))}
     </div>
-  )
-}
+  );
+};
 
 // 性能指标卡片组件
-const MetricCard = ({ 
-  title, 
-  value, 
-  unit, 
-  trend, 
-  chartData, 
+const MetricCard = ({
+  title,
+  value,
+  unit,
+  trend,
+  chartData,
   color,
-  icon: Icon 
+  icon: Icon,
 }: {
   title: string
   value: number
@@ -67,19 +67,19 @@ const MetricCard = ({
 }) => {
   const getTrendColor = () => {
     switch (trend) {
-      case 'up': return 'text-green-400'
-      case 'down': return 'text-red-400'
-      default: return 'text-gray-400'
+      case 'up': return 'text-green-400';
+      case 'down': return 'text-red-400';
+      default: return 'text-gray-400';
     }
-  }
+  };
 
   const getTrendIcon = () => {
     switch (trend) {
-      case 'up': return '↗'
-      case 'down': return '↘'
-      default: return '→'
+      case 'up': return '↗';
+      case 'down': return '↘';
+      default: return '→';
     }
-  }
+  };
 
   return (
     <Card className="glass-effect hover:neon-glow transition-all duration-300">
@@ -101,16 +101,16 @@ const MetricCard = ({
         <SimpleChart data={chartData} color={color.replace('text-', '').replace('-400', '')} height="40px" />
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 // 优化建议组件
-const OptimizationCard = ({ 
-  title, 
-  description, 
-  impact, 
-  status: initialStatus, 
-  estimatedImprovement 
+const OptimizationCard = ({
+  title,
+  description,
+  impact,
+  status: initialStatus,
+  estimatedImprovement,
 }: {
   title: string
   description: string
@@ -118,41 +118,41 @@ const OptimizationCard = ({
   status: 'pending' | 'applied' | 'failed'
   estimatedImprovement: string
 }) => {
-  const [status, setStatus] = useState(initialStatus)
-  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState(initialStatus);
+  const [loading, setLoading] = useState(false);
 
   const getImpactColor = () => {
     switch (impact) {
-      case 'high': return 'text-red-400'
-      case 'medium': return 'text-yellow-400'
-      default: return 'text-green-400'
+      case 'high': return 'text-red-400';
+      case 'medium': return 'text-yellow-400';
+      default: return 'text-green-400';
     }
-  }
+  };
 
   const getStatusIcon = () => {
     switch (status) {
-      case 'applied': return <CheckCircle className="w-4 h-4 text-green-400" />
-      case 'failed': return <AlertTriangle className="w-4 h-4 text-red-400" />
-      default: return <Clock className="w-4 h-4 text-yellow-400" />
+      case 'applied': return <CheckCircle className="w-4 h-4 text-green-400" />;
+      case 'failed': return <AlertTriangle className="w-4 h-4 text-red-400" />;
+      default: return <Clock className="w-4 h-4 text-yellow-400" />;
     }
-  }
+  };
 
   const handleApply = async () => {
     try {
-      setLoading(true)
-      const response = await apiClient.applyOptimization('system', title)
+      setLoading(true);
+      const response = await apiClient.applyOptimization('system', title);
       if (response.success) {
-        setStatus('applied')
+        setStatus('applied');
       } else {
-        setStatus('failed')
+        setStatus('failed');
       }
     } catch (error) {
-      console.error('应用优化失败:', error)
-      setStatus('failed')
+      console.error('应用优化失败:', error);
+      setStatus('failed');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="glass-effect border-l-4 border-l-tech-primary">
@@ -169,9 +169,9 @@ const OptimizationCard = ({
       <CardContent>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-400">预计改进: {estimatedImprovement}</span>
-          <Button 
-            size="sm" 
-            variant="outline" 
+          <Button
+            size="sm"
+            variant="outline"
             onClick={handleApply}
             disabled={status !== 'pending' || loading}
           >
@@ -180,48 +180,48 @@ const OptimizationCard = ({
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 export function PerformanceMonitoring() {
-  const { data: performanceMetrics, isFetching: metricsLoading, refetch: refetchMetrics, error: metricsError } = usePerformanceMetricsQuery()
-  const { data: optimizationStatus, refetch: refetchOptimization, isFetching: optimizationLoading, error: optimizationError } = useOptimizationStatusQuery()
-  
-  const [lastUpdate, setLastUpdate] = useState(new Date())
+  const { data: performanceMetrics, isFetching: metricsLoading, refetch: refetchMetrics, error: metricsError } = usePerformanceMetricsQuery();
+  const { data: optimizationStatus, refetch: refetchOptimization, isFetching: optimizationLoading, error: optimizationError } = useOptimizationStatusQuery();
 
-  
+  const [lastUpdate, setLastUpdate] = useState(new Date());
+
+
   // 模拟实时数据
-  const [migrationAccuracy, setMigrationAccuracy] = useState<number[]>([85, 87, 89, 88, 90, 92, 91, 93])
-  const [edgeLatency, setEdgeLatency] = useState<number[]>([45, 42, 38, 35, 32, 30, 28, 25])
-  const [decisionTime, setDecisionTime] = useState<number[]>([120, 115, 110, 105, 100, 95, 90, 85])
-  const [integrationSuccess, setIntegrationSuccess] = useState<number[]>([92, 93, 94, 95, 96, 97, 98, 99])
+  const [migrationAccuracy, setMigrationAccuracy] = useState<number[]>([85, 87, 89, 88, 90, 92, 91, 93]);
+  const [edgeLatency, setEdgeLatency] = useState<number[]>([45, 42, 38, 35, 32, 30, 28, 25]);
+  const [decisionTime, setDecisionTime] = useState<number[]>([120, 115, 110, 105, 100, 95, 90, 85]);
+  const [integrationSuccess, setIntegrationSuccess] = useState<number[]>([92, 93, 94, 95, 96, 97, 98, 99]);
 
   // 模拟实时数据更新
   useEffect(() => {
     const interval = setInterval(() => {
-      setMigrationAccuracy(prev => [...prev.slice(1), Math.random() * 10 + 85])
-      setEdgeLatency(prev => [...prev.slice(1), Math.random() * 20 + 20])
-      setDecisionTime(prev => [...prev.slice(1), Math.random() * 30 + 70])
-      setIntegrationSuccess(prev => [...prev.slice(1), Math.random() * 5 + 95])
-    }, 5000)
+      setMigrationAccuracy(prev => [...prev.slice(1), Math.random() * 10 + 85]);
+      setEdgeLatency(prev => [...prev.slice(1), Math.random() * 20 + 20]);
+      setDecisionTime(prev => [...prev.slice(1), Math.random() * 30 + 70]);
+      setIntegrationSuccess(prev => [...prev.slice(1), Math.random() * 5 + 95]);
+    }, 5000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   const refreshAll = () => {
-    refetchMetrics()
-    refetchOptimization()
-    setLastUpdate(new Date())
-  }
+    refetchMetrics();
+    refetchOptimization();
+    setLastUpdate(new Date());
+  };
 
   if (metricsError || optimizationError) {
     return (
       <div className="flex flex-col items-center justify-center h-96 space-y-3">
         <div className="text-red-400 text-lg">数据加载失败</div>
-        <div className="text-gray-400 text-sm">{(metricsError as Error)?.message || (optimizationError as Error)?.message}</div>
+        <div className="text-gray-400 text-sm">{(metricsError!).message || (optimizationError!).message}</div>
         <Button variant="tech" onClick={refreshAll}>重试</Button>
       </div>
-    )
+    );
   }
 
 
@@ -239,43 +239,47 @@ export function PerformanceMonitoring() {
       title: '迁移学习精度',
       value: migrationAccuracy[migrationAccuracy.length - 1],
       unit: '%',
-      trend: migrationAccuracy[migrationAccuracy.length - 1] > migrationAccuracy[0] ? 'up' : 
+      trend: migrationAccuracy[migrationAccuracy.length - 1] > migrationAccuracy[0] ?
+'up' :
              migrationAccuracy[migrationAccuracy.length - 1] < migrationAccuracy[0] ? 'down' : 'stable',
       chartData: migrationAccuracy,
       color: 'text-green-400',
-      icon: Target
+      icon: Target,
     },
     {
       title: '边缘计算延迟',
       value: edgeLatency[edgeLatency.length - 1],
       unit: 'ms',
-      trend: edgeLatency[edgeLatency.length - 1] < edgeLatency[0] ? 'up' : 
+      trend: edgeLatency[edgeLatency.length - 1] < edgeLatency[0] ?
+'up' :
              edgeLatency[edgeLatency.length - 1] > edgeLatency[0] ? 'down' : 'stable',
       chartData: edgeLatency,
       color: 'text-blue-400',
-      icon: Zap
+      icon: Zap,
     },
     {
       title: '决策时间',
       value: decisionTime[decisionTime.length - 1],
       unit: 'ms',
-      trend: decisionTime[decisionTime.length - 1] < decisionTime[0] ? 'up' : 
+      trend: decisionTime[decisionTime.length - 1] < decisionTime[0] ?
+'up' :
              decisionTime[decisionTime.length - 1] > decisionTime[0] ? 'down' : 'stable',
       chartData: decisionTime,
       color: 'text-purple-400',
-      icon: Activity
+      icon: Activity,
     },
     {
       title: '集成成功率',
       value: integrationSuccess[integrationSuccess.length - 1],
       unit: '%',
-      trend: integrationSuccess[integrationSuccess.length - 1] > integrationSuccess[0] ? 'up' : 
+      trend: integrationSuccess[integrationSuccess.length - 1] > integrationSuccess[0] ?
+'up' :
              integrationSuccess[integrationSuccess.length - 1] < integrationSuccess[0] ? 'down' : 'stable',
       chartData: integrationSuccess,
       color: 'text-yellow-400',
-      icon: Shield
-    }
-  ]
+      icon: Shield,
+    },
+  ];
 
   // 优化建议数据
   const optimizationSuggestions = [
@@ -284,23 +288,23 @@ export function PerformanceMonitoring() {
       description: '检测到迁移学习精度有提升空间，建议调整学习率和批次大小',
       impact: 'high' as const,
       status: 'pending' as const,
-      estimatedImprovement: '精度提升3-5%'
+      estimatedImprovement: '精度提升3-5%',
     },
     {
       title: '边缘资源重分配',
       description: '部分边缘节点资源利用率不均衡，建议重新分配计算任务',
       impact: 'medium' as const,
       status: 'applied' as const,
-      estimatedImprovement: '延迟降低10-15%'
+      estimatedImprovement: '延迟降低10-15%',
     },
     {
       title: '决策模型优化',
       description: '决策引擎响应时间可以进一步优化，考虑模型压缩',
       impact: 'medium' as const,
       status: 'pending' as const,
-      estimatedImprovement: '响应时间减少20-30%'
-    }
-  ]
+      estimatedImprovement: '响应时间减少20-30%',
+    },
+  ];
 
   // 系统健康状态
   const systemHealth = {
@@ -309,31 +313,31 @@ export function PerformanceMonitoring() {
       { name: '迁移学习模块', status: 'healthy', latency: '45ms', uptime: '99.8%' },
       { name: '边缘计算网关', status: 'healthy', latency: '28ms', uptime: '99.5%' },
       { name: '决策引擎', status: 'warning', latency: '85ms', uptime: '99.2%' },
-      { name: '集成服务', status: 'healthy', latency: '60ms', uptime: '99.9%' }
-    ]
-  }
+      { name: '集成服务', status: 'healthy', latency: '60ms', uptime: '99.9%' },
+    ],
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <CheckCircle className="w-4 h-4 text-green-400" />
+        return <CheckCircle className="w-4 h-4 text-green-400" />;
       case 'warning':
-        return <AlertTriangle className="w-4 h-4 text-yellow-400" />
+        return <AlertTriangle className="w-4 h-4 text-yellow-400" />;
       default:
-        return <AlertTriangle className="w-4 h-4 text-red-400" />
+        return <AlertTriangle className="w-4 h-4 text-red-400" />;
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'healthy':
-        return 'text-green-400'
+        return 'text-green-400';
       case 'warning':
-        return 'text-yellow-400'
+        return 'text-yellow-400';
       default:
-        return 'text-red-400'
+        return 'text-red-400';
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -347,8 +351,8 @@ export function PerformanceMonitoring() {
           <div className="text-sm text-gray-400">
             最后更新: {lastUpdate.toLocaleTimeString()}
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={refreshAll}
             disabled={metricsLoading}
             className="flex items-center space-x-2"
@@ -389,7 +393,8 @@ export function PerformanceMonitoring() {
                 </div>
                 <div className="text-right">
                   <div className={getStatusColor(component.status)}>
-                    {component.status === 'healthy' ? '正常' : 
+                    {component.status === 'healthy' ?
+'正常' :
                      component.status === 'warning' ? '警告' : '异常'}
                   </div>
                   <div className="text-xs text-gray-400">可用性: {component.uptime}</div>
@@ -467,7 +472,7 @@ export function PerformanceMonitoring() {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <AreaChart 
+              <AreaChart
                 data={{
                   labels: ['任务1', '任务2', '任务3', '任务4', '任务5', '任务6', '任务7', '任务8'],
                   datasets: [{
@@ -475,7 +480,7 @@ export function PerformanceMonitoring() {
                     data: migrationAccuracy,
                     borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                  }]
+                  }],
                 }}
               />
             </div>
@@ -497,7 +502,7 @@ export function PerformanceMonitoring() {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <AreaChart 
+              <AreaChart
                 data={{
                   labels: ['任务1', '任务2', '任务3', '任务4', '任务5', '任务6', '任务7', '任务8'],
                   datasets: [{
@@ -510,7 +515,7 @@ export function PerformanceMonitoring() {
                     data: edgeLatency.map(x => x * 3),
                     borderColor: '#6b7280',
                     backgroundColor: 'rgba(107, 114, 128, 0.1)',
-                  }]
+                  }],
                 }}
               />
             </div>
@@ -523,5 +528,5 @@ export function PerformanceMonitoring() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

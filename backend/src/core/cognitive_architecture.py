@@ -24,6 +24,7 @@ class CognitiveModuleType(str, Enum):
     PRODUCTION_SYSTEM = "production_system"
     LEARNING_MODULE = "learning_module"
     METACOGNITIVE_MODULE = "metacognitive_module"
+    EMOTIONAL_PROCESSING = "emotional_processing"
 
 
 class ProductionRuleStatus(str, Enum):
@@ -254,17 +255,20 @@ class ProceduralMemory(CognitiveModule):
             ProceduralRule(
                 rule_id="rule_rain_umbrella",
                 condition=["goal(state=active)", "perceptual(weather=rain)"],
-                action=["retrieve_memory(type=weather, attributes={'type':'rain'})"]
+                action=["retrieve_memory(type=weather, attributes={'type':'rain'})"],
+                utility=0.8
             ),
             ProceduralRule(
                 rule_id="rule_goal_planning",
                 condition=["goal(state=planning)", "working_memory(has_data=true)"],
-                action=["execute_plan()", "set_goal(state=executing)"]
+                action=["execute_plan()", "set_goal(state=executing)"],
+                utility=0.7
             ),
             ProceduralRule(
                 rule_id="rule_learning_update",
                 condition=["learning(need_update=true)", "goal(state=completed)"],
-                action=["update_knowledge()", "set_goal(state=learning)"]
+                action=["update_knowledge()", "set_goal(state=learning)"],
+                utility=0.9
             )
         ]
         
@@ -582,6 +586,29 @@ class ProductionSystem(CognitiveModule):
         return self.production_cycle(input_data)
 
 
+class EmotionalProcessing(CognitiveModule):
+    """情感处理模块，用于识别和处理情感信息"""
+    
+    def __init__(self, name: str = "emotional_processing"):
+        super().__init__(CognitiveModuleType.EMOTIONAL_PROCESSING, name)
+        from .services.hume_evi_service import hume_evi_service
+        self.hume_evi_service = hume_evi_service
+        logger.info(f"初始化情感处理模块: {name}")
+    
+    async def process(self, input_data: Any) -> Dict[str, Any]:
+        """处理输入数据，识别情感"""
+        text = input_data.get("text", "") if isinstance(input_data, dict) else str(input_data)
+        emotions = await self.hume_evi_service.analyze_emotions(text)
+        
+        result = {
+            "text": text,
+            "emotions": emotions,
+            "dominant_emotions": self.hume_evi_service.get_dominant_emotions(emotions) if emotions else []
+        }
+        
+        return result
+
+
 class CognitiveArchitecture:
     """认知架构主类，整合所有认知模块"""
     
@@ -601,6 +628,7 @@ class CognitiveArchitecture:
         self.procedural_memory = ProceduralMemory()
         self.goal_module = GoalModule()
         self.working_memory = WorkingMemory()
+        self.emotional_processing = EmotionalProcessing()
         
         # 创建依赖其他模块的模块
         self.production_system = ProductionSystem(self.procedural_memory, self.working_memory)
@@ -610,6 +638,7 @@ class CognitiveArchitecture:
         self.modules[CognitiveModuleType.PROCEDURAL_MEMORY] = self.procedural_memory
         self.modules[CognitiveModuleType.GOAL_MODULE] = self.goal_module
         self.modules[CognitiveModuleType.WORKING_MEMORY] = self.working_memory
+        self.modules[CognitiveModuleType.EMOTIONAL_PROCESSING] = self.emotional_processing
         self.modules[CognitiveModuleType.PRODUCTION_SYSTEM] = self.production_system
     
     async def initialize(self):
@@ -636,21 +665,30 @@ class CognitiveArchitecture:
         # 3. 从陈述性记忆中检索相关信息
         declarative_chunks = self.declarative_memory.retrieve_chunks()
         
-        # 4. 构建产生式系统条件
+        # 4. 情感识别处理
+        # 初始化默认的情感分析结果
+        emotion_result = {
+            "text": input_data if isinstance(input_data, str) else str(input_data),
+            "emotions": None,
+            "dominant_emotions": []
+        }
+        
+        # 构建产生式系统条件
         conditions = [f"input(type={input_type})"]
         for element in active_elements:
             conditions.append(f"working_memory(content={str(element.content)[:50]})")
         for chunk in declarative_chunks[:3]:  # 只使用前3个最相关的记忆块
             conditions.append(f"declarative(type={chunk.chunk_type})")
         
-        # 5. 执行产生式系统周期
+        # 6. 执行产生式系统周期
         results = self.production_system.production_cycle(conditions)
         
-        # 6. 返回结果
+        # 7. 返回结果
         return {
             "wme_id": wme_id,
             "active_elements": len(active_elements),
             "declarative_chunks": len(declarative_chunks),
+            "emotion_analysis": emotion_result,
             "production_results": results,
             "timestamp": datetime.now()
         }

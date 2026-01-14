@@ -65,6 +65,15 @@ class IntentType(str, Enum):
     UPDATE_APPLICATION = "update_application"  # 更新应用
     GENERATE_INSTALL_PACKAGE = "generate_install_package"  # 生成安装包
     GET_INSTALL_GUIDE = "get_install_guide"  # 获取安装指南
+    # 生成式AI相关意图
+    GENERATE_CREATIVE_IDEA = "generate_creative_idea"  # 生成创造性想法
+    GENERATE_STORY = "generate_story"  # 生成故事
+    GENERATE_POEM = "generate_poem"  # 生成诗歌
+    GENERATE_CODE = "generate_code"  # 生成代码
+    GENERATE_IMAGE = "generate_image"  # 生成图像
+    GENERATE_DESIGN = "generate_design"  # 生成设计
+    GENERATE_REPORT = "generate_report"  # 生成报告
+    GENERATE_PRESENTATION = "generate_presentation"  # 生成演示文稿
     UNKNOWN = "unknown"  # 未知意图
 
 # 对话上下文类
@@ -76,7 +85,12 @@ class ConversationContext:
     
     def add_message(self, role: str, content: str):
         """添加对话消息"""
-        self.history.append({"role": role, "content": content})
+        import datetime
+        self.history.append({
+            "role": role, 
+            "content": content,
+            "timestamp": datetime.datetime.now().isoformat()
+        })
         # 保持历史记录不超过最大值
         if len(self.history) > self.max_history:
             self.history = self.history[-self.max_history:]
@@ -242,7 +256,16 @@ class AIModelService:
             "check_update": ["检查更新", "更新检查", "版本检查"],
             "update_application": ["更新应用", "应用更新", "升级"],
             "generate_install_package": ["生成安装包", "安装包", "本地安装"],
-            "get_install_guide": ["安装指南", "如何安装", "安装说明"]
+            "get_install_guide": ["安装指南", "如何安装", "安装说明"],
+            # 生成式AI相关意图规则
+            "generate_creative_idea": ["生成创意", "创意想法", "创新方案", "创意点子", "头脑风暴"],
+            "generate_story": ["写故事", "生成故事", "编故事", "创作故事", "故事生成"],
+            "generate_poem": ["写诗歌", "生成诗歌", "创作诗歌", "诗歌生成", "写诗句"],
+            "generate_code": ["生成代码", "写代码", "编程", "代码生成", "开发程序"],
+            "generate_image": ["生成图像", "生成图片", "创建图片", "绘制图像", "生成视觉内容"],
+            "generate_design": ["生成设计", "设计方案", "设计创意", "创意设计", "设计生成"],
+            "generate_report": ["生成报告", "写报告", "报告生成", "创建报告", "生成文档"],
+            "generate_presentation": ["生成演示文稿", "创建幻灯片", "幻灯片生成", "演示文稿生成", "制作PPT"]
         }
         
         # 如果规则文件存在，则加载
@@ -780,6 +803,40 @@ class AIModelService:
         elif intent == IntentType.GET_INSTALL_GUIDE:
             # 获取安装指南
             return "我将为你提供安装指南"
+        # 生成式AI相关意图响应
+        elif intent == IntentType.GENERATE_CREATIVE_IDEA:
+            # 生成创造性想法
+            ideas = creativity_service.generate_creative_ideas(text, num_ideas=3)
+            if ideas:
+                response = "创意想法:\n"
+                for i, idea in enumerate(ideas, 1):
+                    response += f"{i}. {idea['idea']} (评分: {idea['overall_score']:.2f})\n"
+                return response
+            return "抱歉，我无法生成创意想法"
+        elif intent == IntentType.GENERATE_STORY:
+            # 生成故事
+            story_result = creativity_service.generate_creative_story(text, genre="科幻")
+            if story_result["story"]:
+                return f"生成的故事:\n{story_result['story']}"
+            return "抱歉，我无法生成故事"
+        elif intent == IntentType.GENERATE_POEM:
+            # 生成诗歌
+            return "抱歉，诗歌生成功能正在开发中"
+        elif intent == IntentType.GENERATE_CODE:
+            # 生成代码
+            return "抱歉，代码生成功能正在开发中"
+        elif intent == IntentType.GENERATE_IMAGE:
+            # 生成图像
+            return "抱歉，图像生成功能正在开发中"
+        elif intent == IntentType.GENERATE_DESIGN:
+            # 生成设计
+            return "抱歉，设计生成功能正在开发中"
+        elif intent == IntentType.GENERATE_REPORT:
+            # 生成报告
+            return "抱歉，报告生成功能正在开发中"
+        elif intent == IntentType.GENERATE_PRESENTATION:
+            # 生成演示文稿
+            return "抱歉，演示文稿生成功能正在开发中"
         else:
             # 未知意图
             return f"抱歉，我还不理解你的需求: {text}"

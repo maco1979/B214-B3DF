@@ -9,7 +9,7 @@ export function useTheme() {
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-    
+
     const initialTheme = savedTheme || (prefersLight ? 'light' : 'dark');
     setTheme(initialTheme);
     document.documentElement.setAttribute('data-theme', initialTheme);
@@ -25,6 +25,6 @@ export function useTheme() {
 
   return {
     theme,
-    toggleTheme
+    toggleTheme,
   };
 }

@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 from functools import wraps
 
-# 默认日志配置
+# 默认日志配置（先使用detailed格式化器，后续会替换为JSON格式化器）
 DEFAULT_LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -22,7 +22,6 @@ DEFAULT_LOGGING_CONFIG = {
         "detailed": {
             "format": "%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s"
         }
-        # JSON格式化器将在代码中动态添加，避免循环导入问题
     },
     "handlers": {
         "console": {
@@ -37,7 +36,7 @@ DEFAULT_LOGGING_CONFIG = {
             "formatter": "detailed",
             "filename": "logs/app.log",
             "maxBytes": 10485760,  # 10MB
-            "backupCount": 10,
+            "backupCount": 5,
             "encoding": "utf-8"
         },
         "error_file": {
@@ -58,12 +57,27 @@ DEFAULT_LOGGING_CONFIG = {
         },
         "uvicorn": {
             "handlers": ["console", "file", "error_file"],
-            "level": "INFO",
+            "level": "WARNING",
             "propagate": False
         },
         "fastapi": {
             "handlers": ["console", "file", "error_file"],
-            "level": "INFO",
+            "level": "WARNING",
+            "propagate": False
+        },
+        "sqlalchemy": {
+            "handlers": ["console", "file", "error_file"],
+            "level": "WARNING",
+            "propagate": False
+        },
+        "websockets": {
+            "handlers": ["console", "file", "error_file"],
+            "level": "WARNING",
+            "propagate": False
+        },
+        "flax_patch": {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
             "propagate": False
         }
     }
@@ -110,11 +124,16 @@ class LoggerManager:
         # 确保日志目录存在
         os.makedirs("logs", exist_ok=True)
         
-        # 配置日志
+        # 配置日志（使用临时的detailed格式化器）
         logging.config.dictConfig(DEFAULT_LOGGING_CONFIG)
         
         # 获取配置的logger
         self._root_logger = logging.getLogger()
+        
+        # 替换所有处理器的格式化器为JSON格式化器
+        json_formatter = JSONFormatter()
+        for handler in self._root_logger.handlers:
+            handler.setFormatter(json_formatter)
         
         # 记录初始化信息
         self._root_logger.info("日志系统初始化完成")

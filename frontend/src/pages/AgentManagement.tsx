@@ -79,6 +79,7 @@ const AgentManagement: React.FC = () => {
   const { data: agents, isLoading: isAgentsLoading, error: agentsError, refetch: refetchAgents } = useQuery<ApiResponse<Agent[]>>({
     queryKey: ['agents'],
     queryFn: async () => {
+
       /*
        * 由于当前API可能没有返回完整的智能体数据，这里暂时返回模拟数据
        * 实际实现时应替换为真实API调用：apiClient.getAgents()
@@ -356,6 +357,7 @@ const AgentManagement: React.FC = () => {
   // 任务操作方法
   const handlePauseTask = async (taskId: string) => {
     try {
+
       /*
        * 实际实现时应调用真实API
        * await apiClient.pauseTask(taskId);
@@ -369,6 +371,7 @@ const AgentManagement: React.FC = () => {
 
   const handleTerminateTask = async (taskId: string) => {
     try {
+
       /*
        * 实际实现时应调用真实API
        * await apiClient.terminateTask(taskId);
@@ -382,6 +385,7 @@ const AgentManagement: React.FC = () => {
 
   const handleRetryTask = async (taskId: string) => {
     try {
+
       /*
        * 实际实现时应调用真实API
        * await apiClient.retryTask(taskId);
@@ -395,6 +399,7 @@ const AgentManagement: React.FC = () => {
 
   const handleReExecuteTask = async (taskId: string) => {
     try {
+
       /*
        * 实际实现时应调用真实API
        * await apiClient.reExecuteTask(taskId);

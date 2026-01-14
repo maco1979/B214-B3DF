@@ -1,36 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Cpu, 
-  Shield, 
-  Wifi, 
-  Mic, 
-  MicOff, 
-  Power, 
-  RefreshCw, 
-  Video, 
+import {
+  Cpu,
+  Shield,
+  Wifi,
+  Mic,
+  MicOff,
+  Power,
+  RefreshCw,
+  Video,
   Settings,
   Activity,
   Zap,
   CheckCircle,
   Lock,
   ArrowRight,
-  Maximize2
+  Maximize2,
 } from 'lucide-react';
-import { apiClient, Device, JEPAData } from '@/services/api';
+import type { Device, JEPAData } from '@/services/api';
+import { apiClient } from '@/services/api';
 import { cn } from '@/lib/utils';
 import { BentoCard } from '@/components/ui/BentoCard';
 import { DeviceCard } from '@/components/ui/DeviceCard';
 import { PTZControl } from '@/components/PTZControl';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts';
 
 // Mock data to fallback if API fails
@@ -45,7 +46,7 @@ export function AIControl() {
   const [selectedDevices, setSelectedDevices] = useState<number[]>([]);
   const [isMasterActive, setIsMasterActive] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState(mockPresets[0]);
-  
+
   // JEPA-DT-MPC state
   const [isJepaActive, setIsJepaActive] = useState(false);
   const [jepaData, setJepaData] = useState<JEPAData | null>(null);
@@ -55,21 +56,21 @@ export function AIControl() {
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [lastCommand, setLastCommand] = useState('');
   const voiceRecognitionRef = useRef<any>(null);
-  
+
   // Camera state
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [cameraFrame, setCameraFrame] = useState('');
   const [cameraError, setCameraError] = useState('');
-  
+
   // Tracking and Recognition state
   const [isTrackingEnabled, setIsTrackingEnabled] = useState(false);
   const [isRecognitionEnabled, setIsRecognitionEnabled] = useState(false);
   const [trackingStatus, setTrackingStatus] = useState<any>(null);
   const [recognitionStatus, setRecognitionStatus] = useState<any>(null);
-  
+
   // 视觉控制标签页状态
-  const [visionTab, setVisionTab] = useState<'camera' | 'ptz'>('camera');  // camera: 基础摄像头 | ptz: 云台控制
-  
+  const [visionTab, setVisionTab] = useState<'camera' | 'ptz'>('camera'); // camera: 基础摄像头 | ptz: 云台控制
+
   const [isScanning, setIsScanning] = useState(false);
 
   // Lifecycle
@@ -88,14 +89,14 @@ export function AIControl() {
       if (camRes.success && camRes.data) {
         setIsCameraOpen(camRes.data.is_open);
       }
-      
+
       // 检查跟踪状态
       const trackRes = await apiClient.get<{ tracking_enabled: boolean, tracker_type?: string }>('/api/camera/tracking/status');
       if (trackRes.success && trackRes.data) {
         setIsTrackingEnabled(trackRes.data.tracking_enabled);
         setTrackingStatus(trackRes.data);
       }
-      
+
       // 检查识别状态
       const recogRes = await apiClient.get<{ recognizing_enabled: boolean, recognized_objects_count?: number }>('/api/camera/recognition/status');
       if (recogRes.success && recogRes.data) {
@@ -116,7 +117,9 @@ export function AIControl() {
 
   const fetchDevices = async () => {
     const res = await apiClient.getDevices();
-    if (res.success && res.data) setDevices(res.data);
+    if (res.success && res.data) {
+ setDevices(res.data);
+}
   };
 
   const fetchJepaStatus = async () => {
@@ -130,7 +133,9 @@ export function AIControl() {
   const scanDevices = async () => {
     setIsScanning(true);
     const res = await apiClient.scanDevices();
-    if (res.success && res.data) setDevices(res.data);
+    if (res.success && res.data) {
+ setDevices(res.data);
+}
     setIsScanning(false);
   };
 
@@ -138,7 +143,9 @@ export function AIControl() {
   const handleMasterToggle = async () => {
     const newStatus = !isMasterActive;
     const res = await apiClient.activateMasterControl(newStatus);
-    if (res.success) setIsMasterActive(newStatus);
+    if (res.success) {
+ setIsMasterActive(newStatus);
+}
   };
 
   const toggleJepa = async () => {
@@ -146,33 +153,35 @@ export function AIControl() {
     try {
       const res = await apiClient.activateJepaDtmpc({
         controller_params: { control_switch: newStatus, startup_mode: 'cold' },
-        mv_params: { 
+        mv_params: {
           operation_range: [-100, 100],
           rate_limits: [-10, 10],
-          action_cycle: 1.0
+          action_cycle: 1.0,
         },
-        cv_params: { 
+        cv_params: {
           setpoint: 50,
           safety_range: [-200, 200],
-          weights: 1.0
+          weights: 1.0,
         },
-        model_params: { 
-          prediction_horizon: 10, 
+        model_params: {
+          prediction_horizon: 10,
           control_horizon: 5,
           system_gain: 1.0,
           time_delay: 1,
-          time_constant: 5
+          time_constant: 5,
         },
-        jepa_params: { 
-          enabled: newStatus, 
-          embedding_dim: 10, 
+        jepa_params: {
+          enabled: newStatus,
+          embedding_dim: 10,
           prediction_horizon: 20,
           input_dim: 3,
           output_dim: 1,
-          training_steps: 100
-        }
+          training_steps: 100,
+        },
       } as any);
-      if (res.success) setIsJepaActive(newStatus);
+      if (res.success) {
+ setIsJepaActive(newStatus);
+}
     } catch (error) {
       console.error('激活JEPA-DT-MPC失败:', error);
       // 可以添加用户友好的错误提示
@@ -193,7 +202,7 @@ export function AIControl() {
           setIsRecognitionEnabled(false);
           setRecognitionStatus(null);
         }
-        
+
         // 关闭摄像头
         const res = await apiClient.closeCamera();
         if (res.success) {
@@ -210,7 +219,7 @@ export function AIControl() {
           setIsCameraOpen(true);
           console.log('摄像头已打开');
         } else {
-          setCameraError("打开摄像头失败");
+          setCameraError('打开摄像头失败');
           console.error('打开摄像头失败:', res);
         }
       }
@@ -228,7 +237,7 @@ export function AIControl() {
       setCameraError('请先打开摄像头');
       return;
     }
-    
+
     try {
       if (isTrackingEnabled) {
         const res = await apiClient.stopTracking();
@@ -243,7 +252,9 @@ export function AIControl() {
           setIsTrackingEnabled(true);
           // 获取跟踪状态
           const status = await apiClient.get<{ tracking_enabled: boolean, tracker_type?: string }>('/api/camera/tracking/status');
-          if (status.data) setTrackingStatus(status.data);
+          if (status.data) {
+ setTrackingStatus(status.data);
+}
           console.log('跟踪已启动');
         }
       }
@@ -260,7 +271,7 @@ export function AIControl() {
       setCameraError('请先打开摄像头');
       return;
     }
-    
+
     try {
       if (isRecognitionEnabled) {
         const res = await apiClient.stopRecognition();
@@ -275,7 +286,9 @@ export function AIControl() {
           setIsRecognitionEnabled(true);
           // 获取识别状态
           const status = await apiClient.get<{ recognizing_enabled: boolean, recognized_objects_count?: number }>('/api/camera/recognition/status');
-          if (status.data) setRecognitionStatus(status.data);
+          if (status.data) {
+ setRecognitionStatus(status.data);
+}
           console.log('识别已启动');
         }
       }
@@ -287,18 +300,20 @@ export function AIControl() {
   // 处理设备连接切换
   const handleToggleConnection = async (deviceId: number) => {
     const device = devices.find(d => d.id === deviceId);
-    if (!device) return;
+    if (!device) {
+ return;
+}
 
     try {
       const newConnectionState = !device.connected;
       const res = await apiClient.toggleDeviceConnection(deviceId, newConnectionState);
-      
+
       if (res.success) {
         // 更新设备列表
-        setDevices(prev => prev.map(d => 
-          d.id === deviceId 
-            ? { ...d, connected: newConnectionState, status: newConnectionState ? 'online' : 'offline' }
-            : d
+        setDevices(prev => prev.map(d =>
+          d.id === deviceId ?
+            { ...d, connected: newConnectionState, status: newConnectionState ? 'online' : 'offline' } :
+            d,
         ));
       }
     } catch (error) {
@@ -309,7 +324,9 @@ export function AIControl() {
   // 处理设备控制
   const handleDeviceControl = async (deviceId: number) => {
     const device = devices.find(d => d.id === deviceId);
-    if (!device || !device.connected) return;
+    if (!device || !device.connected) {
+ return;
+}
 
     try {
       // 这里可以打开设备控制对话框或执行特定控制操作
@@ -327,21 +344,20 @@ export function AIControl() {
   // Camera Frame Loop - 使用 WebSocket 替代高频轮询（解决429限流问题）
   useEffect(() => {
     let ws: WebSocket | null = null;
-    
+
     if (isCameraOpen) {
       // 连接 WebSocket
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const host = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? '127.0.0.1:8005' 
-        : window.location.host;
-      
+      // 使用当前窗口的主机名和端口，或默认使用8001端口
+      const host = window.location.port ? window.location.host : `${window.location.hostname}:8001`;
+
       ws = new WebSocket(`${protocol}//${host}/api/camera/ws/frame`);
-      
+
       ws.onopen = () => {
-        console.log('摄像头 WebSocket 连接成功');
+        console.log(`摄像头 WebSocket 连接成功: ${protocol}//${host}/api/camera/ws/frame`);
       };
-      
-      ws.onmessage = (event) => {
+
+      ws.onmessage = event => {
         try {
           const data = JSON.parse(event.data);
           if (data.success && data.frame_base64) {
@@ -353,12 +369,12 @@ export function AIControl() {
           console.error('WebSocket 消息解析错误:', e);
         }
       };
-      
-      ws.onerror = (error) => {
+
+      ws.onerror = error => {
         console.error('摄像头 WebSocket 错误:', error);
         setCameraError('摄像头连接错误');
       };
-      
+
       ws.onclose = () => {
         console.log('摄像头 WebSocket 连接关闭');
       };
@@ -367,7 +383,7 @@ export function AIControl() {
       setCameraFrame('');
       setCameraError('');
     }
-    
+
     // 清理函数：组件卸载或摄像头关闭时断开 WebSocket
     return () => {
       if (ws) {
@@ -391,7 +407,9 @@ export function AIControl() {
         recognition.onresult = (event: any) => {
           const cmd = event.results[event.results.length - 1][0].transcript;
           setLastCommand(cmd);
-          if (cmd.includes('开启主控')) handleMasterToggle();
+          if (cmd.includes('开启主控')) {
+ handleMasterToggle();
+}
         };
         recognition.start();
         voiceRecognitionRef.current = recognition;
@@ -410,32 +428,32 @@ export function AIControl() {
           </h1>
           <p className="text-gray-500 font-medium tracking-tight uppercase text-xs">AI设备编排与优化</p>
         </div>
-        
+
         <div className="flex items-center space-x-3 bg-white/5 p-2 rounded-2xl border border-white/5 backdrop-blur-md">
-           <button 
+           <button
              onClick={toggleVoice}
              className={cn(
-               "p-3 rounded-xl transition-all flex items-center space-x-2",
-               isVoiceActive ? "bg-cyber-rose/20 text-cyber-rose neon-glow-purple" : "text-gray-400 hover:text-white"
+               'p-3 rounded-xl transition-all flex items-center space-x-2',
+               isVoiceActive ? 'bg-cyber-rose/20 text-cyber-rose neon-glow-purple' : 'text-gray-400 hover:text-white',
              )}
            >
              {isVoiceActive ? <Mic size={20} /> : <MicOff size={20} />}
-             <span className="text-xs font-bold uppercase">{isVoiceActive ? "监听中" : "语音控制"}</span>
+             <span className="text-xs font-bold uppercase">{isVoiceActive ? '监听中' : '语音控制'}</span>
            </button>
-           
+
            <div className="w-[1px] h-6 bg-white/10" />
 
-           <button 
+           <button
              onClick={handleMasterToggle}
              className={cn(
-               "px-6 py-3 rounded-xl font-bold flex items-center space-x-2 transition-all",
-               isMasterActive 
-                ? "bg-cyber-rose text-white shadow-lg shadow-cyber-rose/40" 
-                : "bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/20 neon-glow-cyan"
+               'px-6 py-3 rounded-xl font-bold flex items-center space-x-2 transition-all',
+               isMasterActive ?
+                'bg-cyber-rose text-white shadow-lg shadow-cyber-rose/40' :
+                'bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/20 neon-glow-cyan',
              )}
            >
              <Power size={18} />
-             <span>{isMasterActive ? "关闭主控" : "激活主控"}</span>
+             <span>{isMasterActive ? '关闭主控' : '激活主控'}</span>
            </button>
         </div>
       </div>
@@ -446,7 +464,7 @@ export function AIControl() {
           {/* Presets Bento */}
           <BentoCard title="AI运行模式" description="预定义神经配置文件" icon={Settings}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-              {mockPresets.map((preset) => (
+              {mockPresets.map(preset => (
                 <button
                   key={preset.id}
                   onClick={() => {
@@ -454,21 +472,21 @@ export function AIControl() {
                     setSelectedDevices(preset.devices);
                   }}
                   className={cn(
-                    "p-5 rounded-2xl border text-left transition-all relative overflow-hidden group",
-                    selectedPreset.id === preset.id 
-                      ? "bg-cyber-cyan/10 border-cyber-cyan/40" 
-                      : "bg-white/5 border-white/5 hover:border-white/10"
+                    'p-5 rounded-2xl border text-left transition-all relative overflow-hidden group',
+                    selectedPreset.id === preset.id ?
+                      'bg-cyber-cyan/10 border-cyber-cyan/40' :
+                      'bg-white/5 border-white/5 hover:border-white/10',
                   )}
                 >
                   <div className={cn(
-                    "mb-4 w-10 h-10 rounded-lg flex items-center justify-center transition-all",
-                    selectedPreset.id === preset.id ? "bg-cyber-cyan text-black" : "bg-white/5 text-gray-500"
+                    'mb-4 w-10 h-10 rounded-lg flex items-center justify-center transition-all',
+                    selectedPreset.id === preset.id ? 'bg-cyber-cyan text-black' : 'bg-white/5 text-gray-500',
                   )}>
                     <Zap size={20} />
                   </div>
                   <h4 className="font-bold text-white mb-1">{preset.name}</h4>
                   <p className="text-[10px] text-gray-500 uppercase leading-relaxed tracking-wider">{preset.description}</p>
-                  
+
                   {selectedPreset.id === preset.id && (
                     <motion.div layoutId="active-preset" className="absolute top-2 right-2">
                       <CheckCircle size={16} className="text-cyber-cyan" />
@@ -485,28 +503,28 @@ export function AIControl() {
                 <Wifi size={18} className="text-cyber-cyan" />
                 <span>设备矩阵</span>
              </h3>
-             <button 
+             <button
                onClick={scanDevices}
                disabled={isScanning}
                className="text-[10px] font-bold text-cyber-cyan uppercase tracking-widest flex items-center space-x-2 hover:opacity-80 disabled:opacity-50"
              >
-                <RefreshCw size={12} className={isScanning ? "animate-spin" : ""} />
-                <span>{isScanning ? "扫描中..." : "重新扫描环境"}</span>
+                <RefreshCw size={12} className={isScanning ? 'animate-spin' : ''} />
+                <span>{isScanning ? '扫描中...' : '重新扫描环境'}</span>
              </button>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-             {devices.map((device) => (
-               <DeviceCard 
+             {devices.map(device => (
+               <DeviceCard
                  key={device.id}
                  device={device}
                  isSelected={selectedDevices.includes(device.id)}
-                 onSelect={(id) => setSelectedDevices(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])}
+                 onSelect={id => setSelectedDevices(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])}
                  onToggleConnection={handleToggleConnection}
                  onControl={handleDeviceControl}
                />
              ))}
-             {devices.length === 0 && [1,2,3,4].map(i => (
+             {devices.length === 0 && [1, 2, 3, 4].map(i => (
                <div key={i} className="h-48 glass-card rounded-2xl animate-pulse" />
              ))}
           </div>
@@ -521,10 +539,10 @@ export function AIControl() {
                 <button
                   onClick={() => setVisionTab('camera')}
                   className={cn(
-                    "flex-1 px-3 py-2 rounded-lg text-xs font-bold transition-all",
-                    visionTab === 'camera'
-                      ? "bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30"
-                      : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-gray-700"
+                    'flex-1 px-3 py-2 rounded-lg text-xs font-bold transition-all',
+                    visionTab === 'camera' ?
+                      'bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30' :
+                      'bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-gray-700',
                   )}
                 >
                   📹 基础监控
@@ -532,33 +550,37 @@ export function AIControl() {
                 <button
                   onClick={() => setVisionTab('ptz')}
                   className={cn(
-                    "flex-1 px-3 py-2 rounded-lg text-xs font-bold transition-all",
-                    visionTab === 'ptz'
-                      ? "bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30"
-                      : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-gray-700"
+                    'flex-1 px-3 py-2 rounded-lg text-xs font-bold transition-all',
+                    visionTab === 'ptz' ?
+                      'bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30' :
+                      'bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-gray-700',
                   )}
                 >
                   🎯 PTZ云台
                 </button>
               </div>
-              
+
               {/* 基础摄像头监控 */}
               {visionTab === 'camera' && (
                 <>
                   <div className="mt-4 relative rounded-xl overflow-hidden aspect-video bg-black border border-white/5 group">
-                    {isCameraOpen ? (
-                      cameraFrame ? (
+                    {isCameraOpen ?
+(
+                      cameraFrame ?
+(
                         <img src={`data:image/jpeg;base64,${cameraFrame}`} className="w-full h-full object-cover" alt="Feed" />
-                      ) : (
+                      ) :
+(
                         <div className="absolute inset-0 flex items-center justify-center text-xs text-cyber-cyan animate-pulse font-mono">建立上行链路...</div>
                       )
-                    ) : (
+                    ) :
+(
                       <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
                         <Video size={40} className="mb-2 opacity-20" />
                         <span className="text-[10px] uppercase font-bold tracking-widest">馈送离线</span>
                       </div>
                     )}
-                    
+
                     <div className="absolute bottom-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={toggleCamera} className="p-2 rounded-lg bg-cyber-black/80 backdrop-blur-md border border-white/10 text-white hover:bg-cyber-cyan hover:text-black transition-all">
                         <Power size={14} />
@@ -577,7 +599,7 @@ export function AIControl() {
                   </div>
                   <div className="mt-4 space-y-2">
                     <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">AI视觉控制</p>
-                    
+
                     {/* 跟踪控制 */}
                     <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                       <div className="flex items-center space-x-2">
@@ -589,17 +611,17 @@ export function AIControl() {
                       <button
                         onClick={toggleTracking}
                         className={cn(
-                          "px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all",
-                          isTrackingEnabled
-                            ? "bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30"
-                            : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-cyber-cyan/20 hover:text-cyber-cyan hover:border-cyber-cyan/30",
-                          !isCameraOpen && "opacity-70"
+                          'px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all',
+                          isTrackingEnabled ?
+                            'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30' :
+                            'bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-cyber-cyan/20 hover:text-cyber-cyan hover:border-cyber-cyan/30',
+                          !isCameraOpen && 'opacity-70',
                         )}
                       >
                         {isTrackingEnabled ? '停止' : '启动'}
                       </button>
                     </div>
-                    
+
                     {/* 识别控制 */}
                     <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                       <div className="flex items-center space-x-2">
@@ -611,17 +633,17 @@ export function AIControl() {
                       <button
                         onClick={toggleRecognition}
                         className={cn(
-                          "px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all",
-                          isRecognitionEnabled
-                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30"
-                            : "bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-cyber-cyan/20 hover:text-cyber-cyan hover:border-cyber-cyan/30",
-                          !isCameraOpen && "opacity-70"
+                          'px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all',
+                          isRecognitionEnabled ?
+                            'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30' :
+                            'bg-gray-700/50 text-gray-400 border border-gray-600/30 hover:bg-cyber-cyan/20 hover:text-cyber-cyan hover:border-cyber-cyan/30',
+                          !isCameraOpen && 'opacity-70',
                         )}
                       >
                         {isRecognitionEnabled ? '停止' : '启动'}
                       </button>
                     </div>
-                    
+
                     {/* 状态提示 */}
                     {isTrackingEnabled && trackingStatus && (
                       <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
@@ -633,7 +655,7 @@ export function AIControl() {
                         </p>
                       </div>
                     )}
-                    
+
                     {isRecognitionEnabled && recognitionStatus && (
                       <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
                         <p className="text-[10px] text-blue-400">
@@ -644,7 +666,7 @@ export function AIControl() {
                         </p>
                       </div>
                     )}
-                    
+
                     {!isCameraOpen && (
                       <div className="p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
                         <p className="text-[10px] text-yellow-400">
@@ -655,7 +677,7 @@ export function AIControl() {
                   </div>
                 </>
               )}
-              
+
               {/* PTZ云台控制 */}
               {visionTab === 'ptz' && (
                 <PTZControl apiClient={apiClient} />
@@ -666,19 +688,19 @@ export function AIControl() {
            <BentoCard title="JEPA预测" description="自主MPC集成" icon={Activity}>
               <div className="flex items-center justify-between mb-4">
                  <div className="flex items-center space-x-2">
-                    <div className={cn("w-2 h-2 rounded-full", isJepaActive ? "bg-cyber-emerald animate-pulse" : "bg-gray-700")} />
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">引擎 {isJepaActive ? "运行中" : "待机"}</span>
+                    <div className={cn('w-2 h-2 rounded-full', isJepaActive ? 'bg-cyber-emerald animate-pulse' : 'bg-gray-700')} />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">引擎 {isJepaActive ? '运行中' : '待机'}</span>
                  </div>
-                 <button 
+                 <button
                    onClick={toggleJepa}
                    className={cn(
-                     "text-[10px] font-bold px-3 py-1 rounded-full transition-all border",
-                     isJepaActive 
-                       ? "bg-cyber-rose/10 text-cyber-rose border-cyber-rose/20" 
-                       : "bg-cyber-cyan/10 text-cyber-cyan border-cyber-cyan/20"
+                     'text-[10px] font-bold px-3 py-1 rounded-full transition-all border',
+                     isJepaActive ?
+                       'bg-cyber-rose/10 text-cyber-rose border-cyber-rose/20' :
+                       'bg-cyber-cyan/10 text-cyber-cyan border-cyber-cyan/20',
                    )}
                  >
-                   {isJepaActive ? "断开" : "启动"}
+                   {isJepaActive ? '断开' : '启动'}
                  </button>
               </div>
 
@@ -694,16 +716,16 @@ export function AIControl() {
                        </div>
                        <ArrowRight size={20} className="text-cyber-cyan mb-1" />
                     </div>
-                    
+
                     <div className="space-y-2">
                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
                           <span className="text-gray-500">稳定性</span>
                           <span className="text-cyber-emerald">98.4%</span>
                        </div>
                        <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-                          <motion.div 
+                          <motion.div
                             initial={{ width: 0 }}
-                            animate={{ width: "98%" }}
+                            animate={{ width: '98%' }}
                             className="h-full bg-cyber-emerald"
                           />
                        </div>

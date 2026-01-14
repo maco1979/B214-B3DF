@@ -10,24 +10,23 @@ interface BentoCardProps {
   description?: string;
 }
 
-export const BentoCard: React.FC<BentoCardProps> = ({ 
-  children, 
-  className, 
-  title, 
+export const BentoCard: React.FC<BentoCardProps> = ({
+  children,
+  className,
+  title,
   icon: Icon,
-  description 
-}) => {
-  return (
+  description,
+}) => (
     <motion.div
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className={cn(
-        "glass-card rounded-2xl p-6 relative overflow-hidden group transition-all duration-300",
-        className
+        'glass-card rounded-2xl p-6 relative overflow-hidden group transition-all duration-300',
+        className,
       )}
     >
       {/* Decorative background element */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyber-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-bl-full" />
-      
+
       {(title || Icon) && (
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
@@ -43,10 +42,9 @@ export const BentoCard: React.FC<BentoCardProps> = ({
           </div>
         </div>
       )}
-      
+
       <div className="relative z-10">
         {children}
       </div>
     </motion.div>
   );
-};

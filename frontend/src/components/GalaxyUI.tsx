@@ -6,16 +6,14 @@ interface GalaxyCardProps {
   onClick?: () => void;
 }
 
-export const GalaxyCard: React.FC<GalaxyCardProps> = ({ children, className = '', onClick }) => {
-  return (
-    <div 
+export const GalaxyCard: React.FC<GalaxyCardProps> = ({ children, className = '', onClick }) => (
+    <div
       className={`galaxy-card ${className}`}
       onClick={onClick}
     >
       {children}
     </div>
   );
-};
 
 interface GalaxyButtonProps {
   children: React.ReactNode;
@@ -25,14 +23,13 @@ interface GalaxyButtonProps {
   className?: string;
 }
 
-export const GalaxyButton: React.FC<GalaxyButtonProps> = ({ 
-  children, 
-  variant = 'primary', 
-  onClick, 
+export const GalaxyButton: React.FC<GalaxyButtonProps> = ({
+  children,
+  variant = 'primary',
+  onClick,
   disabled = false,
-  className = ''
-}) => {
-  return (
+  className = '',
+}) => (
     <button
       className={`galaxy-button ${variant === 'secondary' ? 'galaxy-button-secondary' : ''} ${className}`}
       onClick={onClick}
@@ -41,14 +38,12 @@ export const GalaxyButton: React.FC<GalaxyButtonProps> = ({
       {children}
     </button>
   );
-};
 
 interface GalaxyInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 }
 
-export const GalaxyInput: React.FC<GalaxyInputProps> = ({ label, ...props }) => {
-  return (
+export const GalaxyInput: React.FC<GalaxyInputProps> = ({ label, ...props }) => (
     <div className="flex flex-col gap-2">
       {label && (
         <label className="galaxy-font-body text-sm text-white/70">
@@ -61,23 +56,22 @@ export const GalaxyInput: React.FC<GalaxyInputProps> = ({ label, ...props }) => 
       />
     </div>
   );
-};
 
 interface GalaxyBadgeProps {
   children: React.ReactNode;
   variant?: 'default' | 'success' | 'warning';
 }
 
-export const GalaxyBadge: React.FC<GalaxyBadgeProps> = ({ 
-  children, 
-  variant = 'default' 
+export const GalaxyBadge: React.FC<GalaxyBadgeProps> = ({
+  children,
+  variant = 'default',
 }) => {
-  const variantClass = variant === 'success' 
-    ? 'galaxy-badge-success' 
-    : variant === 'warning' 
-    ? 'galaxy-badge-warning' 
-    : '';
-  
+  const variantClass = variant === 'success' ?
+    'galaxy-badge-success' :
+    variant === 'warning' ?
+    'galaxy-badge-warning' :
+    '';
+
   return (
     <span className={`galaxy-badge ${variantClass}`}>
       {children}
@@ -91,13 +85,13 @@ interface GalaxyProgressProps {
   label?: string;
 }
 
-export const GalaxyProgress: React.FC<GalaxyProgressProps> = ({ 
-  value, 
+export const GalaxyProgress: React.FC<GalaxyProgressProps> = ({
+  value,
   max = 100,
-  label 
+  label,
 }) => {
   const percentage = Math.min((value / max) * 100, 100);
-  
+
   return (
     <div className="flex flex-col gap-2">
       {label && (
@@ -106,8 +100,8 @@ export const GalaxyProgress: React.FC<GalaxyProgressProps> = ({
         </span>
       )}
       <div className="galaxy-progress-bar">
-        <div 
-          className="galaxy-progress-fill" 
+        <div
+          className="galaxy-progress-fill"
           style={{ width: `${percentage}%` }}
         />
       </div>
@@ -122,14 +116,16 @@ interface GalaxyModalProps {
   children: React.ReactNode;
 }
 
-export const GalaxyModal: React.FC<GalaxyModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  children 
+export const GalaxyModal: React.FC<GalaxyModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
 }) => {
-  if (!isOpen) return null;
-  
+  if (!isOpen) {
+ return null;
+}
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="galaxy-modal w-full max-w-lg mx-4">
@@ -137,7 +133,7 @@ export const GalaxyModal: React.FC<GalaxyModalProps> = ({
           <h2 className="galaxy-font-display text-xl font-bold galazy-text-gradient">
             {title}
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="text-white/50 hover:text-white transition-colors"
           >
@@ -160,13 +156,12 @@ interface GalaxyStatCardProps {
   };
 }
 
-export const GalaxyStatCard: React.FC<GalaxyStatCardProps> = ({ 
-  title, 
-  value, 
+export const GalaxyStatCard: React.FC<GalaxyStatCardProps> = ({
+  title,
+  value,
   icon,
-  trend 
-}) => {
-  return (
+  trend,
+}) => (
     <div className="galaxy-stat-card">
       {icon && (
         <div className="absolute top-4 right-4 text-3xl galazy-icon-glow">
@@ -190,7 +185,6 @@ export const GalaxyStatCard: React.FC<GalaxyStatCardProps> = ({
       )}
     </div>
   );
-};
 
 interface GalaxySwitchProps {
   checked: boolean;
@@ -198,12 +192,11 @@ interface GalaxySwitchProps {
   label?: string;
 }
 
-export const GalaxySwitch: React.FC<GalaxySwitchProps> = ({ 
-  checked, 
-  onChange, 
-  label 
-}) => {
-  return (
+export const GalaxySwitch: React.FC<GalaxySwitchProps> = ({
+  checked,
+  onChange,
+  label,
+}) => (
     <div className="flex items-center gap-3">
       {label && (
         <span className="galaxy-font-body text-sm text-white/70">
@@ -218,7 +211,6 @@ export const GalaxySwitch: React.FC<GalaxySwitchProps> = ({
       </button>
     </div>
   );
-};
 
 interface GalaxyAvatarProps {
   name: string;
@@ -226,29 +218,31 @@ interface GalaxyAvatarProps {
   src?: string;
 }
 
-export const GalaxyAvatar: React.FC<GalaxyAvatarProps> = ({ 
-  name, 
+export const GalaxyAvatar: React.FC<GalaxyAvatarProps> = ({
+  name,
   size = 'md',
-  src 
+  src,
 }) => {
   const sizeClasses = {
     sm: 'w-8 h-8 text-sm',
     md: 'w-12 h-12 text-lg',
-    lg: 'w-16 h-16 text-xl'
+    lg: 'w-16 h-16 text-xl',
   };
-  
+
   const initials = name
     .split(' ')
     .map(n => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
-  
+
   return (
     <div className={`galaxy-avatar ${sizeClasses[size]}`}>
-      {src ? (
+      {src ?
+(
         <img src={src} alt={name} className="w-full h-full rounded-full" />
-      ) : (
+      ) :
+(
         <span>{initials}</span>
       )}
     </div>
@@ -260,16 +254,14 @@ interface GalaxyTagProps {
   onClick?: () => void;
 }
 
-export const GalaxyTag: React.FC<GalaxyTagProps> = ({ children, onClick }) => {
-  return (
-    <span 
+export const GalaxyTag: React.FC<GalaxyTagProps> = ({ children, onClick }) => (
+    <span
       className="galaxy-tag cursor-pointer"
       onClick={onClick}
     >
       {children}
     </span>
   );
-};
 
 interface GalaxyTimelineItemProps {
   date: string;
@@ -278,13 +270,12 @@ interface GalaxyTimelineItemProps {
   icon?: React.ReactNode;
 }
 
-export const GalaxyTimelineItem: React.FC<GalaxyTimelineItemProps> = ({ 
-  date, 
-  title, 
+export const GalaxyTimelineItem: React.FC<GalaxyTimelineItemProps> = ({
+  date,
+  title,
   description,
-  icon 
-}) => {
-  return (
+  icon,
+}) => (
     <div className="galaxy-timeline-item">
       <div className="galaxy-timeline-dot">
         {icon}
@@ -304,35 +295,32 @@ export const GalaxyTimelineItem: React.FC<GalaxyTimelineItemProps> = ({
       </div>
     </div>
   );
-};
 
 interface GalaxyTimelineProps {
   children: React.ReactNode;
 }
 
-export const GalaxyTimeline: React.FC<GalaxyTimelineProps> = ({ children }) => {
-  return (
+export const GalaxyTimeline: React.FC<GalaxyTimelineProps> = ({ children }) => (
     <div className="galaxy-timeline">
       {children}
     </div>
   );
-};
 
 interface GalaxyLoaderProps {
   size?: 'sm' | 'md' | 'lg';
   type?: 'spinner' | 'dots';
 }
 
-export const GalaxyLoader: React.FC<GalaxyLoaderProps> = ({ 
+export const GalaxyLoader: React.FC<GalaxyLoaderProps> = ({
   size = 'md',
-  type = 'spinner'
+  type = 'spinner',
 }) => {
   const sizeClasses = {
     sm: 'w-6 h-6',
     md: 'w-10 h-10',
-    lg: 'w-14 h-14'
+    lg: 'w-14 h-14',
   };
-  
+
   if (type === 'dots') {
     return (
       <div className="galaxy-dots-loader">
@@ -342,7 +330,7 @@ export const GalaxyLoader: React.FC<GalaxyLoaderProps> = ({
       </div>
     );
   }
-  
+
   return (
     <div className={`galaxy-loader ${sizeClasses[size]}`} />
   );
@@ -355,19 +343,19 @@ interface GalaxyNotificationProps {
   onClose?: () => void;
 }
 
-export const GalaxyNotification: React.FC<GalaxyNotificationProps> = ({ 
-  title, 
+export const GalaxyNotification: React.FC<GalaxyNotificationProps> = ({
+  title,
   message,
   type = 'info',
-  onClose 
+  onClose,
 }) => {
   const typeColors = {
     info: 'from-blue-500 to-cyan-500',
     success: 'from-green-500 to-emerald-500',
     warning: 'from-yellow-500 to-orange-500',
-    error: 'from-red-500 to-pink-500'
+    error: 'from-red-500 to-pink-500',
   };
-  
+
   return (
     <div className="galaxy-notification mb-4">
       <div className="flex items-start justify-between">
@@ -380,7 +368,7 @@ export const GalaxyNotification: React.FC<GalaxyNotificationProps> = ({
           </div>
         </div>
         {onClose && (
-          <button 
+          <button
             onClick={onClose}
             className="text-white/50 hover:text-white transition-colors ml-4"
           >
@@ -397,11 +385,10 @@ interface GalaxyContainerProps {
   className?: string;
 }
 
-export const GalaxyContainer: React.FC<GalaxyContainerProps> = ({ 
-  children, 
-  className = '' 
-}) => {
-  return (
+export const GalaxyContainer: React.FC<GalaxyContainerProps> = ({
+  children,
+  className = '',
+}) => (
     <div className={`galaxy-container min-h-screen ${className}`}>
       <div className="galaxy-stars" />
       <div className="galaxy-nebula galaxy-nebula-1" />
@@ -412,4 +399,3 @@ export const GalaxyContainer: React.FC<GalaxyContainerProps> = ({
       </div>
     </div>
   );
-};

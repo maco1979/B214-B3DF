@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'vitest';
 
-console.log('loaded smoke test')
+console.log('loaded smoke test');
 
 describe('smoke', () => {
-  console.log('inside describe smoke')
+  console.log('inside describe smoke');
   it('works', () => {
-    expect(true).toBe(true)
-  })
-})
+    expect(true).toBe(true);
+  });
+});

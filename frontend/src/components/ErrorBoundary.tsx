@@ -1,6 +1,6 @@
-import React from 'react'
-import { AlertTriangle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import React from 'react';
+import { AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
@@ -14,26 +14,28 @@ interface ErrorBoundaryState {
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
-    super(props)
-    this.state = { hasError: false }
+    super(props);
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error }
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error('[ErrorBoundary] 捕获渲染错误', error, info)
+    console.error('[ErrorBoundary] 捕获渲染错误', error, info);
   }
 
   handleReload = () => {
-    this.setState({ hasError: false, error: undefined })
-    window.location.reload()
-  }
+    this.setState({ hasError: false, error: undefined });
+    window.location.reload();
+  };
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) return <>{this.props.fallback}</>
+      if (this.props.fallback) {
+ return <>{this.props.fallback}</>;
+}
 
       return (
         <div className="flex h-screen flex-col items-center justify-center space-y-4 bg-[#0b0b0f] text-white px-6 text-center">
@@ -53,11 +55,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             </p>
           )}
         </div>
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
-export default ErrorBoundary
+export default ErrorBoundary;

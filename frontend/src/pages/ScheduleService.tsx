@@ -44,7 +44,12 @@ const configFields = {
     { name: 'enabled', label: '启用', type: 'checkbox', defaultValue: true, required: false },
   ],
   code_quality: [
-    { name: 'check_depth', label: '检查深度', type: 'select', defaultValue: 'basic', required: true, options: [
+    { name: 'check_depth',
+label: '检查深度',
+type: 'select',
+defaultValue: 'basic',
+required: true,
+options: [
       { value: 'basic', label: '基础' },
       { value: 'standard', label: '标准' },
       { value: 'detailed', label: '详细' },
@@ -58,7 +63,12 @@ const configFields = {
     { name: 'scan_dependencies', label: '扫描依赖', type: 'checkbox', defaultValue: true, required: false },
     { name: 'check_secrets', label: '检查敏感信息', type: 'checkbox', defaultValue: false, required: false },
     { name: 'check_vulnerabilities', label: '检查漏洞', type: 'checkbox', defaultValue: false, required: false },
-    { name: 'severity_level', label: '严重级别', type: 'select', defaultValue: 'medium', required: false, options: [
+    { name: 'severity_level',
+label: '严重级别',
+type: 'select',
+defaultValue: 'medium',
+required: false,
+options: [
       { value: 'low', label: '低' },
       { value: 'medium', label: '中' },
       { value: 'high', label: '高' },
@@ -74,7 +84,12 @@ const configFields = {
   data_backup: [
     { name: 'backup_path', label: '备份路径', type: 'text', defaultValue: './backups', required: true },
     { name: 'retention_days', label: '保留天数', type: 'number', defaultValue: 7, required: false, min: 1, max: 365 },
-    { name: 'compression', label: '压缩格式', type: 'select', defaultValue: 'gzip', required: false, options: [
+    { name: 'compression',
+label: '压缩格式',
+type: 'select',
+defaultValue: 'gzip',
+required: false,
+options: [
       { value: 'none', label: '无压缩' },
       { value: 'gzip', label: 'GZIP' },
       { value: 'zip', label: 'ZIP' },
@@ -82,11 +97,21 @@ const configFields = {
     { name: 'include_logs', label: '包含日志', type: 'checkbox', defaultValue: false, required: false },
   ],
   report_generation: [
-    { name: 'report_type', label: '报告类型', type: 'select', defaultValue: 'summary', required: true, options: [
+    { name: 'report_type',
+label: '报告类型',
+type: 'select',
+defaultValue: 'summary',
+required: true,
+options: [
       { value: 'summary', label: '摘要' },
       { value: 'detailed', label: '详细' },
     ] },
-    { name: 'format', label: '报告格式', type: 'select', defaultValue: 'pdf', required: true, options: [
+    { name: 'format',
+label: '报告格式',
+type: 'select',
+defaultValue: 'pdf',
+required: true,
+options: [
       { value: 'pdf', label: 'PDF' },
       { value: 'html', label: 'HTML' },
       { value: 'csv', label: 'CSV' },
@@ -283,7 +308,7 @@ const ScheduleService: React.FC = () => {
     setTaskType('cron');
     setConfigMode('template');
     setSelectedTemplate('default');
-    const defaultTemplate = taskTemplates['general'][0].config;
+    const defaultTemplate = taskTemplates.general[0].config;
     setVisualConfig(defaultTemplate);
   };
 
@@ -755,27 +780,27 @@ scheduleTasks?.success && scheduleTasks.data?.length > 0 ?
                     <div className="space-y-4">
                       {configFields[scheduleTask.task_type as keyof typeof configFields].map(field => {
                         // 获取当前值或默认值
-                        const currentValue = visualConfig[field.name] !== undefined 
-                          ? visualConfig[field.name] 
-                          : field.defaultValue;
+                        const currentValue = visualConfig[field.name] !== undefined ?
+                          visualConfig[field.name] :
+                          field.defaultValue;
 
                         return (
                           <div key={field.name} className="space-y-1">
                             <label className="block text-sm font-medium text-muted-foreground">
                               {field.label} {field.required && <span className="text-red-500">*</span>}
                             </label>
-                            
+
                             {/* 文本输入 */}
                             {field.type === 'text' && (
                               <input
                                 type="text"
                                 value={currentValue || ''}
                                 onChange={e => handleVisualConfigChange(field.name, e.target.value)}
-                                placeholder={field.defaultValue?.toString() || ''}
+                                placeholder={field.defaultValue.toString() || ''}
                                 className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-muted text-foreground placeholder-muted-foreground"
                               />
                             )}
-                            
+
                             {/* 数字输入 */}
                             {field.type === 'number' && (
                               <input
@@ -784,11 +809,11 @@ scheduleTasks?.success && scheduleTasks.data?.length > 0 ?
                                 onChange={e => handleVisualConfigChange(field.name, e.target.value ? parseInt(e.target.value) : undefined)}
                                 min={field.min}
                                 max={field.max}
-                                placeholder={field.defaultValue?.toString() || ''}
+                                placeholder={field.defaultValue.toString() || ''}
                                 className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-muted text-foreground placeholder-muted-foreground"
                               />
                             )}
-                            
+
                             {/* 复选框 */}
                             {field.type === 'checkbox' && (
                               <div className="flex items-center">
@@ -801,7 +826,7 @@ scheduleTasks?.success && scheduleTasks.data?.length > 0 ?
                                 <span className="text-sm text-foreground">{field.label}</span>
                               </div>
                             )}
-                            
+
                             {/* 下拉选择 */}
                             {field.type === 'select' && (
                               <select
@@ -819,7 +844,7 @@ scheduleTasks?.success && scheduleTasks.data?.length > 0 ?
                           </div>
                         );
                       })}
-                      
+
                       {/* 配置预览 */}
                       <div className="mt-4 p-4 bg-blue-900/20 rounded-lg border border-blue-800">
                         <h4 className="text-sm font-semibold text-blue-300 mb-2">配置预览：</h4>

@@ -20,8 +20,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   status,
   className,
   children,
-}) => {
-  return (
+}) => (
     <Card className={`bg-gradient-to-br from-tech-dark via-tech-gray to-tech-light border-tech-light/30 ${className}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
@@ -46,4 +45,3 @@ export const StatCard: React.FC<StatCardProps> = ({
       </CardContent>
     </Card>
   );
-};

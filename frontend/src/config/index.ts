@@ -1,18 +1,20 @@
 // 应用配置
 
-// API基础URL
-// 开发环境：使用空字符串，让请求通过Vite代理
-// 生产环境：通过环境变量配置实际后端URL
+/*
+ * API基础URL
+ * 开发环境：使用空字符串，让请求通过Vite代理
+ * 生产环境：通过环境变量配置实际后端URL
+ */
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 // API密钥
-export const API_KEY = import.meta.env.VITE_API_KEY || 'your-api-key-here'
+export const API_KEY = import.meta.env.VITE_API_KEY || 'your-api-key-here';
 
 // 应用名称
-export const APP_NAME = 'AI项目管理系统'
+export const APP_NAME = 'AI项目管理系统';
 
 // 版本信息
-export const APP_VERSION = '1.0.0'
+export const APP_VERSION = '1.0.0';
 
 // 主题配置
 export const THEME_CONFIG = {
@@ -23,7 +25,7 @@ export const THEME_CONFIG = {
   warningColor: '#f59e0b',
   errorColor: '#ef4444',
   infoColor: '#06b6d4',
-}
+};
 
 // 功能开关
 export const FEATURE_FLAGS = {
@@ -31,7 +33,7 @@ export const FEATURE_FLAGS = {
   ENABLE_FEDERATED_LEARNING: true,
   ENABLE_EDGE_COMPUTING: true,
   ENABLE_MONITORING: true,
-}
+};
 
 // API端点配置
 export const API_ENDPOINTS = {
@@ -41,7 +43,7 @@ export const API_ENDPOINTS = {
   BLOCKCHAIN: '/blockchain',
   SYSTEM: '/system',
   EDGE: '/edge',
-}
+};
 
 // 本地存储键名
 export const STORAGE_KEYS = {
@@ -49,7 +51,7 @@ export const STORAGE_KEYS = {
   USER_PREFERENCES: 'user_preferences',
   RECENT_MODELS: 'recent_models',
   THEME_MODE: 'theme_mode',
-}
+};
 
 // 默认配置
 export const DEFAULT_CONFIG = {
@@ -57,7 +59,7 @@ export const DEFAULT_CONFIG = {
   TRAINING_TIMEOUT: 600000, // 10分钟
   POLLING_INTERVAL: 5000, // 5秒
   MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
-}
+};
 
 // 导出所有配置
 export default {
@@ -70,4 +72,4 @@ export default {
   API_ENDPOINTS,
   STORAGE_KEYS,
   DEFAULT_CONFIG,
-}
+};

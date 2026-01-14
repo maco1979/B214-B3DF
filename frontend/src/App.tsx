@@ -1,42 +1,42 @@
-import React, { Suspense, lazy } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
-import { QueryClientProvider } from '@tanstack/react-query'
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { QueryClientProvider } from '@tanstack/react-query';
 
-import { MainLayout as Layout } from './components/layout/MainLayout'
-import ErrorBoundary from './components/ErrorBoundary'
-import { AuthProvider } from './hooks/useAuth'
-import { queryClient } from './lib/query-client'
-import { useOnlineStatus } from './hooks/useOnlineStatus'
+import { MainLayout as Layout } from './components/layout/MainLayout';
+import ErrorBoundary from './components/ErrorBoundary';
+import { AuthProvider } from './hooks/useAuth';
+import { queryClient } from './lib/query-client';
+import { useOnlineStatus } from './hooks/useOnlineStatus';
 
-import './index.css'
+import './index.css';
 
 // 网络状态监听组件（全局生效）
 function NetworkStatusMonitor() {
   // 调用hook启用网络状态监听，网络变化时自动显示toast
-  useOnlineStatus()
-  return null
+  useOnlineStatus();
+  return null;
 }
 
 // 旧路径重定向组件
 function RedirectToModelDetail() {
-  const params = useParams<{ id: string }>()
-  return <Navigate to={`/models/${params.id}`} replace />
+  const params = useParams<{ id: string }>();
+  return <Navigate to={`/models/${params.id}`} replace />;
 }
 
-const Dashboard = lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })))
-const AgriculturePage = lazy(() => import('./pages/Agriculture'))
-const ModelManagement = lazy(() => import('./pages/ModelManagement').then(module => ({ default: module.ModelManagement })))
-const ModelDetail = lazy(() => import('./pages/ModelDetail').then(module => ({ default: module.ModelDetail })))
-const InferenceService = lazy(() => import('./pages/InferenceService').then(module => ({ default: module.InferenceService })))
-const Blockchain = lazy(() => import('./pages/Blockchain').then(module => ({ default: module.Blockchain })))
-const FederatedLearning = lazy(() => import('./pages/FederatedLearning').then(module => ({ default: module.FederatedLearning })))
-const MonitoringDashboard = lazy(() => import('./pages/MonitoringDashboard').then(module => ({ default: module.MonitoringDashboard })))
-const PerformanceMonitoring = lazy(() => import('./pages/PerformanceMonitoring').then(module => ({ default: module.PerformanceMonitoring })))
-const Settings = lazy(() => import('./pages/Settings').then(module => ({ default: module.Settings })))
-const Community = lazy(() => import('./pages/Community'))
-const AIControl = lazy(() => import('./pages/AIControl').then(module => ({ default: module.AIControl })))
-const LoginPage = lazy(() => import('./pages/Login'))
+const Dashboard = lazy(async () => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })));
+const AgriculturePage = lazy(async () => import('./pages/Agriculture'));
+const ModelManagement = lazy(async () => import('./pages/ModelManagement').then(module => ({ default: module.ModelManagement })));
+const ModelDetail = lazy(async () => import('./pages/ModelDetail').then(module => ({ default: module.ModelDetail })));
+const InferenceService = lazy(async () => import('./pages/InferenceService').then(module => ({ default: module.InferenceService })));
+const Blockchain = lazy(async () => import('./pages/Blockchain').then(module => ({ default: module.Blockchain })));
+const FederatedLearning = lazy(async () => import('./pages/FederatedLearning').then(module => ({ default: module.FederatedLearning })));
+const MonitoringDashboard = lazy(async () => import('./pages/MonitoringDashboard').then(module => ({ default: module.MonitoringDashboard })));
+const PerformanceMonitoring = lazy(async () => import('./pages/PerformanceMonitoring').then(module => ({ default: module.PerformanceMonitoring })));
+const Settings = lazy(async () => import('./pages/Settings').then(module => ({ default: module.Settings })));
+const Community = lazy(async () => import('./pages/Community'));
+const AIControl = lazy(async () => import('./pages/AIControl').then(module => ({ default: module.AIControl })));
+const LoginPage = lazy(async () => import('./pages/Login'));
 
 function App() {
   return (
@@ -118,7 +118,7 @@ function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>
-            <Toaster 
+            <Toaster
               position="top-right"
               toastOptions={{
                 duration: 4000,
@@ -135,7 +135,7 @@ function App() {
         </QueryClientProvider>
       </AuthProvider>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

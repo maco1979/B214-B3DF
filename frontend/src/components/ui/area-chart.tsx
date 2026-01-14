@@ -22,7 +22,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 interface AreaChartProps {
@@ -97,7 +97,7 @@ export const AreaChart: React.FC<AreaChartProps> = ({ data, options, className }
       ...dataset,
       fill: dataset.fill !== undefined ? dataset.fill : true,
       tension: dataset.tension !== undefined ? dataset.tension : 0.4,
-    }))
+    })),
   };
 
   return (

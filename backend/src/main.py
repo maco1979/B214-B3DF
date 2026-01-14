@@ -21,8 +21,8 @@ try:
     sys.modules["flax_patch"] = flax_patch_module
     spec.loader.exec_module(flax_patch_module)
     flax_patch_module.apply_flax_patch()
-    print("Flax兼容性补丁应用成功")
 except Exception as e:
+    # 日志系统尚未初始化，使用print
     print(f"Flax兼容性补丁应用失败: {e}")
     # 继续执行，即使补丁应用失败
 
@@ -32,11 +32,22 @@ from src.api import create_app
 app = create_app()
 
 if __name__ == "__main__":
-    # 启动服务
+    # 导入日志相关模块
+    import logging.config
+    from src.core.utils.logging_utils import DEFAULT_LOGGING_CONFIG, LoggerManager
+    
+    # 先配置日志（此时所有模块已导入，无循环问题）
+    logging.config.dictConfig(DEFAULT_LOGGING_CONFIG)
+    
+    # 再初始化日志管理器
+    logger_manager = LoggerManager()
+    
+    # 启动服务，禁用uvicorn的默认日志配置
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=8001,
         reload=True,
-        log_level="info"
+        log_level="warning",  # 设置uvicorn本身的日志级别为warning
+        log_config=None  # 禁用uvicorn的默认日志配置
     )

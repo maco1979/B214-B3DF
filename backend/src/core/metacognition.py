@@ -4,6 +4,7 @@ from typing import Dict, List, Any, Optional
 import logging
 from datetime import datetime
 import numpy as np
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -432,14 +433,31 @@ class MetacognitionSystem:
         self.strategy_selector = LearningStrategySelector()
         self.resource_allocator = ResourceAllocator()
         
+        # 新增：反思机制
+        self.reflection_history = []
+        self.max_reflection_history = 1000
+        
+        # 新增：元认知监控指标
+        self.monitoring_metrics = {
+            'total_decisions': 0,
+            'successful_decisions': 0,
+            'average_reflection_time': 0.0,
+            'anomaly_rate': 0.0
+        }
+        
+        # 新增：学习策略历史
+        self.strategy_history = []
+        self.max_strategy_history = 500
+        
         logger.info("元认知监控系统初始化成功")
     
-    def self_assessment(self, task: Dict[str, Any], decision: Dict[str, Any]) -> Dict[str, Any]:
-        """自我评估
+    def self_assessment(self, task: Dict[str, Any], decision: Dict[str, Any], context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """自我评估 - 增强版，支持更多评估维度
         
         Args:
             task: 任务描述
             decision: 决策结果
+            context: 上下文信息
             
         Returns:
             自我评估结果
@@ -448,19 +466,30 @@ class MetacognitionSystem:
         task_difficulty = self.ability_evaluator.evaluate_task_difficulty(task)
         
         # 计算决策置信度
-        confidence = self.confidence_calculator.calculate_confidence(decision, [])
+        confidence = self.confidence_calculator.calculate_confidence(decision, context.get('evidence', []) if context else [])
         
         # 获取能力评分
         ability_scores = self.ability_evaluator.get_ability_scores()
         
+        # 新增：上下文评估
+        context_score = 0.0
+        if context and 'relevant_memories' in context:
+            context_score = min(1.0, len(context['relevant_memories']) / 10)
+        
+        # 新增：风险评估
+        risk_score = decision.get('risk_assessment', {}).get('total_risk', 0.3)
+        
         return {
             'task_difficulty': task_difficulty,
             'confidence': confidence,
-            'ability_scores': ability_scores
+            'ability_scores': ability_scores,
+            'context_score': context_score,
+            'risk_score': risk_score,
+            'timestamp': datetime.now().isoformat()
         }
     
     def monitor_process(self, reasoning_steps: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """过程监控
+        """过程监控 - 增强版，支持更详细的异常分析
         
         Args:
             reasoning_steps: 推理步骤列表
@@ -475,18 +504,35 @@ class MetacognitionSystem:
         # 检测异常
         anomalies = self.anomaly_detector.detect_anomalies(reasoning_steps)
         
+        # 新增：异常类型分析
+        anomaly_types = {}
+        for anomaly in anomalies:
+            anomaly_type = anomaly.get('type', 'unknown')
+            anomaly_types[anomaly_type] = anomaly_types.get(anomaly_type, 0) + 1
+        
+        # 更新监控指标
+        self.monitoring_metrics['total_decisions'] += 1
+        if anomalies:
+            self.monitoring_metrics['anomaly_rate'] = (
+                (self.monitoring_metrics['anomaly_rate'] * (self.monitoring_metrics['total_decisions'] - 1) + len(anomalies)) / 
+                self.monitoring_metrics['total_decisions']
+            )
+        
         return {
             'reasoning_steps_count': len(reasoning_steps),
             'anomalies_detected': len(anomalies),
-            'anomalies': anomalies
+            'anomaly_types': anomaly_types,
+            'anomalies': anomalies,
+            'timestamp': datetime.now().isoformat()
         }
     
-    def adjust_strategy(self, task: Dict[str, Any], assessment_result: Dict[str, Any]) -> Dict[str, Any]:
-        """策略调整
+    def adjust_strategy(self, task: Dict[str, Any], assessment_result: Dict[str, Any], performance_history: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+        """策略调整 - 增强版，基于历史性能调整
         
         Args:
             task: 任务描述
             assessment_result: 自我评估结果
+            performance_history: 历史性能记录
             
         Returns:
             策略调整建议
@@ -494,23 +540,52 @@ class MetacognitionSystem:
         # 选择学习策略
         strategy = self.strategy_selector.select_strategy(task)
         
-        # 分配资源
+        # 分配资源，考虑更多因素
+        urgency = task.get('urgency', 0.5)
         resource_allocation = self.resource_allocator.allocate_resources(
-            assessment_result['task_difficulty']
+            assessment_result['task_difficulty'],
+            urgency
         )
+        
+        # 新增：基于历史性能的策略调整
+        if performance_history:
+            # 分析历史性能
+            recent_performance = performance_history[-20:] if len(performance_history) > 20 else performance_history
+            avg_success = sum(1 for p in recent_performance if p['success']) / len(recent_performance)
+            
+            # 根据历史成功率调整策略
+            if avg_success < 0.6 and strategy == 'reinforcement_learning':
+                # 成功率低，切换到更保守的策略
+                strategy = 'supervised_learning'
+        
+        # 记录策略选择
+        strategy_record = {
+            'task_type': task.get('type', 'unknown'),
+            'difficulty': assessment_result['task_difficulty'],
+            'selected_strategy': strategy,
+            'timestamp': datetime.now().isoformat()
+        }
+        self.strategy_history.append(strategy_record)
+        
+        # 限制策略历史大小
+        if len(self.strategy_history) > self.max_strategy_history:
+            self.strategy_history = self.strategy_history[-self.max_strategy_history:]
         
         return {
             'selected_strategy': strategy,
-            'resource_allocation': resource_allocation
+            'resource_allocation': resource_allocation,
+            'adjustment_reason': '基于任务难度、历史性能和上下文的综合调整',
+            'timestamp': datetime.now().isoformat()
         }
     
-    def learn_from_experience(self, task: Dict[str, Any], success: bool, performance: float):
-        """从经验中学习
+    def learn_from_experience(self, task: Dict[str, Any], success: bool, performance: float, context: Optional[Dict[str, Any]] = None):
+        """从经验中学习 - 增强版，支持上下文学习
         
         Args:
             task: 任务描述
             success: 是否成功
             performance: 性能指标
+            context: 上下文信息
         """
         # 更新能力评分
         task_difficulty = self.ability_evaluator.evaluate_task_difficulty(task)
@@ -520,17 +595,158 @@ class MetacognitionSystem:
         # 评估策略有效性
         strategy = self.strategy_selector.select_strategy(task)
         self.strategy_selector.evaluate_strategy_effectiveness(strategy, success, performance)
+        
+        # 更新监控指标
+        self.monitoring_metrics['total_decisions'] += 1
+        if success:
+            self.monitoring_metrics['successful_decisions'] += 1
+        
+        # 新增：反思过程
+        if not success or performance < 0.5:
+            # 失败或性能差时进行反思
+            self._reflect_on_failure(task, decision=context.get('decision', {}), 
+                                   performance=performance, error=context.get('error', ''))
+    
+    def _reflect_on_failure(self, task: Dict[str, Any], decision: Dict[str, Any], performance: float, error: str):
+        """反思失败经验
+        
+        Args:
+            task: 任务描述
+            decision: 决策结果
+            performance: 性能指标
+            error: 错误信息
+        """
+        start_time = time.time()
+        
+        # 分析失败原因
+        failure_analysis = {
+            'task_type': task.get('type', 'unknown'),
+            'decision_action': decision.get('action', 'unknown'),
+            'performance': performance,
+            'error': error,
+            'possible_causes': [],
+            'improvement_suggestions': []
+        }
+        
+        # 基于能力评分分析可能原因
+        ability_scores = self.ability_evaluator.get_ability_scores()
+        for ability, score in ability_scores.items():
+            if score < 0.6:
+                failure_analysis['possible_causes'].append(f"{ability}能力不足 (评分: {score:.2f})")
+                failure_analysis['improvement_suggestions'].append(f"加强{ability}训练")
+        
+        # 基于策略分析可能原因
+        strategy = self.strategy_selector.select_strategy(task)
+        failure_analysis['possible_causes'].append(f"可能的策略选择不当 (当前策略: {strategy})")
+        failure_analysis['improvement_suggestions'].append(f"考虑其他学习策略")
+        
+        # 基于上下文分析
+        if 'context' in decision:
+            if 'relevant_memories' in decision['context'] and len(decision['context']['relevant_memories']) < 2:
+                failure_analysis['possible_causes'].append("相关记忆不足")
+                failure_analysis['improvement_suggestions'].append("增强长期记忆系统")
+        
+        # 记录反思结果
+        reflection = {
+            'failure_analysis': failure_analysis,
+            'timestamp': datetime.now().isoformat(),
+            'reflection_time': time.time() - start_time
+        }
+        
+        self.reflection_history.append(reflection)
+        
+        # 限制反思历史大小
+        if len(self.reflection_history) > self.max_reflection_history:
+            self.reflection_history = self.reflection_history[-self.max_reflection_history:]
+        
+        # 更新平均反思时间
+        total_reflection_time = sum(r['reflection_time'] for r in self.reflection_history)
+        self.monitoring_metrics['average_reflection_time'] = total_reflection_time / len(self.reflection_history)
+        
+        logger.debug(f"反思结果: {failure_analysis}")
     
     def get_system_status(self) -> Dict[str, Any]:
-        """获取元认知系统状态
+        """获取元认知系统状态 - 增强版，包含更多指标
         
         Returns:
             系统状态信息
         """
+        # 计算成功率
+        success_rate = (self.monitoring_metrics['successful_decisions'] / self.monitoring_metrics['total_decisions'] 
+                      if self.monitoring_metrics['total_decisions'] > 0 else 0.0)
+        
         return {
             'ability_scores': self.ability_evaluator.get_ability_scores(),
             'current_confidence': self.confidence_calculator.calculate_confidence({}, []),
             'recent_anomalies': len(self.anomaly_detector.get_recent_anomalies(limit=5)),
+            'anomaly_rate': self.monitoring_metrics['anomaly_rate'],
             'current_allocation': self.resource_allocator.get_current_allocation(),
-            'reasoning_steps_count': len(self.reasoning_logger.get_recent_traces(limit=10))
+            'reasoning_steps_count': len(self.reasoning_logger.get_recent_traces(limit=10)),
+            'reflection_history_size': len(self.reflection_history),
+            'success_rate': success_rate,
+            'total_decisions': self.monitoring_metrics['total_decisions'],
+            'average_reflection_time': self.monitoring_metrics['average_reflection_time'],
+            'strategy_history_size': len(self.strategy_history),
+            'timestamp': datetime.now().isoformat()
         }
+    
+    def get_reflection_insights(self, limit: int = 10) -> List[Dict[str, Any]]:
+        """获取反思洞察
+        
+        Args:
+            limit: 返回的洞察数量
+            
+        Returns:
+            反思洞察列表
+        """
+        # 分析反思历史，提取常见问题和改进建议
+        insights = {
+            'common_causes': {},
+            'effective_suggestions': {},
+            'improvement_trends': []
+        }
+        
+        # 统计常见原因和有效建议
+        for reflection in self.reflection_history:
+            analysis = reflection['failure_analysis']
+            for cause in analysis['possible_causes']:
+                insights['common_causes'][cause] = insights['common_causes'].get(cause, 0) + 1
+            for suggestion in analysis['improvement_suggestions']:
+                insights['effective_suggestions'][suggestion] = insights['effective_suggestions'].get(suggestion, 0) + 1
+        
+        # 按频率排序
+        insights['common_causes'] = dict(sorted(insights['common_causes'].items(), key=lambda x: x[1], reverse=True))
+        insights['effective_suggestions'] = dict(sorted(insights['effective_suggestions'].items(), key=lambda x: x[1], reverse=True))
+        
+        # 分析改进趋势
+        if len(self.reflection_history) > 10:
+            # 计算最近的成功率变化
+            recent_decisions = self.monitoring_metrics['total_decisions']
+            if recent_decisions > 0:
+                recent_success_rate = self.monitoring_metrics['successful_decisions'] / recent_decisions
+                insights['improvement_trends'].append(f"当前成功率: {recent_success_rate:.2f}")
+        
+        return insights
+    
+    def update_learning_strategy(self, strategy_feedback: Dict[str, Any]):
+        """更新学习策略
+        
+        Args:
+            strategy_feedback: 策略反馈信息
+        """
+        # 基于反馈调整策略选择机制
+        if 'strategy_effectiveness' in strategy_feedback:
+            for strategy, effectiveness in strategy_feedback['strategy_effectiveness'].items():
+                # 可以在这里调整策略选择的权重或参数
+                logger.debug(f"更新策略 {strategy} 的有效性: {effectiveness}")
+        
+        # 记录策略更新
+        self.strategy_history.append({
+            'update_type': 'strategy_feedback',
+            'feedback': strategy_feedback,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+        # 限制策略历史大小
+        if len(self.strategy_history) > self.max_strategy_history:
+            self.strategy_history = self.strategy_history[-self.max_strategy_history:]

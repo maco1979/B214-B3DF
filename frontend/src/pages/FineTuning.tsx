@@ -143,9 +143,9 @@ const FineTuning: React.FC = () => {
   // 微调所有智能体的mutation
   const fineTuneAllAgentsMutation = useMutation<ApiResponse<any>, Error>({
     mutationFn: async () => apiClient.fineTuneAllAgents(),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['fineTuneTasks'] });
-      if (data.success && data.data && data.data.tasks) {
+      if (data.success && data.data?.tasks) {
         alert(`已为 ${data.data.tasks.length} 个智能体创建微调任务`);
       } else {
         alert('已为智能体创建微调任务');

@@ -1026,8 +1026,3 @@ async def ptz_get_status():
             status_code=500,
             detail=f"获取状态错误: {str(e)}"
         )
-    finally:
-        try:
-            await websocket.close()
-        except:
-            pass

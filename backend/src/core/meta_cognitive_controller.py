@@ -3,18 +3,21 @@ Implementing self-awareness, reflection mechanisms, and meta-level decision maki
 Building on ACT-R/Soar cognitive architecture with autonomous goal management
 """
 
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Tuple, Set
 import logging
 from dataclasses import dataclass
 from datetime import datetime
 import time
 from enum import Enum
 from collections import deque
+import psutil
 
 from .cognitive_architecture import CognitiveArchitecture, CognitiveModuleType, CognitiveModule
 from .neural_symbolic_system import neural_symbolic_system
 from .common_knowledge_base import common_knowledge_base
 from .environment_perception import environment_perception_system
+from .cross_domain_transfer import cross_domain_transfer_service
+from .logical_consistency.consistency_checker import LogicalConsistencyChecker
 
 logger = logging.getLogger(__name__)
 
@@ -39,15 +42,30 @@ class ReflectionType(str, Enum):
 
 
 @dataclass
+class CapabilityAssessment:
+    """能力评估数据结构"""
+    capability_name: str
+    score: float  # 0-1
+    confidence: float  # 0-1
+    description: str
+    metrics: Dict[str, float]
+    improvement_areas: List[str]
+
+
+@dataclass
 class SelfAssessmentResult:
     """自我评估结果数据结构"""
     timestamp: datetime
     overall_score: float  # 整体评分，0-1
     performance_metrics: Dict[str, float]  # 各项性能指标
+    capability_assessments: List[CapabilityAssessment]  # 各项能力评估
     strengths: List[str]  # 系统优势
     weaknesses: List[str]  # 系统弱点
     recommended_actions: List[str]  # 推荐改进措施
     self_awareness_level: SelfAwarenessLevel
+    cognitive_load: float  # 认知负载，0-1
+    resource_usage: Dict[str, float]  # 资源使用情况
+    cross_domain_performance: Dict[str, float]  # 跨领域性能
 
 
 @dataclass
@@ -164,56 +182,354 @@ class MetaCognitiveModule(CognitiveModule):
         # 获取当前系统状态
         system_state = self.monitor_system_state()
         
-        # 评估各项性能指标
+        # 1. 评估各项性能指标
         performance_metrics = {
             "decision_quality": self._assess_decision_quality(),
             "learning_efficiency": self._assess_learning_efficiency(),
             "goal_progress": self._assess_goal_progress(),
             "resource_usage": self._assess_resource_usage(),
-            "ethical_compliance": self._assess_ethical_compliance()
+            "ethical_compliance": self._assess_ethical_compliance(),
+            "cross_domain_effectiveness": self._assess_cross_domain_effectiveness(),
+            "logical_consistency": self._assess_logical_consistency()
         }
         
-        # 计算整体评分（加权平均）
+        # 2. 评估各项核心能力
+        capability_assessments = self._assess_core_capabilities()
+        
+        # 3. 评估跨领域性能
+        cross_domain_performance = self._evaluate_cross_domain_performance()
+        
+        # 4. 监控资源使用情况
+        resource_usage = self._get_resource_usage()
+        
+        # 5. 评估认知负载
+        cognitive_load = self._assess_cognitive_load()
+        
+        # 6. 计算整体评分（加权平均）
         weights = {
-            "decision_quality": 0.25,
-            "learning_efficiency": 0.20,
-            "goal_progress": 0.25,
-            "resource_usage": 0.15,
-            "ethical_compliance": 0.15
+            "decision_quality": 0.15,
+            "learning_efficiency": 0.15,
+            "goal_progress": 0.15,
+            "resource_usage": 0.10,
+            "ethical_compliance": 0.10,
+            "cross_domain_effectiveness": 0.15,
+            "logical_consistency": 0.20
         }
         
         overall_score = sum(performance_metrics[key] * weights[key] for key in weights)
         
-        # 识别优势和弱点
+        # 7. 识别优势和弱点
         strengths = [key for key, value in performance_metrics.items() if value > 0.7]
         weaknesses = [key for key, value in performance_metrics.items() if value < 0.5]
         
-        # 生成推荐行动
+        # 8. 生成推荐行动
         recommended_actions = self._generate_recommendations(performance_metrics)
         
-        # 创建评估结果
+        # 9. 创建评估结果
         assessment = SelfAssessmentResult(
             timestamp=datetime.now(),
             overall_score=overall_score,
             performance_metrics=performance_metrics,
+            capability_assessments=capability_assessments,
             strengths=strengths,
             weaknesses=weaknesses,
             recommended_actions=recommended_actions,
-            self_awareness_level=self.self_awareness_level
+            self_awareness_level=self.self_awareness_level,
+            cognitive_load=cognitive_load,
+            resource_usage=resource_usage,
+            cross_domain_performance=cross_domain_performance
         )
         
-        # 保存评估结果
+        # 10. 保存评估结果
         self.self_assessment_history.append(assessment)
         self.last_self_assessment = assessment
         
-        # 根据评估结果调整自我意识水平
-        if overall_score > 0.8 and len(self.self_assessment_history) > 5:
+        # 11. 根据评估结果调整自我意识水平
+        if overall_score > 0.85 and len(self.self_assessment_history) > 5:
             self.update_self_awareness_level(SelfAwarenessLevel.META_AWARE)
         elif overall_score < 0.4:
             self.update_self_awareness_level(SelfAwarenessLevel.BASIC)
+        elif overall_score < 0.6:
+            self.update_self_awareness_level(SelfAwarenessLevel.AWARE)
+        else:
+            self.update_self_awareness_level(SelfAwarenessLevel.REFLECTIVE)
         
-        logger.info(f"自我评估完成，整体评分: {overall_score:.2f}, 自我意识水平: {self.self_awareness_level.name}")
+        logger.info(f"自我评估完成，整体评分: {overall_score:.2f}, 自我意识水平: {self.self_awareness_level.name}, 认知负载: {cognitive_load:.2f}")
         return assessment
+    
+    def _assess_core_capabilities(self) -> List[CapabilityAssessment]:
+        """评估系统核心能力"""
+        capabilities = []
+        
+        # 1. 决策能力评估
+        decision_metrics = {
+            "accuracy": self._assess_decision_quality(),
+            "speed": self._assess_decision_speed(),
+            "consistency": self._assess_decision_consistency()
+        }
+        capabilities.append(CapabilityAssessment(
+            capability_name="决策能力",
+            score=sum(decision_metrics.values()) / len(decision_metrics),
+            confidence=0.85,
+            description="系统做出准确、快速和一致决策的能力",
+            metrics=decision_metrics,
+            improvement_areas=self._identify_improvement_areas(decision_metrics, "决策能力")
+        ))
+        
+        # 2. 学习能力评估
+        learning_metrics = {
+            "efficiency": self._assess_learning_efficiency(),
+            "adaptability": self._assess_learning_adaptability(),
+            "retention": self._assess_knowledge_retention()
+        }
+        capabilities.append(CapabilityAssessment(
+            capability_name="学习能力",
+            score=sum(learning_metrics.values()) / len(learning_metrics),
+            confidence=0.80,
+            description="系统高效学习、适应新情况和保留知识的能力",
+            metrics=learning_metrics,
+            improvement_areas=self._identify_improvement_areas(learning_metrics, "学习能力")
+        ))
+        
+        # 3. 跨领域迁移能力评估
+        cross_domain_metrics = {
+            "effectiveness": self._assess_cross_domain_effectiveness(),
+            "accuracy": self._assess_cross_domain_accuracy(),
+            "coverage": self._assess_cross_domain_coverage()
+        }
+        capabilities.append(CapabilityAssessment(
+            capability_name="跨领域迁移能力",
+            score=sum(cross_domain_metrics.values()) / len(cross_domain_metrics),
+            confidence=0.75,
+            description="系统将知识从一个领域迁移到另一个领域的能力",
+            metrics=cross_domain_metrics,
+            improvement_areas=self._identify_improvement_areas(cross_domain_metrics, "跨领域迁移能力")
+        ))
+        
+        # 4. 逻辑推理能力评估
+        reasoning_metrics = {
+            "consistency": self._assess_logical_consistency(),
+            "depth": self._assess_reasoning_depth(),
+            "explainability": self._assess_reasoning_explainability()
+        }
+        capabilities.append(CapabilityAssessment(
+            capability_name="逻辑推理能力",
+            score=sum(reasoning_metrics.values()) / len(reasoning_metrics),
+            confidence=0.85,
+            description="系统进行一致、深入和可解释推理的能力",
+            metrics=reasoning_metrics,
+            improvement_areas=self._identify_improvement_areas(reasoning_metrics, "逻辑推理能力")
+        ))
+        
+        # 5. 自我意识能力评估
+        self_awareness_metrics = {
+            "self_monitoring": self._assess_self_monitoring(),
+            "reflection_quality": self._assess_reflection_quality(),
+            "meta_cognitive_ability": self._assess_meta_cognitive_ability()
+        }
+        capabilities.append(CapabilityAssessment(
+            capability_name="自我意识能力",
+            score=sum(self_awareness_metrics.values()) / len(self_awareness_metrics),
+            confidence=0.70,
+            description="系统监控自身状态、反思行为和进行元认知的能力",
+            metrics=self_awareness_metrics,
+            improvement_areas=self._identify_improvement_areas(self_awareness_metrics, "自我意识能力")
+        ))
+        
+        # 6. 情感识别能力评估
+        emotional_metrics = {
+            "recognition_accuracy": self._assess_emotional_recognition_accuracy(),
+            "response_appropriateness": self._assess_emotional_response_appropriateness(),
+            "emotional_awareness": self._assess_emotional_awareness()
+        }
+        capabilities.append(CapabilityAssessment(
+            capability_name="情感识别能力",
+            score=sum(emotional_metrics.values()) / len(emotional_metrics),
+            confidence=0.75,
+            description="系统识别和响应情感的能力",
+            metrics=emotional_metrics,
+            improvement_areas=self._identify_improvement_areas(emotional_metrics, "情感识别能力")
+        ))
+        
+        return capabilities
+    
+    def _assess_cross_domain_effectiveness(self) -> float:
+        """评估跨领域迁移的有效性"""
+        # 从跨领域迁移服务获取统计信息
+        transfer_stats = cross_domain_transfer_service.get_transfer_statistics()
+        
+        if transfer_stats["total_transfers"] == 0:
+            return 0.6  # 默认值
+        
+        # 计算平均迁移置信度
+        avg_confidence = 0.0
+        for pair_stats in transfer_stats["domain_pair_stats"].values():
+            avg_confidence += pair_stats["average_confidence"]
+        
+        if transfer_stats["domain_pair_stats"]:
+            avg_confidence /= len(transfer_stats["domain_pair_stats"])
+        
+        return min(1.0, avg_confidence)
+    
+    def _assess_logical_consistency(self) -> float:
+        """评估系统逻辑一致性"""
+        # 简化实现，实际应使用逻辑一致性检查器
+        # 假设系统有一些最近的决策历史
+        if not self.decision_history:
+            return 0.8  # 默认值
+        
+        # 检查最近决策的一致性
+        consistency_checker = LogicalConsistencyChecker()
+        consistent_count = 0
+        
+        for decision in self.decision_history[-5:]:  # 检查最近5个决策
+            # 简化的一致性检查
+            consistency_result = consistency_checker.check_consistency(
+                decision=decision,
+                history=self.decision_history[-10:]  # 使用最近10个决策作为历史
+            )
+            
+            if consistency_result["is_consistent"]:
+                consistent_count += 1
+        
+        return consistent_count / len(self.decision_history[-5:]) if self.decision_history[-5:] else 0.8
+    
+    def _get_resource_usage(self) -> Dict[str, float]:
+        """获取系统资源使用情况"""
+        process = psutil.Process()
+        
+        with process.oneshot():
+            cpu_percent = process.cpu_percent(interval=0.1)
+            memory_info = process.memory_info()
+            memory_percent = process.memory_percent()
+            num_threads = process.num_threads()
+        
+        return {
+            "cpu_usage": cpu_percent / 100.0,  # 转换为0-1范围
+            "memory_usage": memory_percent / 100.0,  # 转换为0-1范围
+            "memory_mb": memory_info.rss / (1024 * 1024),  # MB
+            "threads": num_threads
+        }
+    
+    def _assess_cognitive_load(self) -> float:
+        """评估系统认知负载"""
+        # 基于资源使用和决策复杂度评估认知负载
+        resource_usage = self._get_resource_usage()
+        
+        # 认知负载 = CPU使用 * 0.5 + 内存使用 * 0.3 + 决策复杂度 * 0.2
+        cpu_load = resource_usage["cpu_usage"]
+        memory_load = resource_usage["memory_usage"]
+        
+        # 简单的决策复杂度评估
+        decision_complexity = len(self.decision_history) / 100.0 if self.decision_history else 0.0
+        
+        cognitive_load = (cpu_load * 0.5) + (memory_load * 0.3) + (decision_complexity * 0.2)
+        return min(1.0, cognitive_load)
+    
+    def _evaluate_cross_domain_performance(self) -> Dict[str, float]:
+        """评估跨领域性能"""
+        # 从跨领域迁移服务获取统计信息
+        transfer_stats = cross_domain_transfer_service.get_transfer_statistics()
+        
+        # 计算各领域对的性能
+        performance = {}
+        for domain_pair, stats in transfer_stats["domain_pair_stats"].items():
+            performance[domain_pair] = stats["average_confidence"]
+        
+        return performance
+    
+    def _assess_decision_speed(self) -> float:
+        """评估决策速度"""
+        # 简单实现，实际应测量决策时间
+        return 0.85
+    
+    def _assess_decision_consistency(self) -> float:
+        """评估决策一致性"""
+        # 简单实现，实际应检查决策之间的一致性
+        return 0.80
+    
+    def _assess_learning_adaptability(self) -> float:
+        """评估学习适应性"""
+        # 简单实现，实际应测量系统适应新情况的能力
+        return 0.75
+    
+    def _assess_knowledge_retention(self) -> float:
+        """评估知识保留能力"""
+        # 简单实现，实际应测量系统保留所学知识的能力
+        return 0.80
+    
+    def _assess_cross_domain_accuracy(self) -> float:
+        """评估跨领域迁移准确性"""
+        # 简单实现，实际应测量跨领域迁移的准确性
+        return 0.70
+    
+    def _assess_cross_domain_coverage(self) -> float:
+        """评估跨领域迁移覆盖范围"""
+        transfer_stats = cross_domain_transfer_service.get_transfer_statistics()
+        # 覆盖范围基于领域对数量
+        return min(1.0, len(transfer_stats["domain_pair_stats"]) / 10.0)
+    
+    def _assess_self_monitoring(self) -> float:
+        """评估自我监控能力"""
+        # 基于自我评估历史频率
+        if len(self.self_assessment_history) < 5:
+            return 0.6
+        return 0.8
+    
+    def _assess_reflection_quality(self) -> float:
+        """评估反思质量"""
+        # 基于反思记录数量
+        if len(self.reflection_history) < 3:
+            return 0.5
+        return 0.75
+    
+    def _assess_meta_cognitive_ability(self) -> float:
+        """评估元认知能力"""
+        # 基于自我意识水平
+        return self.self_awareness_level.value / 4.0
+    
+    def _identify_improvement_areas(self, metrics: Dict[str, float], capability_name: str) -> List[str]:
+        """识别能力改进领域"""
+        improvement_areas = []
+        
+        for metric_name, score in metrics.items():
+            if score < 0.7:
+                improvement_areas.append(f"{capability_name}的{metric_name}指标需要改进，当前分数: {score:.2f}")
+        
+        return improvement_areas
+    
+    def _assess_emotional_recognition_accuracy(self) -> float:
+        """评估情感识别准确性"""
+        # 简单实现，实际应测量情感识别的准确性
+        # 从认知架构获取情感处理模块
+        from .cognitive_architecture import CognitiveModuleType
+        emotional_module = self.cognitive_architecture.get_module(
+            CognitiveModuleType.EMOTIONAL_PROCESSING
+        )
+        
+        if emotional_module:
+            return 0.85  # 假设情感识别服务工作正常
+        return 0.7  # 默认值
+    
+    def _assess_emotional_response_appropriateness(self) -> float:
+        """评估情感响应适当性"""
+        # 简单实现，实际应评估系统对情感的响应是否适当
+        return 0.80  # 默认值
+    
+    def _assess_emotional_awareness(self) -> float:
+        """评估情感意识水平"""
+        # 基于系统是否能感知和响应情感
+        return 0.75  # 默认值
+    
+    def _assess_reasoning_depth(self) -> float:
+        """评估推理深度"""
+        # 简单实现，实际应测量推理步骤的深度
+        return 0.80
+    
+    def _assess_reasoning_explainability(self) -> float:
+        """评估推理可解释性"""
+        # 简单实现，实际应测量推理过程的可解释程度
+        return 0.85
     
     def _assess_decision_quality(self) -> float:
         """评估决策质量"""
@@ -440,13 +756,30 @@ class MetaCognitiveModule(CognitiveModule):
         
         latest_assessment = self.self_assessment_history[-1]
         
+        # 转换能力评估为字典格式
+        capability_assessments_dict = []
+        for cap in latest_assessment.capability_assessments:
+            capability_assessments_dict.append({
+                "capability_name": cap.capability_name,
+                "score": cap.score,
+                "confidence": cap.confidence,
+                "description": cap.description,
+                "metrics": cap.metrics,
+                "improvement_areas": cap.improvement_areas
+            })
+        
         return {
             "latest_assessment": {
                 "overall_score": latest_assessment.overall_score,
                 "timestamp": latest_assessment.timestamp,
                 "performance_metrics": latest_assessment.performance_metrics,
+                "capability_assessments": capability_assessments_dict,
                 "strengths": latest_assessment.strengths,
-                "weaknesses": latest_assessment.weaknesses
+                "weaknesses": latest_assessment.weaknesses,
+                "recommended_actions": latest_assessment.recommended_actions,
+                "cognitive_load": latest_assessment.cognitive_load,
+                "resource_usage": latest_assessment.resource_usage,
+                "cross_domain_performance": latest_assessment.cross_domain_performance
             },
             "self_awareness_level": self.self_awareness_level.name,
             "assessment_count": len(self.self_assessment_history),
@@ -504,12 +837,26 @@ class MetaCognitiveSystem:
     
     def get_status(self) -> Dict[str, Any]:
         """获取元认知系统状态"""
+        # 安全获取最新评估结果
+        latest_assessment = self.meta_module.self_assessment_history[-1] if self.meta_module.self_assessment_history else None
+        
         return {
             "initialized": self.initialized,
             "last_update": self.last_update,
-            "meta_module": self.meta_module.get_status(),
             "self_awareness_level": self.meta_module.self_awareness_level.name,
-            "assessment_summary": self.meta_module.get_self_assessment_summary()
+            "assessment_summary": self.meta_module.get_self_assessment_summary(),
+            "capability_assessments": [
+                {
+                    "capability_name": cap.capability_name,
+                    "score": cap.score,
+                    "confidence": cap.confidence
+                }
+                for cap in latest_assessment.capability_assessments
+                if latest_assessment is not None
+            ],
+            "cognitive_load": latest_assessment.cognitive_load if latest_assessment else 0.0,
+            "resource_usage": latest_assessment.resource_usage if latest_assessment else {},
+            "cross_domain_performance": latest_assessment.cross_domain_performance if latest_assessment else {}
         }
     
     def reflect_on_decision(self, decision_id: str, decision_context: Dict[str, Any]):

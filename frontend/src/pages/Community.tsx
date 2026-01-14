@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { 
-  Video, 
-  Users, 
-  MessageSquare, 
-  Heart, 
-  Share2, 
-  MoreVertical, 
-  Search, 
-  Play, 
-  Pause, 
-  Volume2, 
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Video,
+  Users,
+  MessageSquare,
+  Heart,
+  Share2,
+  MoreVertical,
+  Search,
+  Play,
+  Pause,
+  Volume2,
   VolumeX,
-  Star
-} from 'lucide-react'
-import { apiClient } from '@/services/api'
+  Star,
+} from 'lucide-react';
+import { apiClient } from '@/services/api';
 
 // 定义直播流数据类型
 interface LiveStream {
@@ -34,8 +34,7 @@ interface LiveStream {
 }
 
 // 初始空直播流数据
-const initialLiveStreams: LiveStream[] = []
-
+const initialLiveStreams: LiveStream[] = [];
 
 
 // Mock community posts data
@@ -48,7 +47,7 @@ const communityPosts = [
     likes: 128,
     comments: 35,
     time: '2小时前',
-    tags: ['模型训练', 'AI', '技术分享']
+    tags: ['模型训练', 'AI', '技术分享'],
   },
   {
     id: 2,
@@ -58,7 +57,7 @@ const communityPosts = [
     likes: 256,
     comments: 48,
     time: '4小时前',
-    tags: ['农业', '病虫害', '预测']
+    tags: ['农业', '病虫害', '预测'],
   },
   {
     id: 3,
@@ -68,113 +67,113 @@ const communityPosts = [
     likes: 192,
     comments: 27,
     time: '6小时前',
-    tags: ['区块链', '数据安全', '集成']
-  }
-]
+    tags: ['区块链', '数据安全', '集成'],
+  },
+];
 
 export function Community() {
-  const [liveStreams, setLiveStreams] = useState<LiveStream[]>(initialLiveStreams)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedStream, setSelectedStream] = useState<LiveStream | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
-  const [commentText, setCommentText] = useState('')
+  const [liveStreams, setLiveStreams] = useState<LiveStream[]>(initialLiveStreams);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStream, setSelectedStream] = useState<LiveStream | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([
     { id: 1, user: '用户A', content: '这个直播内容非常棒！学到了很多关于AI的知识，感谢主播分享！', time: '1小时前', likes: 15 },
     { id: 2, user: '用户B', content: '请问这个技术在实际生产环境中应用效果如何？', time: '30分钟前', likes: 8 },
     { id: 3, user: '用户C', content: '主播讲得很清晰，希望能有更多这样的直播！', time: '15分钟前', likes: 12 },
-  ])
-  const [likedPosts, setLikedPosts] = useState<{[key: number]: boolean}>({})
+  ]);
+  const [likedPosts, setLikedPosts] = useState<{[key: number]: boolean}>({});
   const [postLikes, setPostLikes] = useState<{[key: number]: number}>({
     1: 128,
     2: 256,
-    3: 192
-  })
-  
+    3: 192,
+  });
+
   // 从后端获取直播流数据
   useEffect(() => {
     const fetchLiveStreams = async () => {
       try {
-        const response = await apiClient.getCommunityLiveStreams()
+        const response = await apiClient.getCommunityLiveStreams();
         if (response.success && response.data) {
-          setLiveStreams(response.data)
+          setLiveStreams(response.data);
           // 设置第一个直播流为默认选中
           if (response.data.length > 0) {
-            setSelectedStream(response.data[0])
+            setSelectedStream(response.data[0]);
           }
         }
       } catch (error) {
-        console.error('获取直播流失败:', error)
+        console.error('获取直播流失败:', error);
       }
-    }
-    
-    fetchLiveStreams()
-  }, [])
-  
+    };
+
+    fetchLiveStreams();
+  }, []);
+
   // 搜索功能实现
-  const filteredStreams = liveStreams.filter(stream => 
+  const filteredStreams = liveStreams.filter(stream =>
     stream.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     stream.streamer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    stream.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  )
-  
-  const filteredPosts = communityPosts.filter(post => 
+    stream.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())),
+  );
+
+  const filteredPosts = communityPosts.filter(post =>
     post.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  )
-  
+    post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())),
+  );
+
   // 提交评论
   const handleSubmitComment = async () => {
     if (commentText.trim() && selectedStream) {
       try {
-        const response = await apiClient.submitComment(selectedStream.id, commentText)
+        const response = await apiClient.submitComment(selectedStream.id, commentText);
         if (response.success) {
           const newComment = {
             id: comments.length + 1,
             user: '我',
             content: commentText,
             time: '刚刚',
-            likes: 0
-          }
-          setComments([newComment, ...comments])
-          setCommentText('')
+            likes: 0,
+          };
+          setComments([newComment, ...comments]);
+          setCommentText('');
         }
       } catch (error) {
-        console.error('提交评论失败:', error)
+        console.error('提交评论失败:', error);
       }
     }
-  }
-  
+  };
+
   // 点赞功能
   const handleLikePost = async (postId: number) => {
     try {
-      const response = await apiClient.likePost(postId)
+      const response = await apiClient.likePost(postId);
       if (response.success) {
         setLikedPosts(prev => ({
           ...prev,
-          [postId]: !prev[postId]
-        }))
+          [postId]: !prev[postId],
+        }));
         setPostLikes(prev => ({
           ...prev,
-          [postId]: prev[postId] + (likedPosts[postId] ? -1 : 1)
-        }))
+          [postId]: prev[postId] + (likedPosts[postId] ? -1 : 1),
+        }));
       }
     } catch (error) {
-      console.error('点赞失败:', error)
+      console.error('点赞失败:', error);
     }
-  }
-  
+  };
+
   // 点赞评论
   const handleLikeComment = (commentId: number) => {
-    setComments(prevComments => 
-      prevComments.map(comment => 
-        comment.id === commentId 
-          ? { ...comment, likes: comment.likes + 1 } 
-          : comment
-      )
-    )
-  }
+    setComments(prevComments =>
+      prevComments.map(comment =>
+        comment.id === commentId ?
+          { ...comment, likes: comment.likes + 1 } :
+          comment,
+      ),
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -191,7 +190,7 @@ export function Community() {
           placeholder="搜索直播、帖子或用户..."
           className="pl-10 bg-tech-dark/50 border-tech-primary/20 text-white placeholder:text-gray-400"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
         />
       </div>
 
@@ -229,21 +228,23 @@ export function Community() {
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="relative bg-black w-full h-[400px] flex items-center justify-center">
-                      {selectedStream.cover_image ? (
-                        <img 
-                          src={selectedStream.cover_image} 
-                          alt={selectedStream.title} 
+                      {selectedStream.cover_image ?
+(
+                        <img
+                          src={selectedStream.cover_image}
+                          alt={selectedStream.title}
                           className="w-full h-full object-cover opacity-70"
                         />
-                      ) : (
+                      ) :
+(
                         <div className="bg-gradient-to-br from-tech-primary to-tech-secondary w-full h-full flex items-center justify-center opacity-70">
                           <Video className="w-20 h-20 text-white/50" />
                         </div>
                       )}
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Button 
-                        variant="secondary" 
-                        size="icon" 
+                      <Button
+                        variant="secondary"
+                        size="icon"
                         className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30"
                         onClick={() => setIsPlaying(!isPlaying)}
                       >
@@ -254,9 +255,9 @@ export function Community() {
                     <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             className="text-white hover:bg-white/20"
                             onClick={() => setIsMuted(!isMuted)}
                           >
@@ -306,11 +307,11 @@ export function Community() {
                   我
                 </div>
                 <div className="flex-1">
-                  <Input 
-                    placeholder="输入评论..." 
+                  <Input
+                    placeholder="输入评论..."
                     className="bg-tech-dark/50 border-tech-primary/20 text-white placeholder:text-gray-400"
                     value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
+                    onChange={e => setCommentText(e.target.value)}
                   />
                   <div className="flex justify-end mt-2 space-x-2">
                     <Button variant="outline" size="sm" onClick={() => setCommentText('')}>取消</Button>
@@ -319,7 +320,7 @@ export function Community() {
                 </div>
               </div>
               {/* 评论列表 */}
-              {comments.map((comment) => (
+              {comments.map(comment => (
                 <div key={comment.id} className="flex space-x-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-random-1 to-random-2 flex items-center justify-center font-bold">
                     {comment.user.charAt(0)}
@@ -333,7 +334,7 @@ export function Community() {
                       {comment.content}
                     </p>
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-400">
-                      <button 
+                      <button
                         className={`flex items-center space-x-1 ${comment.likes > 0 ? 'text-tech-primary' : 'hover:text-tech-primary'}`}
                         onClick={() => handleLikeComment(comment.id)}
                       >
@@ -361,20 +362,22 @@ export function Community() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {filteredStreams.map((stream) => (
-                <div 
+              {filteredStreams.map(stream => (
+                <div
                   key={stream.id}
                   className={`cursor-pointer rounded-lg overflow-hidden border ${selectedStream?.id === stream.id ? 'border-tech-primary' : 'border-tech-primary/10'} hover:border-tech-primary/50 transition-all duration-300`}
                   onClick={() => setSelectedStream(stream)}
                 >
                   <div className="relative">
-                    {stream.cover_image ? (
-                      <img 
-                        src={stream.cover_image} 
-                        alt={stream.title} 
+                    {stream.cover_image ?
+(
+                      <img
+                        src={stream.cover_image}
+                        alt={stream.title}
                         className="w-full h-32 object-cover"
                       />
-                    ) : (
+                    ) :
+(
                       <div className="bg-gradient-to-br from-tech-primary to-tech-secondary w-full h-32 flex items-center justify-center">
                         <Video className="w-10 h-10 text-white/50" />
                       </div>
@@ -404,12 +407,12 @@ export function Community() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {filteredPosts.map((post) => (
+              {filteredPosts.map(post => (
                 <div key={post.id} className="space-y-2">
                   <div className="flex items-center space-x-3">
-                    <img 
-                      src={post.avatar} 
-                      alt={post.user} 
+                    <img
+                      src={post.avatar}
+                      alt={post.user}
                       className="w-10 h-10 rounded-full"
                     />
                     <div>
@@ -420,9 +423,9 @@ export function Community() {
                   <p className="text-sm text-gray-300 line-clamp-3">{post.content}</p>
                   <div className="flex items-center justify-between text-xs text-gray-400">
                     <div className="flex items-center space-x-4">
-                      <button 
+                      <button
                         className={`flex items-center space-x-1 ${likedPosts[post.id] ? 'text-tech-primary' : 'hover:text-tech-primary'}`}
-                        onClick={() => handleLikePost(post.id)}
+                        onClick={async () => handleLikePost(post.id)}
                       >
                         <Heart className="w-3 h-3" />
                         <span>{postLikes[post.id]}</span>
@@ -455,7 +458,7 @@ export function Community() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Community
+export default Community;

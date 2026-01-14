@@ -1,80 +1,82 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Download, 
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Plus,
+  Search,
+  Filter,
+  Download,
   Upload,
   Play,
   Pause,
   Edit,
   Trash2,
   Brain,
-  RefreshCw
-} from 'lucide-react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectLabel, SelectSeparator } from '@/components/ui/select'
-import { useModelsQuery } from '@/hooks/useModelsQuery'
-import { apiClient } from '@/services/api'
-import toast from 'react-hot-toast'
+  RefreshCw,
+} from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectLabel, SelectSeparator } from '@/components/ui/select';
+import { useModelsQuery } from '@/hooks/useModelsQuery';
+import { apiClient } from '@/services/api';
+import toast from 'react-hot-toast';
 
 export function ModelManagement() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showImportModal, setShowImportModal] = useState(false)
-  const [showMarketImportModal, setShowMarketImportModal] = useState(false)
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [showMarketImportModal, setShowMarketImportModal] = useState(false);
   const [operatingModel, setOperatingModel] = useState<{id: string, operation: string} | null>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [createForm, setCreateForm] = useState({
     name: '',
     description: '',
-    type: 'ai'
-  })
+    type: 'ai',
+  });
   const [importForm, setImportForm] = useState({
     name: '',
     file: null as File | null,
-    fileName: ''
-  })
+    fileName: '',
+  });
   const [marketImportForm, setMarketImportForm] = useState({
     model_name_or_path: '',
     model_format: 'huggingface',
     model_type: 'transformer',
-    name: ''
-  })
-  const { data: models = [], isLoading: loading, refetch, isRefetching } = useModelsQuery()
-  
+    name: '',
+  });
+  const { data: models = [], isLoading: loading, refetch, isRefetching } = useModelsQuery();
+
   // 转换API数据格式
   const modelList = models.map(model => ({
 
     id: model.id,
     name: model.name,
     type: model.description || 'AI模型',
-    status: model.status === 'ready' ? '运行中' : 
-            model.status === 'training' ? '训练中' : 
+    status: model.status === 'ready' ?
+'运行中' :
+            model.status === 'training' ?
+'训练中' :
             model.status === 'deployed' ? '运行中' : '已停止',
     accuracy: model.accuracy ? `${(model.accuracy * 100).toFixed(1)}%` : '--',
     size: model.size ? `${(model.size / 1024 / 1024).toFixed(2)} MB` : '--',
     lastTrained: model.updated_at ? new Date(model.updated_at).toLocaleDateString() : '--',
-    version: model.version || 'v1.0.0'
-  })) || []
+    version: model.version || 'v1.0.0',
+  })) || [];
 
   const filteredModels = modelList.filter(model =>
     model.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    model.type.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    model.type.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case '运行中': return 'text-green-400'
-      case '训练中': return 'text-yellow-400'
-      case '已停止': return 'text-red-400'
-      default: return 'text-gray-400'
+      case '运行中': return 'text-green-400';
+      case '训练中': return 'text-yellow-400';
+      case '已停止': return 'text-red-400';
+      default: return 'text-gray-400';
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -89,9 +91,13 @@ export function ModelManagement() {
             <Plus className="w-4 h-4" />
             <span>新建模型</span>
           </Button>
-          <Select onValueChange={(value) => {
-            if (value === 'import') setShowImportModal(true);
-            if (value === 'market') setShowMarketImportModal(true);
+          <Select onValueChange={value => {
+            if (value === 'import') {
+ setShowImportModal(true);
+}
+            if (value === 'market') {
+ setShowMarketImportModal(true);
+}
           }}>
             <SelectTrigger className="w-[120px] flex items-center space-x-2">
               <Upload className="w-4 h-4" />
@@ -102,10 +108,10 @@ export function ModelManagement() {
               <SelectItem value="market">从市场导入</SelectItem>
             </SelectContent>
           </Select>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="flex items-center space-x-2"
-            onClick={() => refetch()}
+            onClick={async () => refetch()}
             disabled={loading}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -123,7 +129,7 @@ export function ModelManagement() {
               <Input
                 placeholder="搜索模型名称或类型..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -137,7 +143,7 @@ export function ModelManagement() {
 
       {/* 模型列表 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredModels.map((model) => (
+        {filteredModels.map(model => (
           <Card key={model.id} className="glass-effect hover:neon-glow transition-all duration-300 cursor-pointer" onClick={() => navigate(`/models/${encodeURIComponent(model.id)}`)}>
 
             <CardHeader className="pb-3">
@@ -175,12 +181,12 @@ export function ModelManagement() {
                   <span className="ml-2 text-white">{model.version}</span>
                 </div>
               </div>
-              
+
               <div className="flex justify-between pt-2 border-t border-tech-light">
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline" className="flex items-center space-x-1" onClick={async (e) => {
+                  <Button size="sm" variant="outline" className="flex items-center space-x-1" onClick={async e => {
                     e.stopPropagation();
-                    setOperatingModel({id: model.id, operation: 'start'});
+                    setOperatingModel({ id: model.id, operation: 'start' });
                     try {
                       const response = await apiClient.startModel(model.id);
                       if (response.success) {
@@ -196,21 +202,23 @@ export function ModelManagement() {
                       setOperatingModel(null);
                     }
                   }} disabled={loading || isRefetching || (operatingModel?.id === model.id && operatingModel.operation === 'start')}>
-                    {operatingModel?.id === model.id && operatingModel.operation === 'start' ? (
+                    {operatingModel?.id === model.id && operatingModel.operation === 'start' ?
+(
                       <>
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         <span>启动中</span>
                       </>
-                    ) : (
+                    ) :
+(
                       <>
                         <Play className="w-3 h-3" />
                         <span>启动</span>
                       </>
                     )}
                   </Button>
-                  <Button size="sm" variant="outline" className="flex items-center space-x-1" onClick={async (e) => {
+                  <Button size="sm" variant="outline" className="flex items-center space-x-1" onClick={async e => {
                     e.stopPropagation();
-                    setOperatingModel({id: model.id, operation: 'pause'});
+                    setOperatingModel({ id: model.id, operation: 'pause' });
                     try {
                       const response = await apiClient.pauseModel(model.id);
                       if (response.success) {
@@ -226,12 +234,14 @@ export function ModelManagement() {
                       setOperatingModel(null);
                     }
                   }} disabled={loading || isRefetching || (operatingModel?.id === model.id && operatingModel.operation === 'pause')}>
-                    {operatingModel?.id === model.id && operatingModel.operation === 'pause' ? (
+                    {operatingModel?.id === model.id && operatingModel.operation === 'pause' ?
+(
                       <>
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         <span>暂停中</span>
                       </>
-                    ) : (
+                    ) :
+(
                       <>
                         <Pause className="w-3 h-3" />
                         <span>暂停</span>
@@ -240,10 +250,10 @@ export function ModelManagement() {
                   </Button>
                 </div>
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                  <Button size="sm" variant="ghost" onClick={e => e.stopPropagation()}>
                     <Edit className="w-3 h-3" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                  <Button size="sm" variant="ghost" onClick={e => e.stopPropagation()}>
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>
@@ -302,7 +312,7 @@ export function ModelManagement() {
                   <Input
                     placeholder="请输入模型名称"
                     value={createForm.name}
-                    onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                    onChange={e => setCreateForm({ ...createForm, name: e.target.value })}
                   />
                 </div>
                 <div>
@@ -310,7 +320,7 @@ export function ModelManagement() {
                   <Input
                     placeholder="请输入模型描述"
                     value={createForm.description}
-                    onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
+                    onChange={e => setCreateForm({ ...createForm, description: e.target.value })}
                   />
                 </div>
                 <div>
@@ -338,24 +348,24 @@ export function ModelManagement() {
               </Button>
               <Button variant="tech" onClick={async () => {
                 try {
-                  console.log('开始创建模型，表单数据:', createForm)
+                  console.log('开始创建模型，表单数据:', createForm);
                   const response = await apiClient.createModel({
                     name: createForm.name,
                     description: createForm.description,
                     status: 'ready',
-                    version: 'v1.0.0'
-                  })
-                  console.log('创建模型API响应:', response)
+                    version: 'v1.0.0',
+                  });
+                  console.log('创建模型API响应:', response);
                   if (response.success) {
-                    console.log('模型创建成功:', response.data)
-                    refetch() // 刷新模型列表
-                    setShowCreateModal(false)
-                    setCreateForm({ name: '', description: '', type: 'ai' }) // 重置表单
+                    console.log('模型创建成功:', response.data);
+                    refetch(); // 刷新模型列表
+                    setShowCreateModal(false);
+                    setCreateForm({ name: '', description: '', type: 'ai' }); // 重置表单
                   } else {
-                    console.error('模型创建失败:', response.error)
+                    console.error('模型创建失败:', response.error);
                   }
                 } catch (error) {
-                  console.error('创建模型时发生错误:', error)
+                  console.error('创建模型时发生错误:', error);
                 }
               }}>
                 创建
@@ -380,7 +390,7 @@ export function ModelManagement() {
                   <Input
                     placeholder="请输入模型名称"
                     value={importForm.name}
-                    onChange={(e) => setImportForm({ ...importForm, name: e.target.value })}
+                    onChange={e => setImportForm({ ...importForm, name: e.target.value })}
                   />
                 </div>
                 <div>
@@ -388,26 +398,27 @@ export function ModelManagement() {
                   <div
                     className={`border-2 rounded-lg p-6 text-center ${importForm.file ? 'border-tech-primary bg-tech-primary/10' : 'border-dashed border-gray-600'}`}
                     onClick={() => document.getElementById('model-file-input')?.click()}
-                    onDragOver={(e) => {
-                      e.preventDefault()
-                      e.currentTarget.classList.add('border-tech-primary')
+                    onDragOver={e => {
+                      e.preventDefault();
+                      e.currentTarget.classList.add('border-tech-primary');
                     }}
-                    onDragLeave={(e) => {
-                      e.preventDefault()
+                    onDragLeave={e => {
+                      e.preventDefault();
                       if (!importForm.file) {
-                        e.currentTarget.classList.remove('border-tech-primary')
+                        e.currentTarget.classList.remove('border-tech-primary');
                       }
                     }}
-                    onDrop={(e) => {
-                      e.preventDefault()
-                      e.currentTarget.classList.remove('border-tech-primary')
+                    onDrop={e => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('border-tech-primary');
                       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                        const file = e.dataTransfer.files[0]
-                        setImportForm({ ...importForm, file, fileName: file.name })
+                        const file = e.dataTransfer.files[0];
+                        setImportForm({ ...importForm, file, fileName: file.name });
                       }
                     }}
                   >
-                    {importForm.file ? (
+                    {importForm.file ?
+(
                       <div className="flex flex-col items-center">
                         <div className="w-10 h-10 bg-tech-primary/20 rounded-full flex items-center justify-center mb-2">
                           <Upload className="w-6 h-6 text-tech-primary" />
@@ -418,15 +429,16 @@ export function ModelManagement() {
                           variant="outline"
                           size="sm"
                           className="mt-2"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setImportForm({ ...importForm, file: null, fileName: '' })
+                          onClick={e => {
+                            e.stopPropagation();
+                            setImportForm({ ...importForm, file: null, fileName: '' });
                           }}
                         >
                           更换文件
                         </Button>
                       </div>
-                    ) : (
+                    ) :
+(
                       <>
                         <Upload className="w-10 h-10 text-gray-500 mx-auto mb-2" />
                         <p className="text-gray-400 mb-2">点击或拖拽文件到此处上传</p>
@@ -439,10 +451,10 @@ export function ModelManagement() {
                     type="file"
                     accept=".pt,.pth,.onnx,.pb"
                     className="hidden"
-                    onChange={(e) => {
+                    onChange={e => {
                       if (e.target.files && e.target.files.length > 0) {
-                        const file = e.target.files[0]
-                        setImportForm({ ...importForm, file, fileName: file.name })
+                        const file = e.target.files[0];
+                        setImportForm({ ...importForm, file, fileName: file.name });
                       }
                     }}
                   />
@@ -454,8 +466,8 @@ export function ModelManagement() {
             </CardContent>
             <div className="p-4 flex justify-end space-x-2">
               <Button variant="outline" onClick={() => {
-                setShowImportModal(false)
-                setImportForm({ name: '', file: null, fileName: '' })
+                setShowImportModal(false);
+                setImportForm({ name: '', file: null, fileName: '' });
               }}>
                 取消
               </Button>
@@ -464,23 +476,25 @@ export function ModelManagement() {
                 disabled={!importForm.name || !importForm.file}
                 onClick={async () => {
                   try {
-                    if (!importForm.name || !importForm.file) return
-                    
+                    if (!importForm.name || !importForm.file) {
+ return;
+}
+
                     const response = await apiClient.importModel(
                       { name: importForm.name },
-                      importForm.file
-                    )
+                      importForm.file,
+                    );
                     if (response.success) {
-                      console.log('模型导入成功:', response.data)
-                      refetch() // 刷新模型列表
-                      setShowImportModal(false)
-                      setImportForm({ name: '', file: null, fileName: '' }) // 重置表单
+                      console.log('模型导入成功:', response.data);
+                      refetch(); // 刷新模型列表
+                      setShowImportModal(false);
+                      setImportForm({ name: '', file: null, fileName: '' }); // 重置表单
                     } else {
-                      console.error('模型导入失败:', response.error)
+                      console.error('模型导入失败:', response.error);
                       // 这里可以添加错误提示
                     }
                   } catch (error) {
-                    console.error('导入模型时发生错误:', error)
+                    console.error('导入模型时发生错误:', error);
                     // 这里可以添加错误提示
                   }
                 }}
@@ -507,7 +521,7 @@ export function ModelManagement() {
                   <Input
                     placeholder="例如: gpt2, bert-base-uncased, HuggingFaceH4/zephyr-7b-beta"
                     value={marketImportForm.model_name_or_path}
-                    onChange={(e) => setMarketImportForm({ ...marketImportForm, model_name_or_path: e.target.value })}
+                    onChange={e => setMarketImportForm({ ...marketImportForm, model_name_or_path: e.target.value })}
                   />
                 </div>
                 <div>
@@ -515,7 +529,7 @@ export function ModelManagement() {
                   <select
                     className="w-full p-2 rounded-md bg-gray-900 border border-gray-700 text-white"
                     value={marketImportForm.model_format}
-                    onChange={(e) => setMarketImportForm({ ...marketImportForm, model_format: e.target.value })}
+                    onChange={e => setMarketImportForm({ ...marketImportForm, model_format: e.target.value })}
                   >
                     <option value="huggingface">Hugging Face</option>
                     <option value="onnx">ONNX</option>
@@ -528,7 +542,7 @@ export function ModelManagement() {
                   <select
                     className="w-full p-2 rounded-md bg-gray-900 border border-gray-700 text-white"
                     value={marketImportForm.model_type}
-                    onChange={(e) => setMarketImportForm({ ...marketImportForm, model_type: e.target.value })}
+                    onChange={e => setMarketImportForm({ ...marketImportForm, model_type: e.target.value })}
                   >
                     <option value="transformer">Transformer模型</option>
                     <option value="cv">计算机视觉</option>
@@ -542,15 +556,15 @@ export function ModelManagement() {
                   <Input
                     placeholder="模型在系统中的显示名称（可选）"
                     value={marketImportForm.name}
-                    onChange={(e) => setMarketImportForm({ ...marketImportForm, name: e.target.value })}
+                    onChange={e => setMarketImportForm({ ...marketImportForm, name: e.target.value })}
                   />
                 </div>
               </div>
             </CardContent>
             <div className="p-4 flex justify-end space-x-2">
               <Button variant="outline" onClick={() => {
-                setShowMarketImportModal(false)
-                setMarketImportForm({ model_name_or_path: '', model_format: 'huggingface', model_type: 'transformer', name: '' })
+                setShowMarketImportModal(false);
+                setMarketImportForm({ model_name_or_path: '', model_format: 'huggingface', model_type: 'transformer', name: '' });
               }}>
                 取消
               </Button>
@@ -559,20 +573,22 @@ export function ModelManagement() {
                 disabled={!marketImportForm.model_name_or_path}
                 onClick={async () => {
                   try {
-                    if (!marketImportForm.model_name_or_path) return
-                    
-                    const response = await apiClient.loadPretrainedModel(marketImportForm)
+                    if (!marketImportForm.model_name_or_path) {
+ return;
+}
+
+                    const response = await apiClient.loadPretrainedModel(marketImportForm);
                     if (response.success) {
-                      console.log('从市场导入模型成功:', response.data)
-                      refetch() // 刷新模型列表
-                      setShowMarketImportModal(false)
-                      setMarketImportForm({ model_name_or_path: '', model_format: 'huggingface', model_type: 'transformer', name: '' }) // 重置表单
+                      console.log('从市场导入模型成功:', response.data);
+                      refetch(); // 刷新模型列表
+                      setShowMarketImportModal(false);
+                      setMarketImportForm({ model_name_or_path: '', model_format: 'huggingface', model_type: 'transformer', name: '' }); // 重置表单
                     } else {
-                      console.error('从市场导入模型失败:', response.error)
+                      console.error('从市场导入模型失败:', response.error);
                       // 这里可以添加错误提示
                     }
                   } catch (error) {
-                    console.error('从市场导入模型时发生错误:', error)
+                    console.error('从市场导入模型时发生错误:', error);
                     // 这里可以添加错误提示
                   }
                 }}
@@ -585,5 +601,5 @@ export function ModelManagement() {
       )}
 
     </div>
-  )
+  );
 }
