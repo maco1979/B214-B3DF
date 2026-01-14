@@ -1,0 +1,141 @@
+/* 设计系统工具类 */
+
+/* 布局工具类 */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-column { display: flex; flex-direction: column; }
+.grid-center { display: grid; place-items: center; }
+
+/* 间距工具类 */
+.m-auto { margin: auto; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.my-auto { margin-top: auto; margin-bottom: auto; }
+
+.p-section { padding: 2rem 1rem; }
+.p-subsection { padding: 1.5rem 1rem; }
+
+/* 响应式间距 */
+@media (min-width: 768px) {
+  .p-section { padding: 3rem 2rem; }
+  .p-subsection { padding: 2rem 1.5rem; }
+}
+
+/* 视觉层次工具类 */
+.elevate-1 { 
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); 
+}
+.elevate-2 { 
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); 
+}
+.elevate-3 { 
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); 
+}
+
+/* 动画过渡工具类 */
+.transition-fast { transition: all 0.15s ease; }
+.transition-normal { transition: all 0.25s ease; }
+.transition-slow { transition: all 0.35s ease; }
+
+/* 悬停效果 */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 边框圆角工具类 */
+.rounded-sm { border-radius: calc(var(--radius) - 4px); }
+.rounded-md { border-radius: var(--radius); }
+.rounded-lg { border-radius: calc(var(--radius) + 4px); }
+.rounded-xl { border-radius: calc(var(--radius) + 8px); }
+
+/* 状态指示器 */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: hsl(var(--muted-foreground));
+}
+
+.status-dot.success { background-color: #10b981; }
+.status-dot.warning { background-color: #f59e0b; }
+.status-dot.error { background-color: #ef4444; }
+.status-dot.info { background-color: #3b82f6; }
+
+/* 加载动画 */
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 渐变背景 */
+.gradient-primary {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(calc(var(--primary) - 20deg)));
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, hsl(var(--secondary)), hsl(calc(var(--secondary) - 20deg)));
+}
+
+/* 文本溢出处理 */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 宽高比容器 */
+.aspect-video { aspect-ratio: 16 / 9; }
+.aspect-square { aspect-ratio: 1 / 1; }
+
+/* 交互状态 */
+.cursor-pointer { cursor: pointer; }
+.cursor-not-allowed { cursor: not-allowed; }
+.pointer-events-none { pointer-events: none; }
+
+/* 显示工具类 */
+.hidden-sm {
+  display: none;
+}
+@media (min-width: 640px) {
+  .hidden-sm {
+    display: block;
+  }
+}
+
+/* 媒体查询断点 */
+@media (max-width: 639px) { .show-mobile { display: block; } .hide-mobile { display: none; } }
+@media (min-width: 640px) { .show-tablet { display: block; } .hide-tablet { display: none; } }
+@media (min-width: 1024px) { .show-desktop { display: block; } .hide-desktop { display: none; } }
+
+/* 可访问性 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

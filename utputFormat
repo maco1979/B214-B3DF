@@ -1,0 +1,11 @@
+HTTP/1.1 307 Temporary Redirect
+date: Fri, 09 Jan 2026 07:03:20 GMT
+server: uvicorn
+content-length: 0
+location: http://localhost:8001/api/training/status
+x-content-type-options: nosniff
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-ancestors 'self'
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: geolocation=(), microphone=(), camera=()
+cache-control: no-store, no-cache, must-revalidate, private, max-age=0
+

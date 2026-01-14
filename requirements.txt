@@ -1,0 +1,6 @@
+requests>=2.31.0
+win_unicode_console>=0.5
+packaging>=23.0
+requests_cache>=1.2.0
+flask>=3.0.0
+waitress>=2.1.0

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>统计仪表盘 - CVE监控系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 30px;
+        }
+        .chart-section {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">CVE统计仪表盘</h1>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        导航菜单
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="/" class="list-group-item list-group-item-action">首页</a>
+                        <a href="/dashboard" class="list-group-item list-group-item-action active">统计仪表盘</a>
+                        <a href="/cves" class="list-group-item list-group-item-action">CVE列表</a>
+                        <a href="/deltas" class="list-group-item list-group-item-action">Delta记录</a>
+                        <a href="/assets" class="list-group-item list-group-item-action">资产列表</a>
+                        <a href="/impact" class="list-group-item list-group-item-action">影响分析</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <!-- 统计卡片 -->
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-primary text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">总CVE数量</h6>
+                                <h3 class="card-text">{{ stats.total_cves }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-success text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">状态分类</h6>
+                                <h3 class="card-text">{{ stats.status_stats|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-info text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">年份范围</h6>
+                                <h3 class="card-text">{{ stats.year_stats|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-warning text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">最近更新</h6>
+                                <h3 class="card-text">{{ stats.month_stats|length }}个月</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 月份统计图表 -->
+                <div class="card chart-section">
+                    <div class="card-header">
+                        近12个月CVE发布趋势
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 年份分布图表 -->
+                <div class="card chart-section">
+                    <div class="card-header">
+                        CVE年份分布
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="yearChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 状态分布图表 -->
+                <div class="card chart-section">
+                    <div class="card-header">
+                        CVE状态分布
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 绘制图表
+        window.onload = function() {
+            // 1. 月份统计图表
+            const monthData = {{ stats.month_stats|tojson }};
+            const monthLabels = Object.keys(monthData);
+            const monthValues = Object.values(monthData);
+            
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'CVE数量',
+                        data: monthValues,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // 2. 年份分布图表
+            const yearData = {{ stats.year_stats|tojson }};
+            const yearLabels = Object.keys(yearData);
+            const yearValues = Object.values(yearData);
+            
+            const yearCtx = document.getElementById('yearChart').getContext('2d');
+            new Chart(yearCtx, {
+                type: 'bar',
+                data: {
+                    labels: yearLabels,
+                    datasets: [{
+                        label: 'CVE数量',
+                        data: yearValues,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // 3. 状态分布图表
+            const statusData = {{ stats.status_stats|tojson }};
+            const statusLabels = Object.keys(statusData);
+            const statusValues = Object.values(statusData);
+            
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusValues,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        };
+    </script>
+</body>
+</html>

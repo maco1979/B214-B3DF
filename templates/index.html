@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CVE监控系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 30px;
+        }
+        .filter-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">CVE监控系统</h1>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        导航菜单
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="/" class="list-group-item list-group-item-action active">首页</a>
+                        <a href="/dashboard" class="list-group-item list-group-item-action">统计仪表盘</a>
+                        <a href="/cves" class="list-group-item list-group-item-action">CVE列表</a>
+                        <a href="/deltas" class="list-group-item list-group-item-action">Delta记录</a>
+                        <a href="/assets" class="list-group-item list-group-item-action">资产列表</a>
+                        <a href="/impact" class="list-group-item list-group-item-action">影响分析</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        系统概览
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">欢迎使用CVE监控系统</h5>
+                        <p class="card-text">本系统用于监控和管理CVE漏洞信息，支持资产影响分析和多渠道通知。</p>
+                        <div class="mt-4">
+                            <button id="run-monitor" class="btn btn-primary me-2">运行监控</button>
+                            <button id="clear-cache" class="btn btn-secondary me-2">清理缓存</button>
+                            <button id="show-stats" class="btn btn-info">缓存统计</button>
+                        </div>
+                        <div id="status-message" class="mt-3"></div>
+                    </div>
+                </div>
+                
+                <!-- 统计卡片 -->
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-primary text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">总CVE数量</h6>
+                                <h3 class="card-text">{{ stats.total_cves }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-success text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">状态分类</h6>
+                                <h3 class="card-text">{{ stats.status_stats|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-info text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">年份范围</h6>
+                                <h3 class="card-text">{{ stats.year_stats|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card bg-warning text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">最近更新</h6>
+                                <h3 class="card-text">{{ stats.month_stats|length }}个月</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 月份统计图表 -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        近12个月CVE发布趋势
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 运行监控按钮
+        document.getElementById('run-monitor').addEventListener('click', function() {
+            fetch('/api/run-monitor', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    const msgEl = document.getElementById('status-message');
+                    msgEl.innerHTML = `<div class="alert alert-${data.status === 'success' ? 'success' : 'danger'}">${data.message}</div>`;
+                });
+        });
+        
+        // 清理缓存按钮
+        document.getElementById('clear-cache').addEventListener('click', function() {
+            fetch('/api/clear-cache', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    const msgEl = document.getElementById('status-message');
+                    msgEl.innerHTML = `<div class="alert alert-${data.status === 'success' ? 'success' : 'danger'}">${data.message}</div>`;
+                });
+        });
+        
+        // 缓存统计按钮
+        document.getElementById('show-stats').addEventListener('click', function() {
+            fetch('/api/cache-stats')
+                .then(response => response.json())
+                .then(data => {
+                    const msgEl = document.getElementById('status-message');
+                    msgEl.innerHTML = `<div class="alert alert-info">缓存统计: ${JSON.stringify(data, null, 2)}</div>`;
+                });
+        });
+        
+        // 绘制月份统计图表
+        window.onload = function() {
+            // 月份数据
+            const monthData = {{ stats.month_stats|tojson }};
+            const labels = Object.keys(monthData);
+            const values = Object.values(monthData);
+            
+            // 创建图表
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'CVE数量',
+                        data: values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
