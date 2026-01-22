@@ -15,18 +15,43 @@ import os
 import importlib.util
 import sys
 
-# 动态导入jepa_dtmpc_integration
-jepa_dtmpc_spec = importlib.util.spec_from_file_location(
-    "jepa_dtmpc_integration",
-    os.path.join(os.path.dirname(__file__), "../../../jepa_dtmpc_integration.py")
-)
-jepa_dtmpc_module = importlib.util.module_from_spec(jepa_dtmpc_spec)
-jepa_dtmpc_spec.loader.exec_module(jepa_dtmpc_module)
-
-JepaDtmpcController = jepa_dtmpc_module.JepaDtmpcController
-
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/jepa-dtmpc", tags=["jepa-dtmpc"])
+
+# 尝试动态导入jepa_dtmpc_integration，如果失败则使用模拟实现
+JepaDtmpcController = None
+try:
+    # 动态导入jepa_dtmpc_integration
+    jepa_dtmpc_spec = importlib.util.spec_from_file_location(
+        "jepa_dtmpc_integration",
+        os.path.join(os.path.dirname(__file__), "../../../jepa_dtmpc_integration.py")
+    )
+    jepa_dtmpc_module = importlib.util.module_from_spec(jepa_dtmpc_spec)
+    jepa_dtmpc_spec.loader.exec_module(jepa_dtmpc_module)
+    
+    JepaDtmpcController = jepa_dtmpc_module.JepaDtmpcController
+    logger.info("成功导入JEPA-DT-MPC控制器")
+except Exception as e:
+    logger.error(f"导入JEPA-DT-MPC控制器失败: {str(e)}")
+    # 定义一个模拟的控制器类
+    class MockJepaDtmpcController:
+        def __init__(self, **kwargs):
+            self.jepa_enabled = False
+            self.jepa_trained = False
+            self.jepa_embedding_dim = 0
+            self.mpc_core = type('obj', (object,), {'Np': 0, 'Nc': 0})
+            self.current_state = np.array([0])
+            self.jepa_current_training_step = 0
+            self.jepa_training_steps = 0
+        
+        def _train_jepa_step(self):
+            return None
+        
+        def step(self):
+            return {"cv_prediction": [0.0, 0.0, 0.0]}
+    
+    JepaDtmpcController = MockJepaDtmpcController
+    logger.info("使用模拟的JEPA-DT-MPC控制器")
 
 # JEPA-DT-MPC控制器实例
 _jepa_dtmpc_controller = None

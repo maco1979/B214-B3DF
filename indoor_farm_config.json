@@ -1,0 +1,21 @@
+{
+  "crop_type": "黄瓜",
+  "farm_type": "植物工厂",
+  "hardware_level": "普通PC",
+  "models": {
+    "visual": "黄瓜病虫害检测YOLOv8模型",
+    "growth": "LSTM黄瓜生长预测模型",
+    "led": "温室黄瓜光环境调控模型"
+  },
+  "environmental_targets": {
+    "temperature": 25.0,
+    "humidity": 60.0,
+    "co2": 800,
+    "light_intensity": 300
+  },
+  "led_defaults": {
+    "red_blue_ratio": "3:1",
+    "intensity": 100,
+    "photoperiod": 16
+  }
+}

@@ -40,12 +40,18 @@ async def register_client(client_info: Dict[str, Any]) -> Dict[str, Any]:
     
     client_id = client_info.get('client_id')
     if not client_id:
-        raise HTTPException(status_code=400, detail="客户端ID不能为空")
+        return {
+            "success": False,
+            "error": "客户端ID不能为空"
+        }
     
     success = server.register_client(client_id, client_info)
     
     if not success:
-        raise HTTPException(status_code=400, detail="客户端已存在")
+        return {
+            "success": False,
+            "error": "客户端已存在"
+        }
     
     return {
         "success": True,

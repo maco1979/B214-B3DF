@@ -1,0 +1,14 @@
+{
+    "email": {
+        "enabled": false,
+        "smtp_server": "smtp.example.com",
+        "smtp_port": 587,
+        "smtp_user": "your-email@example.com",
+        "smtp_password": "your-password",
+        "sender": "cve-monitor@example.com",
+        "recipients": [
+            "admin@example.com",
+            "security-team@example.com"
+        ]
+    }
+}

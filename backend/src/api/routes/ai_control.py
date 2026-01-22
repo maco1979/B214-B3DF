@@ -446,11 +446,11 @@ async def get_device_status(device_id: int):
         raise HTTPException(status_code=500, detail=f"获取设备状态失败: {str(e)}")
 
 @router.post("/master-control", response_model=Dict[str, Any])
-async def activate_master_control(activate: Dict[str, bool]):
+async def activate_master_control(request: Dict[str, bool] = Body(...)):
     """激活/关闭AI主控功能"""
     try:
         global master_control_active
-        activate_status = activate.get("activate", False)
+        activate_status = request.get("activate", False)
         
         logger.info(f"AI主控 {'激活' if activate_status else '关闭'} 请求")
         
@@ -626,6 +626,146 @@ async def scan_devices():
     except Exception as e:
         logger.error(f"扫描设备失败: {str(e)}")
         raise HTTPException(status_code=500, detail=f"扫描设备失败: {str(e)}")
+
+@router.post("/fine-tune", response_model=Dict[str, Any])
+async def fine_tune_core_ai(fine_tune_params: Dict[str, Any]):
+    """微调核心AI参数
+    
+    Args:
+        fine_tune_params: 微调参数，包含以下可选字段:
+            - learning_rate: 学习率调整
+            - exploration_rate: 探索率调整
+            - exploration_decay: 探索率衰减
+            - iteration_interval: 主动迭代间隔
+            - evolution_strategy: 网络演化策略 (adaptive, expand, shrink, random, optimize)
+            - multimodal_weights: 多模态数据融合权重
+            - memory_retrieval_threshold: 记忆检索阈值
+    
+    Returns:
+        微调结果
+    """
+    try:
+        logger.info(f"微调核心AI请求: {fine_tune_params}")
+        
+        # 初始化有机体AI核心实例
+        await initialize_organic_ai_core()
+        
+        if not organic_ai_core_instance:
+            raise HTTPException(status_code=500, detail="有机体AI核心未初始化")
+        
+        # 存储微调前的参数
+        before_params = {
+            "learning_rate": organic_ai_core_instance.learning_system.learning_rate,
+            "exploration_rate": organic_ai_core_instance.exploration_rate,
+            "exploration_decay": organic_ai_core_instance.exploration_decay,
+            "iteration_interval": organic_ai_core_instance.iteration_interval,
+            "multimodal_weights": organic_ai_core_instance.multimodal_weights,
+            "memory_retrieval_threshold": organic_ai_core_instance.memory_retrieval_threshold
+        }
+        
+        # 执行微调操作
+        results = {}
+        
+        # 调整学习率
+        if "learning_rate" in fine_tune_params:
+            learning_rate = float(fine_tune_params["learning_rate"])
+            organic_ai_core_instance.learning_system.learning_rate = learning_rate
+            results["learning_rate"] = learning_rate
+        
+        # 调整探索率
+        if "exploration_rate" in fine_tune_params:
+            exploration_rate = float(fine_tune_params["exploration_rate"])
+            organic_ai_core_instance.exploration_rate = exploration_rate
+            results["exploration_rate"] = exploration_rate
+        
+        # 调整探索率衰减
+        if "exploration_decay" in fine_tune_params:
+            exploration_decay = float(fine_tune_params["exploration_decay"])
+            organic_ai_core_instance.exploration_decay = exploration_decay
+            results["exploration_decay"] = exploration_decay
+        
+        # 调整主动迭代间隔
+        if "iteration_interval" in fine_tune_params:
+            iteration_interval = int(fine_tune_params["iteration_interval"])
+            organic_ai_core_instance.iteration_interval = iteration_interval
+            results["iteration_interval"] = iteration_interval
+        
+        # 调整多模态权重
+        if "multimodal_weights" in fine_tune_params:
+            multimodal_weights = fine_tune_params["multimodal_weights"]
+            if isinstance(multimodal_weights, dict):
+                # 更新指定的多模态权重
+                for modality, weight in multimodal_weights.items():
+                    if modality in organic_ai_core_instance.multimodal_weights:
+                        organic_ai_core_instance.multimodal_weights[modality] = float(weight)
+                results["multimodal_weights"] = organic_ai_core_instance.multimodal_weights
+        
+        # 调整记忆检索阈值
+        if "memory_retrieval_threshold" in fine_tune_params:
+            threshold = float(fine_tune_params["memory_retrieval_threshold"])
+            organic_ai_core_instance.memory_retrieval_threshold = threshold
+            results["memory_retrieval_threshold"] = threshold
+        
+        # 执行网络结构演化
+        if "evolution_strategy" in fine_tune_params:
+            evolution_strategy = fine_tune_params["evolution_strategy"]
+            if evolution_strategy in ["adaptive", "expand", "shrink", "random", "optimize"]:
+                evolution_result = await organic_ai_core_instance.evolve_network_structure(evolution_strategy)
+                results["network_evolution"] = evolution_result
+            else:
+                results["network_evolution"] = f"无效的演化策略: {evolution_strategy}"
+        
+        # 获取微调后的参数
+        after_params = {
+            "learning_rate": organic_ai_core_instance.learning_system.learning_rate,
+            "exploration_rate": organic_ai_core_instance.exploration_rate,
+            "exploration_decay": organic_ai_core_instance.exploration_decay,
+            "iteration_interval": organic_ai_core_instance.iteration_interval,
+            "multimodal_weights": organic_ai_core_instance.multimodal_weights,
+            "memory_retrieval_threshold": organic_ai_core_instance.memory_retrieval_threshold
+        }
+        
+        return {
+            "success": True,
+            "message": "核心AI微调完成",
+            "timestamp": datetime.datetime.now().isoformat(),
+            "before_params": before_params,
+            "after_params": after_params,
+            "results": results,
+            "ai_core_status": organic_ai_core_instance.get_status()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"微调核心AI失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"微调核心AI失败: {str(e)}")
+
+@router.get("/core-ai/status", response_model=Dict[str, Any])
+async def get_core_ai_status():
+    """获取核心AI状态"""
+    try:
+        logger.info("获取核心AI状态请求")
+        
+        # 初始化有机体AI核心实例
+        await initialize_organic_ai_core()
+        
+        if not organic_ai_core_instance:
+            raise HTTPException(status_code=500, detail="有机体AI核心未初始化")
+        
+        status = organic_ai_core_instance.get_status()
+        
+        return {
+            "success": True,
+            "data": status,
+            "message": "获取核心AI状态成功",
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"获取核心AI状态失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"获取核心AI状态失败: {str(e)}")
 
 @router.post("/device/{device_id}/authenticate", response_model=Dict[str, Any])
 async def authenticate_device(device_id: int, auth_params: Dict[str, Any]):

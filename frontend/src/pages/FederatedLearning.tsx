@@ -90,8 +90,8 @@ export function FederatedLearning() {
 
   const registerClient = async () => {
     if (!newClientId.trim()) {
- return;
-}
+      return;
+    }
 
     try {
       const response = await apiClient.registerFederatedClient({
@@ -103,9 +103,13 @@ export function FederatedLearning() {
       if (response.success) {
         setNewClientId('');
         fetchFederatedData();
+      } else {
+        alert(`注册失败: ${response.error || response.message || '未知错误'}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('注册客户端失败:', error);
+      const errorMessage = error.response?.data?.detail || error.message || '请求失败';
+      alert(`注册失败: ${errorMessage}`);
     }
   };
 

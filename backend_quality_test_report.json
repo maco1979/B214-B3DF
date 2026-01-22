@@ -1,0 +1,355 @@
+{
+  "start_time": "2025-12-31T23:23:48.557859",
+  "end_time": "2025-12-31T23:24:45.361751",
+  "total_duration_seconds": 56.803892,
+  "summary": {
+    "total_tests": 23,
+    "passed": 17,
+    "failed": 6,
+    "pass_rate": "73.9%",
+    "categories": {
+      "unit_tests": "4/6",
+      "integration_tests": "3/4",
+      "performance_tests": "4/4",
+      "security_tests": "5/5",
+      "code_review": "1/4"
+    }
+  },
+  "unit_tests": [
+    {
+      "name": "异步缓存服务",
+      "category": "unit",
+      "passed": true,
+      "duration_ms": 909.6533000119962,
+      "details": {
+        "tests_passed": 4
+      },
+      "error": ""
+    },
+    {
+      "name": "智能体权限管理器",
+      "category": "unit",
+      "passed": true,
+      "duration_ms": 8.282299997517839,
+      "details": {
+        "tests_passed": 4
+      },
+      "error": ""
+    },
+    {
+      "name": "审计监控服务",
+      "category": "unit",
+      "passed": true,
+      "duration_ms": 6.137999997008592,
+      "details": {
+        "tests_passed": 4
+      },
+      "error": ""
+    },
+    {
+      "name": "决策引擎",
+      "category": "unit",
+      "passed": false,
+      "duration_ms": 0.4036999889649451,
+      "details": {},
+      "error": "Can't instantiate abstract class DecisionEngine without an implementation for abstract method 'make_decision'"
+    },
+    {
+      "name": "模型管理器",
+      "category": "unit",
+      "passed": true,
+      "duration_ms": 330.119599995669,
+      "details": {
+        "models_count": 4
+      },
+      "error": ""
+    },
+    {
+      "name": "区块链管理器",
+      "category": "unit",
+      "passed": false,
+      "duration_ms": 176.77399999229237,
+      "details": {},
+      "error": "'BlockchainManager' object has no attribute 'get_status'"
+    }
+  ],
+  "integration_tests": [
+    {
+      "name": "API端点测试",
+      "category": "integration",
+      "passed": false,
+      "duration_ms": 787.9533999948762,
+      "details": {
+        "endpoints_tested": 6,
+        "passed": 5,
+        "failed": 1,
+        "failures": [
+          "/api/monitoring/health: expected 200, got 404"
+        ]
+      },
+      "error": ""
+    },
+    {
+      "name": "模块间协作测试",
+      "category": "integration",
+      "passed": true,
+      "duration_ms": 0.2245000214315951,
+      "details": {
+        "modules_tested": [
+          "cache",
+          "permission",
+          "audit"
+        ],
+        "flow": "register -> check_permission -> cache -> audit"
+      },
+      "error": ""
+    },
+    {
+      "name": "数据流测试",
+      "category": "integration",
+      "passed": true,
+      "duration_ms": 0.12569999671541154,
+      "details": {
+        "data_flow": "request -> check_cache -> process -> cache -> verify"
+      },
+      "error": ""
+    },
+    {
+      "name": "监控集成测试",
+      "category": "integration",
+      "passed": true,
+      "duration_ms": 0.24549997760914266,
+      "details": {
+        "metrics_exported": true,
+        "dashboard_available": true
+      },
+      "error": ""
+    }
+  ],
+  "performance_tests": [
+    {
+      "name": "压力测试",
+      "category": "performance",
+      "passed": true,
+      "duration_ms": 65.94899998162873,
+      "details": {
+        "write_operations": 10000,
+        "write_time_ms": 53.14,
+        "write_ops_per_sec": 188181.0,
+        "read_operations": 10000,
+        "read_time_ms": 12.8,
+        "read_ops_per_sec": 781342.0
+      },
+      "error": ""
+    },
+    {
+      "name": "负载测试",
+      "category": "performance",
+      "passed": true,
+      "duration_ms": 5004.207599995425,
+      "details": {
+        "test_duration_sec": 5,
+        "total_operations": 21200,
+        "throughput_per_sec": 4240.0,
+        "avg_latency_ms": 0.236,
+        "status": "PASS"
+      },
+      "error": ""
+    },
+    {
+      "name": "并发测试",
+      "category": "performance",
+      "passed": true,
+      "duration_ms": 7.413500017719343,
+      "details": {
+        "concurrency_level": 20,
+        "ops_per_task": 100,
+        "total_operations": 4000,
+        "total_time_ms": 7.3,
+        "avg_op_time_ms": 0.0034,
+        "p99_op_time_ms": 0.0066,
+        "ops_per_second": 547668.0
+      },
+      "error": ""
+    },
+    {
+      "name": "响应时间测试",
+      "category": "performance",
+      "passed": true,
+      "duration_ms": 803.6186000099406,
+      "details": {
+        "endpoints_tested": 3,
+        "requests_per_endpoint": 20,
+        "avg_response_time_ms": 6.24,
+        "p95_response_time_ms": 2.67,
+        "endpoint_details": {
+          "/api/system/health": {
+            "avg": 14.8,
+            "p95": 2.68
+          },
+          "/api/models/": {
+            "avg": 2.05,
+            "p95": 2.53
+          },
+          "/api/ai-control/status": {
+            "avg": 1.87,
+            "p95": 2.66
+          }
+        }
+      },
+      "error": ""
+    }
+  ],
+  "security_tests": [
+    {
+      "name": "SQL注入检测",
+      "category": "security",
+      "passed": true,
+      "duration_ms": 620.7864000170957,
+      "details": {
+        "payloads_tested": 10,
+        "vulnerabilities_found": 0,
+        "issues": []
+      },
+      "error": ""
+    },
+    {
+      "name": "XSS检测",
+      "category": "security",
+      "passed": true,
+      "duration_ms": 600.2684000122827,
+      "details": {
+        "payloads_tested": 5,
+        "vulnerabilities_found": 0,
+        "issues": []
+      },
+      "error": ""
+    },
+    {
+      "name": "权限漏洞检测",
+      "category": "security",
+      "passed": true,
+      "duration_ms": 2.378699980909005,
+      "details": {
+        "tests_performed": 3,
+        "vulnerabilities_found": 0,
+        "issues": []
+      },
+      "error": ""
+    },
+    {
+      "name": "输入验证测试",
+      "category": "security",
+      "passed": true,
+      "duration_ms": 14.343800023198128,
+      "details": {
+        "tests_performed": 3,
+        "minor_issues": [
+          "接受了超长键名(10000字符)",
+          "接受了空键名"
+        ],
+        "recommendation": "建议添加输入长度限制"
+      },
+      "error": ""
+    },
+    {
+      "name": "API安全测试",
+      "category": "security",
+      "passed": true,
+      "duration_ms": 607.9822999890894,
+      "details": {
+        "tests_performed": 3,
+        "security_recommendations": [
+          "CORS配置允许所有来源(生产环境建议限制)",
+          "缺少安全头: x-content-type-options, x-frame-options, x-xss-protection"
+        ]
+      },
+      "error": ""
+    }
+  ],
+  "code_review": [
+    {
+      "name": "代码规范检查",
+      "category": "code_review",
+      "passed": false,
+      "duration_ms": 2286.6332000121474,
+      "details": {
+        "files_checked": 12620,
+        "issues_found": 1371,
+        "sample_issues": [
+          "conftest.py:L40 行长度超过120",
+          "dt_mpc_core.py:L794 行长度超过120",
+          "jepa_dtmpc_integration.py:L17 行长度超过120",
+          "main.py:L18 行长度超过120",
+          "simple_api.py:L112 行长度超过120"
+        ]
+      },
+      "error": ""
+    },
+    {
+      "name": "代码复杂度分析",
+      "category": "code_review",
+      "passed": true,
+      "duration_ms": 6874.470799986739,
+      "details": {
+        "files_analyzed": 12620,
+        "total_lines": 5612983,
+        "total_functions": 244119,
+        "avg_lines_per_file": 444.8,
+        "large_files": [
+          "dt_mpc_core.py: 905行",
+          "simple_api.py: 623行",
+          "algorithm_bias_controller.py: 790行",
+          "data_security_controller.py: 595行",
+          "governance_conflict_controller.py: 644行"
+        ]
+      },
+      "error": ""
+    },
+    {
+      "name": "安全模式检查",
+      "category": "code_review",
+      "passed": false,
+      "duration_ms": 31768.11910001561,
+      "details": {
+        "files_checked": 12620,
+        "patterns_checked": [
+          "hardcoded_secrets",
+          "sql_injection_risk",
+          "eval_usage",
+          "pickle_usage"
+        ],
+        "potential_issues": [
+          "simple_api.py: sql_injection_risk",
+          "test_model_manager_simple.py: pickle_usage",
+          "governance_conflict_controller.py: sql_injection_risk",
+          "auth.py: sql_injection_risk",
+          "blockchain_decision.py: sql_injection_risk",
+          "model_training_decision.py: sql_injection_risk",
+          "resource_decision.py: sql_injection_risk",
+          "system.py: sql_injection_risk",
+          "blockchain_manager.py: sql_injection_risk",
+          "agent_permission_manager.py: sql_injection_risk"
+        ]
+      },
+      "error": ""
+    },
+    {
+      "name": "文档完整性检查",
+      "category": "code_review",
+      "passed": false,
+      "duration_ms": 5914.476300007664,
+      "details": {
+        "total_files": 12618,
+        "files_with_docstring": 3395,
+        "documentation_coverage": "26.9%",
+        "recommendation": "继续完善函数级文档"
+      },
+      "error": ""
+    }
+  ],
+  "recommendations": [
+    "修复单元测试: 决策引擎",
+    "修复单元测试: 区块链管理器"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "timestamp": 1767483774.3716447,
+  "farm_info": {
+    "crop_type": "黄瓜",
+    "farm_type": "植物工厂",
+    "growth_stage": "营养生长期"
+  },
+  "environmental_conditions": {
+    "temperature": 25.0,
+    "humidity": 60.0,
+    "co2": 400,
+    "light_intensity": 200
+  },
+  "disease_detection": {
+    "success": true,
+    "disease_detected": false,
+    "disease_type": "健康",
+    "confidence": 0.98,
+    "recommendation": "当前作物健康，继续保持现有管理策略"
+  },
+  "growth_prediction": {
+    "success": true,
+    "crop_type": "黄瓜",
+    "current_growth_stage": "营养生长期",
+    "predicted_growth_stage": "营养生长期",
+    "predicted_yield": 5.2,
+    "growth_rate": 0.8,
+    "recommendations": [
+      "增加氮肥施用量至150ppm",
+      "保持温度在24-26℃",
+      "维持湿度在60-65%"
+    ]
+  },
+  "led_optimization": {
+    "red_blue_ratio": "3:1",
+    "intensity": 100,
+    "photoperiod": 16,
+    "recommendation": "营养生长期需较高光强，较长光照时间，增加红光比例"
+  },
+  "integrated_recommendations": [
+    "作物健康，继续保持现有管理",
+    "增加氮肥施用量至150ppm",
+    "保持温度在24-26℃",
+    "维持湿度在60-65%",
+    "光照优化建议：营养生长期需较高光强，较长光照时间，增加红光比例",
+    "CO2浓度低于目标值(800ppm)，当前值：400ppm，建议增加CO2供应"
+  ],
+  "models_used": {
+    "visual": "默认模型",
+    "growth": "默认模型",
+    "led": "默认模型"
+  }
+}

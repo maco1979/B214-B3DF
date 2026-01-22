@@ -35,9 +35,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log('Calling apiClient.login method');
       const response = await apiClient.login(email, password);
       console.log('Login API response:', response);
-      if (response.success && response.data) {
-        const userInfo = response.data.user_info;
-        const accessToken = response.data.access_token;
+      if (response.success) {
+        const userInfo = response.user_info;
+        const accessToken = response.access_token;
 
         setUser(userInfo);
         setToken(accessToken);

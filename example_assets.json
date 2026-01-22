@@ -1,0 +1,30 @@
+[
+    {
+        "name": "企业网站服务器",
+        "vendor": "nginx",
+        "product": "nginx",
+        "version": "1.24.0",
+        "ip": "192.168.1.100"
+    },
+    {
+        "name": "数据库服务器",
+        "vendor": "mysql",
+        "product": "mysql",
+        "version": "8.0.35",
+        "ip": "192.168.1.101"
+    },
+    {
+        "name": "办公系统",
+        "vendor": "microsoft",
+        "product": "office 365",
+        "version": "2308",
+        "users": ["admin", "user1", "user2"]
+    },
+    {
+        "name": "电商平台",
+        "vendor": "workdo",
+        "product": "ecommercego saas",
+        "version": "latest",
+        "url": "https://shop.example.com"
+    }
+]

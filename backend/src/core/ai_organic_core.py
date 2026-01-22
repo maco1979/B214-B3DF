@@ -244,16 +244,18 @@ class OrganicAICore:
         try:
             import jax.random
             # 初始化策略网络参数
-            # The above code is written in Python and it seems to be using the JAX library for
-            # numerical computing. It creates a dummy state variable `dummy_state` which is
-            # initialized with an array of ones with 32 dimensions. This array represents a
-            # 32-dimensional state feature vector.
             dummy_state = jnp.ones(32)  # 32维状态特征
-            self.policy_params = self.policy_network.init(
-                jax.random.PRNGKey(42), dummy_state
-            )
             
-            logger.info("AI核心策略网络初始化成功")
+            # 检查策略网络是否有init方法
+            if hasattr(self.policy_network, 'init'):
+                self.policy_params = self.policy_network.init(
+                    jax.random.PRNGKey(42), dummy_state
+                )
+                logger.info("AI核心策略网络初始化成功")
+            else:
+                # SimpleSelfEvolvingPolicy没有init方法，直接设置params为None
+                self.policy_params = None
+                logger.info("AI核心策略网络使用简化初始化（无init方法）")
         except Exception as e:
             logger.error(f"AI核心初始化失败: {e}")
             # 使用备用初始化

@@ -14,7 +14,7 @@ export default defineConfig({
     strictPort: false,  // 允许端口被占用时自动递增
     proxy: {
       '/api': {
-        target: 'http://localhost:8001',
+        target: 'http://localhost:8002',
         changeOrigin: true,
         secure: false,
         ws: true, // 兼容WebSocket，无副作用

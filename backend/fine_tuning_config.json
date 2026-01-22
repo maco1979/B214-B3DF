@@ -1,0 +1,26 @@
+{
+  "model_id": "agriculture_classification_v1",
+  "training_config": {
+    "learning_rate": 1e-4,
+    "batch_size": 16,
+    "num_epochs": 5,
+    "gradient_accumulation_steps": 1,
+    "mixed_precision": true,
+    "early_stopping_patience": 3,
+    "save_checkpoint_frequency": 500,
+    "lr_scheduler": "cosine",
+    "optimizer": "adamw",
+    "weight_decay": 0.01
+  },
+  "dataset": {
+    "train": {
+      "data": [[101, 2023, 2003, 1010, 102], [101, 2019, 2003, 1037, 102], [101, 2020, 2003, 1045, 102]],
+      "labels": [0, 1, 0]
+    },
+    "val": {
+      "data": [[101, 2018, 2003, 1015, 102], [101, 2021, 2003, 1027, 102]],
+      "labels": [1, 0]
+    }
+  },
+  "distributed": false
+}

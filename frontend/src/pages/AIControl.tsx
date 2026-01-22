@@ -20,6 +20,7 @@ import {
 import type { Device, JEPAData } from '@/services/api';
 import { apiClient } from '@/services/api';
 import { cn } from '@/lib/utils';
+import { FEATURE_FLAGS } from '@/config';
 import { BentoCard } from '@/components/ui/BentoCard';
 import { DeviceCard } from '@/components/ui/DeviceCard';
 import { PTZControl } from '@/components/PTZControl';
@@ -123,10 +124,22 @@ export function AIControl() {
   };
 
   const fetchJepaStatus = async () => {
-    const res = await apiClient.getJepaDtmpcStatus();
-    if (res.success && res.data) {
-      setIsJepaActive(res.data.is_active);
-      setJepaModelStatus(res.data.model_status);
+    if (!FEATURE_FLAGS.ENABLE_JEPA_DTMPC) {
+      setIsJepaActive(false);
+      setJepaModelStatus('disabled');
+      return;
+    }
+    
+    try {
+      const res = await apiClient.getJepaDtmpcStatus();
+      if (res.success && res.data) {
+        setIsJepaActive(res.data.is_active);
+        setJepaModelStatus(res.data.model_status);
+      }
+    } catch (error) {
+      console.error('获取JEPA状态失败:', error);
+      setIsJepaActive(false);
+      setJepaModelStatus('error');
     }
   };
 
@@ -141,14 +154,29 @@ export function AIControl() {
 
   // Actions
   const handleMasterToggle = async () => {
-    const newStatus = !isMasterActive;
-    const res = await apiClient.activateMasterControl(newStatus);
-    if (res.success) {
- setIsMasterActive(newStatus);
-}
+    console.log('handleMasterToggle called');
+    try {
+      const newStatus = !isMasterActive;
+      console.log('newStatus:', newStatus);
+      const res = await apiClient.activateMasterControl(newStatus);
+      console.log('activateMasterControl response:', res);
+      if (res && res.success) {
+        console.log('setting isMasterActive to:', newStatus);
+        setIsMasterActive(newStatus);
+      } else {
+        console.error('激活主控失败:', res?.message || '未知错误');
+      }
+    } catch (error) {
+      console.error('激活主控时发生异常:', error);
+    }
   };
 
   const toggleJepa = async () => {
+    if (!FEATURE_FLAGS.ENABLE_JEPA_DTMPC) {
+      console.error('JEPA-DT-MPC功能已禁用');
+      return;
+    }
+    
     const newStatus = !isJepaActive;
     try {
       const res = await apiClient.activateJepaDtmpc({
@@ -359,6 +387,17 @@ export function AIControl() {
 
       ws.onmessage = event => {
         try {
+          // 检查消息是否为内存地址格式
+          const message = event.data;
+          // 增强正则表达式，匹配更多类型的内存地址格式
+          const memoryAddressPattern = /^\[\s*0x[0-9a-fA-F]+(\s+0x[0-9a-fA-F]+)*\s*\]$/;
+          
+          if (memoryAddressPattern.test(message)) {
+            // 这是一个内存地址日志，忽略它
+            console.log('收到内存地址日志，已忽略');
+            return;
+          }
+          
           const data = JSON.parse(event.data);
           if (data.success && data.frame_base64) {
             setCameraFrame(data.frame_base64);

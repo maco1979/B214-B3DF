@@ -8,8 +8,6 @@ import time
 from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 import numpy as np
-import jax.numpy as jnp
-from jax import random
 
 # 尝试多种导入路径以兼容不同的运行环境
 try:
@@ -254,22 +252,26 @@ class FederatedLearningServer:
         return True
     
     def _federated_averaging(self, updates: List[Dict], data_sizes: List[int]):
-        """联邦平均算法，利用JAX优化大模型参数聚合"""
+        """联邦平均算法，纯Python实现确保类型一致性"""
         total_data_size = sum(data_sizes)
         
         # 计算加权平均
-        averaged_params = {}
-        
         for key in updates[0]['parameters'].keys():
             # 收集所有客户端的参数更新
             param_updates = [update['parameters'][key] for update in updates]
+            weights = [size / total_data_size for size in data_sizes]
             
-            # 转换为JAX数组以利用并行计算
-            param_updates_jax = jnp.array(param_updates)
-            weights_jax = jnp.array([size / total_data_size for size in data_sizes])
+            # 初始化加权和
+            first_param = param_updates[0]
+            if isinstance(first_param, np.ndarray):
+                weighted_sum = np.zeros_like(first_param)
+            else:
+                weighted_sum = 0.0
             
-            # 计算加权和（利用JAX的向量化操作）
-            weighted_sum = jnp.sum(param_updates_jax * weights_jax[:, None, None], axis=0)
+            # 计算加权和
+            for i, param in enumerate(param_updates):
+                weight = weights[i]
+                weighted_sum += param * weight
             
             # 应用差分隐私
             if self.dp_enabled:
@@ -382,7 +384,7 @@ class FederatedLearningClient:
                             input_dim, output_dim = param.shape
                             # 模拟反向传播中的梯度计算
                             # 使用本地数据特征来生成更真实的梯度方向
-                            gradient = jnp.zeros((input_dim, output_dim))
+                            gradient = np.zeros((input_dim, output_dim))
                             
                             # 模拟基于本地数据的梯度
                             if hasattr(self.local_data, 'shape') and len(self.local_data.shape) > 1:
@@ -392,30 +394,30 @@ class FederatedLearningClient:
                                 data_std = np.std(local_data_sample) if len(local_data_sample) > 0 else 1
                                 
                                 # 生成基于数据特征的梯度
-                                gradient = jnp.array(np.random.normal(data_mean * 0.001, data_std * 0.01, (input_dim, output_dim)))
+                                gradient = np.random.normal(data_mean * 0.001, data_std * 0.01, (input_dim, output_dim))
                             else:
                                 # 如果没有合适的数据形状，使用随机梯度
-                                gradient = jnp.array(np.random.normal(0, 0.01, (input_dim, output_dim)))
+                                gradient = np.random.normal(0, 0.01, (input_dim, output_dim))
                         
                         elif len(param.shape) == 1:  # 偏置向量或一维参数
                             param_size = param.shape[0]
-                            gradient = jnp.zeros(param_size)
+                            gradient = np.zeros(param_size)
                             
                             # 基于本地数据特征生成偏置梯度
                             if hasattr(self.local_data, 'shape'):
                                 local_data_sample = self.local_data[:min(len(self.local_data), batch_size)]
                                 data_mean = np.mean(local_data_sample) if len(local_data_sample) > 0 else 0
                                 
-                                gradient = jnp.array(np.random.normal(data_mean * 0.0005, 0.005, param_size))
+                                gradient = np.random.normal(data_mean * 0.0005, 0.005, param_size)
                             else:
-                                gradient = jnp.array(np.random.normal(0, 0.005, param_size))
+                                gradient = np.random.normal(0, 0.005, param_size)
                         
                         else:
                             # 其他维度的参数
-                            gradient = jnp.array(np.random.normal(0, 0.01, param.shape))
+                            gradient = np.random.normal(0, 0.01, param.shape)
                     else:
                         # 为标量参数生成梯度
-                        gradient = jnp.array([np.random.normal(0, 0.01)])
+                        gradient = np.array([np.random.normal(0, 0.01)])
                     
                     # 根据本地数据大小调整梯度强度
                     local_data_size = len(self.local_data) if hasattr(self.local_data, '__len__') else 1
@@ -429,9 +431,9 @@ class FederatedLearningClient:
                     
                     # 累积更新（在多轮训练中）
                     if key in updates:
-                        updates[key] += np.array(param_update)
+                        updates[key] += param_update
                     else:
-                        updates[key] = np.array(param_update)
+                        updates[key] = param_update
         
         return updates
     

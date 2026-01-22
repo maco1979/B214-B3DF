@@ -33,6 +33,7 @@ export const FEATURE_FLAGS = {
   ENABLE_FEDERATED_LEARNING: true,
   ENABLE_EDGE_COMPUTING: true,
   ENABLE_MONITORING: true,
+  ENABLE_JEPA_DTMPC: false,
 };
 
 // API端点配置

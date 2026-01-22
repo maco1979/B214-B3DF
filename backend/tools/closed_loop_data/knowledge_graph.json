@@ -1,0 +1,41 @@
+{
+  "nodes": {
+    "knowledge_agent_learning_2_1767549383": {
+      "id": "knowledge_agent_learning_2_1767549383",
+      "type": "learning_pattern",
+      "content": {
+        "patterns": [
+          "pattern_1",
+          "pattern_2"
+        ],
+        "source": "agent_learning_2",
+        "timestamp": "2026-01-05T01:56:23.579179"
+      }
+    },
+    "knowledge_agent_learning_2_1767549773": {
+      "id": "knowledge_agent_learning_2_1767549773",
+      "type": "learning_pattern",
+      "content": {
+        "patterns": [
+          "pattern_1",
+          "pattern_2"
+        ],
+        "source": "agent_learning_2",
+        "timestamp": "2026-01-05T02:02:53.267099"
+      }
+    },
+    "knowledge_agent_learning_2_1767549823": {
+      "id": "knowledge_agent_learning_2_1767549823",
+      "type": "learning_pattern",
+      "content": {
+        "patterns": [
+          "pattern_2",
+          "pattern_1"
+        ],
+        "source": "agent_learning_2",
+        "timestamp": "2026-01-05T02:03:43.932784"
+      }
+    }
+  },
+  "edges": {}
+}

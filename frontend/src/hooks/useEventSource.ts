@@ -120,6 +120,15 @@ export function useEventSource<T = any>(options: UseEventSourceOptions<T>) {
 
       const handleMessage = (event: MessageEvent) => {
         try {
+          // 检查消息是否为内存地址格式
+          const memoryAddressPattern = /^\[\s*0x[0-9a-fA-F]+(\s+0x[0-9a-fA-F]+)*\s*\]$/;
+          
+          if (memoryAddressPattern.test(event.data)) {
+            // 这是一个内存地址日志，忽略它
+            console.log('[SSE] 收到内存地址日志，已忽略');
+            return;
+          }
+          
           const payload = parse(event);
           if (queryKey) {
             queryClient.setQueryData(queryKey, prev => applyUpdateStrategy(prev, payload, updateStrategy, dedupeBy, keepLast));

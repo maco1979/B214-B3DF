@@ -1,0 +1,24 @@
+{
+  "version": "1",
+  "services": {
+    "decision-service": {
+      "name": "ai-decision-service",
+      "type": "web",
+      "build": {
+        "command": "python src/main.py",
+        "outputDir": ".",
+        "install": "pip install -r requirements.txt"
+      },
+      "ports": [
+        {
+          "port": 8001,
+          "public": true
+        }
+      ],
+      "env": {
+        "API_HOST": "0.0.0.0",
+        "API_PORT": 8001
+      }
+    }
+  }
+}
