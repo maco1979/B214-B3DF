@@ -1,0 +1,74 @@
+[
+  {
+    "behavior_id": "behavior_09a41f09-88e7-4b5a-96bd-31e97952d092",
+    "user_id": "test_user_001",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030225.892061,
+    "datetime": "2026-01-10T15:30:25.892061"
+  },
+  {
+    "behavior_id": "behavior_83b469b8-bd13-43c3-811b-96749279e0a5",
+    "user_id": "test_user_001",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.85
+    },
+    "timestamp": 1768030228.448588,
+    "datetime": "2026-01-10T15:30:28.448588"
+  },
+  {
+    "behavior_id": "behavior_536fde17-8ce9-4590-87f3-5dbaf8162b84",
+    "user_id": "test_user_001",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.95
+    },
+    "timestamp": 1768030231.000557,
+    "datetime": "2026-01-10T15:30:31.000557"
+  },
+  {
+    "behavior_id": "behavior_8047183c-ed47-4660-b8d4-bbf6c0af231b",
+    "user_id": "test_user_001",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "static_analysis_agent",
+      "success": true,
+      "satisfaction": 0.8
+    },
+    "timestamp": 1768030233.556004,
+    "datetime": "2026-01-10T15:30:33.556004"
+  },
+  {
+    "behavior_id": "behavior_197c2792-12c7-44f4-b84b-d86c8d0a667c",
+    "user_id": "test_user_001",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "static_analysis_agent",
+      "success": false,
+      "satisfaction": 0.5
+    },
+    "timestamp": 1768030236.107517,
+    "datetime": "2026-01-10T15:30:36.107517"
+  },
+  {
+    "behavior_id": "behavior_5f1e361c-6d53-415c-8c6a-5535a30b31dc",
+    "user_id": "test_user_001",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "error_monitor_agent",
+      "success": true,
+      "satisfaction": 0.75
+    },
+    "timestamp": 1768030238.660493,
+    "datetime": "2026-01-10T15:30:38.660493"
+  }
+]

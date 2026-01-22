@@ -1,0 +1,628 @@
+{
+  "models": {
+    "pretrained_pytorch_dc331de2": {
+      "model_id": "pretrained_pytorch_dc331de2",
+      "name": "蔬菜病虫害检测模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:43:25.806739",
+      "updated_at": "2026-01-03T14:43:25.806750",
+      "metadata": {
+        "pretrained_source": "yolov8-agricultural-disease-detection",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "支持8类蔬菜病虫害检测，准确率96%",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_dc331de2.pth",
+      "hash": "6621d6eff0a75f6eaf8b379284d97049958ef68f74a99f81092e68a09c1736e5",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_aab93267": {
+      "model_id": "pretrained_pytorch_aab93267",
+      "name": "黄瓜病虫害检测YOLOv8模型",
+      "type": "object_detection",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:45.430493",
+      "updated_at": "2026-01-03T14:58:45.430504",
+      "metadata": {
+        "pretrained_source": "yolov8n_cucumber.pt",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "覆盖黄瓜全生育期8类核心病害+4类常见虫害，精度96.2%",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_aab93267.pth",
+      "hash": "dd99946010d97fe1c0b6f228d731573173b662fa3b4cc90b87dac7b2a8feecf3",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_5182bed8": {
+      "model_id": "pretrained_pytorch_5182bed8",
+      "name": "黄瓜病虫害检测YOLOv8轻量化模型",
+      "type": "object_detection",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:46.048214",
+      "updated_at": "2026-01-03T14:58:46.048227",
+      "metadata": {
+        "pretrained_source": "yolov8n_cucumber_light.pt",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "黄瓜病虫害检测轻量化模型，体积仅6MB，适合边缘设备",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_5182bed8.pth",
+      "hash": "a697fb02661ee3b505c527db3082e9f2f05f45d38b5c66cf0226dc999a4cc96f",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_fab3c7c1": {
+      "model_id": "pretrained_pytorch_fab3c7c1",
+      "name": "番茄病害识别模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:46.656383",
+      "updated_at": "2026-01-03T14:58:46.656399",
+      "metadata": {
+        "pretrained_source": "tomato-disease-detection",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "10类番茄病害识别，含健康叶片",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_fab3c7c1.pth",
+      "hash": "8cb1a0f416b8ade07194f4a8bc8d9be95452b79ca3075c999bca051ec5aee02b",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_49333bd8": {
+      "model_id": "pretrained_pytorch_49333bd8",
+      "name": "黄瓜叶片病害分类模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:47.261331",
+      "updated_at": "2026-01-03T14:58:47.261344",
+      "metadata": {
+        "pretrained_source": "cucumber-leaf-disease-classification",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "8类黄瓜叶片病害分类",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_49333bd8.pth",
+      "hash": "fa2016ad5b1633e7876d9e51656dc00232a0d8d404269d3bf6d3aa7c4071dd96",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_1e3ba686": {
+      "model_id": "pretrained_pytorch_1e3ba686",
+      "name": "植物分类ResNet50模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:47.868920",
+      "updated_at": "2026-01-03T14:58:47.868933",
+      "metadata": {
+        "pretrained_source": "resnet50_plant_classification.pt",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "支持200+常见农作物/杂草分类，精度98.1%",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_1e3ba686.pth",
+      "hash": "b0209b7256fbcae7c8a2a8fe5d7cc1dc3f96fbcb51c745dc4e3e4b415de2118a",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_02c23bad": {
+      "model_id": "pretrained_pytorch_02c23bad",
+      "name": "YOLOv8植物品种分类模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:48.476372",
+      "updated_at": "2026-01-03T14:58:48.476385",
+      "metadata": {
+        "pretrained_source": "yolov8n-cls-agri.pt",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "ultralytics",
+        "description": "支持番茄/黄瓜/辣椒等20+蔬菜品种分类，准确率97%+",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_02c23bad.pth",
+      "hash": "cbf6470e00895a856b491a7b33d2fb26cfe6092216d872c50f65618f3cb7e157",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_c70f400d": {
+      "model_id": "pretrained_pytorch_c70f400d",
+      "name": "作物幼苗分类模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:49.093704",
+      "updated_at": "2026-01-03T14:58:49.093715",
+      "metadata": {
+        "pretrained_source": "plant-seedling-classifier-resnet18",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "huggingface",
+        "description": "区分作物与杂草，适配苗期管理，准确率98.5%",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_c70f400d.pth",
+      "hash": "d671ee69721c3558bc2f43f598bec078ba0640c3a2e93d8e6181f5c0c58a2ff0",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_ba0103fa": {
+      "model_id": "pretrained_pytorch_ba0103fa",
+      "name": "YOLOv8作物生长阶段分类模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:49.700858",
+      "updated_at": "2026-01-03T14:58:49.700872",
+      "metadata": {
+        "pretrained_source": "yolov8n-cls-growth.pt",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "ultralytics",
+        "description": "通过田间实拍图像识别作物生长阶段，准确率97%+",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_ba0103fa.pth",
+      "hash": "f8cf172ac6dbce1e47d97e51b3464a467f30ed0d0db7d00b4d7c516d5e8d9b07",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_03584619": {
+      "model_id": "pretrained_pytorch_03584619",
+      "name": "LSTM黄瓜生长预测模型",
+      "type": "regression",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:50.306183",
+      "updated_at": "2026-01-03T14:58:50.306197",
+      "metadata": {
+        "pretrained_source": "lstm_cucumber_growth.pt",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "支持生长阶段/产量/需水量预测，准确率97.5%",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_03584619.pth",
+      "hash": "8fb4f1c28b70cbd8f66e92504a4365b2490dfbf2402a8c068c5c3599e75411cd",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_huggingface_cdcce294": {
+      "model_id": "pretrained_huggingface_cdcce294",
+      "name": "农科大模型-轻量化版",
+      "type": "transformer",
+      "framework": "huggingface",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:51.312876",
+      "updated_at": "2026-01-03T14:58:51.312888",
+      "metadata": {
+        "pretrained_source": "agriculture-llm-light",
+        "model_format": "huggingface",
+        "is_agriculture": true,
+        "source": "modelscope",
+        "description": "农业知识问答模型，支持蔬菜瓜果生产技术咨询",
+        "downloaded_at": "2026-01-03",
+        "model_type": "huggingface"
+      },
+      "file_path": "models\\pretrained_huggingface_cdcce294.pth",
+      "hash": "8767903f125a880e3ede4cb060fd2e7fb41df34e2b42f79a50e6002135650435",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_python_60e57c36": {
+      "model_id": "pretrained_python_60e57c36",
+      "name": "PCSE作物生长模拟模型",
+      "type": "simulation",
+      "framework": "python",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:51.315244",
+      "updated_at": "2026-01-03T14:58:51.315246",
+      "metadata": {
+        "pretrained_source": "pcse-wofost",
+        "model_format": "python",
+        "is_agriculture": true,
+        "source": "github",
+        "description": "荷兰瓦赫宁根大学开发，可模拟200+作物完整生长周期",
+        "downloaded_at": "2026-01-03"
+      },
+      "file_path": "models\\pretrained_python_60e57c36.pth",
+      "hash": "65000f4e7c9adcd3f92950ca026590ce3980db32411dbbd28c074be4741bd57a",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_exe_39862f85": {
+      "model_id": "pretrained_exe_39862f85",
+      "name": "AquaCrop作物生长模型",
+      "type": "simulation",
+      "framework": "exe",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:51.316751",
+      "updated_at": "2026-01-03T14:58:51.316754",
+      "metadata": {
+        "pretrained_source": "aquacrop-7.0",
+        "model_format": "exe",
+        "is_agriculture": true,
+        "source": "fao",
+        "description": "FAO官方模型，专注作物-水分关系，适合节水农业",
+        "downloaded_at": "2026-01-03"
+      },
+      "file_path": "models\\pretrained_exe_39862f85.pth",
+      "hash": "01a089d573a72104554521f39518cc00f4447237a177db3073fb6bfe4820bc38",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_8f86e604": {
+      "model_id": "pretrained_pytorch_8f86e604",
+      "name": "LSTM作物产量预测模型",
+      "type": "regression",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:51.920024",
+      "updated_at": "2026-01-03T14:58:51.920037",
+      "metadata": {
+        "pretrained_source": "agri-lstm-cucumber-yield",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "huggingface",
+        "description": "基于历史气象+土壤+管理数据训练，预测黄瓜等蔬菜产量，准确率96%+",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_8f86e604.pth",
+      "hash": "ac3ade56e8cf66726ca72d75db5f6188fe2b5c089b7f5fb9242eb57f4b59c580",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_a711c555": {
+      "model_id": "pretrained_pytorch_a711c555",
+      "name": "作物幼苗生长监测模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:52.531787",
+      "updated_at": "2026-01-03T14:58:52.531795",
+      "metadata": {
+        "pretrained_source": "plant-seedling-growth-monitor-resnet50",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "huggingface",
+        "description": "支持黄瓜/番茄/辣椒等幼苗生长状态监测，准确率98.5%",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_a711c555.pth",
+      "hash": "020a0769e4c12c9e3866b963683e32cf7b09e2c3b0861b7be25ddacc14277be3",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_6c3481ca": {
+      "model_id": "pretrained_pytorch_6c3481ca",
+      "name": "温室黄瓜光环境调控模型",
+      "type": "optimization",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:53.137853",
+      "updated_at": "2026-01-03T14:58:53.137862",
+      "metadata": {
+        "pretrained_source": "cucumber-led-spectrum",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "tcsae",
+        "description": "基于MOPSO+TOPSIS双优化，获取最优红蓝光配比，光能利用率提升35%",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_6c3481ca.pth",
+      "hash": "4e3e58314ff96ed8a2f9ced1b4e581fd9d254aa62322e07315312dccfa15e1f0",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_93374136": {
+      "model_id": "pretrained_pytorch_93374136",
+      "name": "LSTM LED补光智能控制模型",
+      "type": "control",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:53.749080",
+      "updated_at": "2026-01-03T14:58:53.749092",
+      "metadata": {
+        "pretrained_source": "agri-lstm-led-cucumber",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "huggingface",
+        "description": "根据黄瓜生长阶段自动调整LED光强、光谱和光周期，准确率97%+",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_93374136.pth",
+      "hash": "331005b0cb758ed972da38a8a1690856da2c5b290919ae52f18d40215f0087a9",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pretrained_pytorch_2374c6d1": {
+      "model_id": "pretrained_pytorch_2374c6d1",
+      "name": "植物胁迫-LED补光修复模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "registered",
+      "created_at": "2026-01-03T14:58:54.356884",
+      "updated_at": "2026-01-03T14:58:54.356897",
+      "metadata": {
+        "pretrained_source": "plant-stress-led-recovery-transformer",
+        "model_format": "pytorch",
+        "is_agriculture": true,
+        "source": "huggingface",
+        "description": "通过植物图像识别胁迫状态，输出针对性LED补光方案，修复效率提升40%+",
+        "downloaded_at": "2026-01-03",
+        "model_type": "pytorch"
+      },
+      "file_path": "models\\pretrained_pytorch_2374c6d1.pth",
+      "hash": "49c1582a901851d89c9636d524e2e161fb21508e2b025e66b416e0fa2c84da8d"
+    }
+  },
+  "versions": {
+    "pretrained_pytorch_dc331de2": [
+      {
+        "model_id": "pretrained_pytorch_dc331de2",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:43:25.806739",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_aab93267": [
+      {
+        "model_id": "pretrained_pytorch_aab93267",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:45.430493",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_5182bed8": [
+      {
+        "model_id": "pretrained_pytorch_5182bed8",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:46.048214",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_fab3c7c1": [
+      {
+        "model_id": "pretrained_pytorch_fab3c7c1",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:46.656383",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_49333bd8": [
+      {
+        "model_id": "pretrained_pytorch_49333bd8",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:47.261331",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_1e3ba686": [
+      {
+        "model_id": "pretrained_pytorch_1e3ba686",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:47.868920",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_02c23bad": [
+      {
+        "model_id": "pretrained_pytorch_02c23bad",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:48.476372",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_c70f400d": [
+      {
+        "model_id": "pretrained_pytorch_c70f400d",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:49.093704",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_ba0103fa": [
+      {
+        "model_id": "pretrained_pytorch_ba0103fa",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:49.700858",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_03584619": [
+      {
+        "model_id": "pretrained_pytorch_03584619",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:50.306183",
+        "status": "registered"
+      }
+    ],
+    "pretrained_huggingface_cdcce294": [
+      {
+        "model_id": "pretrained_huggingface_cdcce294",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:51.312876",
+        "status": "registered"
+      }
+    ],
+    "pretrained_python_60e57c36": [
+      {
+        "model_id": "pretrained_python_60e57c36",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:51.315244",
+        "status": "registered"
+      }
+    ],
+    "pretrained_exe_39862f85": [
+      {
+        "model_id": "pretrained_exe_39862f85",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:51.316751",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_8f86e604": [
+      {
+        "model_id": "pretrained_pytorch_8f86e604",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:51.920024",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_a711c555": [
+      {
+        "model_id": "pretrained_pytorch_a711c555",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:52.531787",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_6c3481ca": [
+      {
+        "model_id": "pretrained_pytorch_6c3481ca",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:53.137853",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_93374136": [
+      {
+        "model_id": "pretrained_pytorch_93374136",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:53.749080",
+        "status": "registered"
+      }
+    ],
+    "pretrained_pytorch_2374c6d1": [
+      {
+        "model_id": "pretrained_pytorch_2374c6d1",
+        "version": "1.0.0",
+        "created_at": "2026-01-03T14:58:54.356884",
+        "status": "registered"
+      }
+    ]
+  }
+}

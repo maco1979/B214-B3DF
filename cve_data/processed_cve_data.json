@@ -1,0 +1,563 @@
+[
+  {
+    "cveId": "CVE-2025-40978",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-40978",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/40xxx/CVE-2025-40978.json",
+    "dateUpdated": "2026-01-12T11:28:35.332Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-40978",
+      "assignerOrgId": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
+      "state": "PUBLISHED",
+      "assignerShortName": "INCIBE",
+      "dateReserved": "2025-04-16T09:08:23.193Z",
+      "datePublished": "2026-01-12T11:28:35.332Z",
+      "dateUpdated": "2026-01-12T12:53:10.833Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "supportingMedia": [
+          {
+            "base64": false,
+            "type": "text/html",
+            "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's eCommerceGo SaaS, consisting of a stored XSS due to a lack of proper validation of user input by sending a POST request to ‘/ticket/x/conversion’, using the ‘reply_description’ parameter."
+          }
+        ],
+        "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's eCommerceGo SaaS, consisting of a stored XSS due to a lack of proper validation of user input by sending a POST request to ‘/ticket/x/conversion’, using the ‘reply_description’ parameter."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "defaultStatus": "unaffected",
+        "product": "eCommerceGo SaaS",
+        "vendor": "WorkDo",
+        "versions": [
+          {
+            "status": "affected",
+            "version": "All versions"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [
+      {
+        "type": "scenarios",
+        "score": null,
+        "vectorString": null,
+        "severity": null
+      }
+    ],
+    "references": [
+      {
+        "url": "https://www.incibe.es/en/incibe-cert/notices/aviso/multiple-vulnerabilities-workdo-products"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2025-40975",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-40975",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/40xxx/CVE-2025-40975.json",
+    "dateUpdated": "2026-01-12T11:26:30.574Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-40975",
+      "assignerOrgId": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
+      "state": "PUBLISHED",
+      "assignerShortName": "INCIBE",
+      "dateReserved": "2025-04-16T09:08:23.192Z",
+      "datePublished": "2026-01-12T11:26:30.574Z",
+      "dateUpdated": "2026-01-12T11:26:30.574Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "supportingMedia": [
+          {
+            "base64": false,
+            "type": "text/html",
+            "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's HRMGo, consisting of a lack of proper validation of user input by sending a POST request to ‘/hrmgo/ticket/changereply’, using the ‘description’ parameter."
+          }
+        ],
+        "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's HRMGo, consisting of a lack of proper validation of user input by sending a POST request to ‘/hrmgo/ticket/changereply’, using the ‘description’ parameter."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "defaultStatus": "unaffected",
+        "product": "HRMGo",
+        "vendor": "WorkDo",
+        "versions": [
+          {
+            "status": "affected",
+            "version": "All versions"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [
+      {
+        "type": "scenarios",
+        "score": null,
+        "vectorString": null,
+        "severity": null
+      }
+    ],
+    "references": [
+      {
+        "url": "https://www.incibe.es/en/incibe-cert/notices/aviso/multiple-vulnerabilities-workdo-products"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2025-40976",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-40976",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/40xxx/CVE-2025-40976.json",
+    "dateUpdated": "2026-01-12T11:27:20.271Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-40976",
+      "assignerOrgId": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
+      "state": "PUBLISHED",
+      "assignerShortName": "INCIBE",
+      "dateReserved": "2025-04-16T09:08:23.193Z",
+      "datePublished": "2026-01-12T11:27:20.271Z",
+      "dateUpdated": "2026-01-12T11:27:20.271Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "supportingMedia": [
+          {
+            "base64": false,
+            "type": "text/html",
+            "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's TicketGo, consisting of a lack of proper validation of user input by sending a POST request to ‘/ticketgo-saas/home’, using the ‘description’ parameter."
+          }
+        ],
+        "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's TicketGo, consisting of a lack of proper validation of user input by sending a POST request to ‘/ticketgo-saas/home’, using the ‘description’ parameter."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "defaultStatus": "unaffected",
+        "product": "TicketGo",
+        "vendor": "WorkDo",
+        "versions": [
+          {
+            "status": "affected",
+            "version": "All versions"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [
+      {
+        "type": "scenarios",
+        "score": null,
+        "vectorString": null,
+        "severity": null
+      }
+    ],
+    "references": [
+      {
+        "url": "https://www.incibe.es/en/incibe-cert/notices/aviso/multiple-vulnerabilities-workdo-products"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2025-40977",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-40977",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/40xxx/CVE-2025-40977.json",
+    "dateUpdated": "2026-01-12T11:28:01.725Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-40977",
+      "assignerOrgId": "0cbda920-cd7f-484a-8e76-bf7f4b7f4516",
+      "state": "PUBLISHED",
+      "assignerShortName": "INCIBE",
+      "dateReserved": "2025-04-16T09:08:23.193Z",
+      "datePublished": "2026-01-12T11:28:01.725Z",
+      "dateUpdated": "2026-01-12T13:10:34.512Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "supportingMedia": [
+          {
+            "base64": false,
+            "type": "text/html",
+            "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's eCommerceGo SaaS, consisting of a lack of proper validation of user input by sending a POST request to ‘/store-ticket’, using the ‘subject’ and ‘description’ parameters."
+          }
+        ],
+        "value": "Stored Cross-Site Scripting (XSS) vulnerability in WorkDo's eCommerceGo SaaS, consisting of a lack of proper validation of user input by sending a POST request to ‘/store-ticket’, using the ‘subject’ and ‘description’ parameters."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "defaultStatus": "unaffected",
+        "product": "eCommerceGo SaaS",
+        "vendor": "WorkDo",
+        "versions": [
+          {
+            "status": "affected",
+            "version": "All versions"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [
+      {
+        "type": "scenarios",
+        "score": null,
+        "vectorString": null,
+        "severity": null
+      }
+    ],
+    "references": [
+      {
+        "url": "https://www.incibe.es/en/incibe-cert/notices/aviso/multiple-vulnerabilities-workdo-products"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2025-20765",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-20765",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/20xxx/CVE-2025-20765.json",
+    "dateUpdated": "2026-01-12T09:32:55.184Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-20765",
+      "assignerOrgId": "ee979b05-11f8-4f25-a7e0-a1fa9c190374",
+      "state": "PUBLISHED",
+      "assignerShortName": "MediaTek",
+      "dateReserved": "2024-11-01T01:21:50.398Z",
+      "datePublished": "2025-12-02T02:34:28.595Z",
+      "dateUpdated": "2026-01-12T09:32:55.184Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "value": "In aee daemon, there is a possible system crash due to a race condition. This could lead to local denial of service if a malicious actor has already obtained the System privilege. User interaction is not needed for exploitation. Patch ID: ALPS10190802; Issue ID: MSV-4833."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "vendor": "MediaTek, Inc.",
+        "product": "MT2718, MT2737, MT6739, MT6761, MT6765, MT6768, MT6781, MT6789, MT6833, MT6835, MT6853, MT6855, MT6877, MT6878, MT6879, MT6880, MT6883, MT6885, MT6886, MT6889, MT6890, MT6893, MT6895, MT6897, MT6899, MT6980D, MT6983, MT6985, MT6989, MT6990, MT6991, MT8113, MT8115, MT8139, MT8163, MT8168, MT8169, MT8183, MT8186, MT8188, MT8512, MT8516, MT8518, MT8519, MT8532, MT8676, MT8678, MT8695, MT8696, MT8698",
+        "versions": [
+          {
+            "version": "Android 14.0, 15.0, 16.0 / openWRT 21.02, 23.05 / Yocto 4.0",
+            "status": "affected"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [],
+    "references": [
+      {
+        "url": "https://corp.mediatek.com/product-security-bulletin/December-2025"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2025-52694",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-52694",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/52xxx/CVE-2025-52694.json",
+    "dateUpdated": "2026-01-12T02:27:16.744Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-52694",
+      "assignerOrgId": "5f57b9bf-260d-4433-bf07-b6a79e9bb7d4",
+      "state": "PUBLISHED",
+      "assignerShortName": "CSA",
+      "dateReserved": "2025-06-19T06:04:41.987Z",
+      "datePublished": "2026-01-12T02:27:16.744Z",
+      "dateUpdated": "2026-01-12T09:20:30.502Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "supportingMedia": [
+          {
+            "base64": false,
+            "type": "text/html",
+            "value": "Successful exploitation of the SQL injection vulnerability could allow an unauthenticated remote attacker to execute arbitrary SQL commands on the vulnerable service when it is exposed to the Internet."
+          }
+        ],
+        "value": "Successful exploitation of the SQL injection vulnerability could allow an unauthenticated remote attacker to execute arbitrary SQL commands on the vulnerable service when it is exposed to the Internet."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "defaultStatus": "unknown",
+        "product": "IoTSuite and IoT Edge Products",
+        "vendor": "Advantech",
+        "versions": [
+          {
+            "status": "affected",
+            "version": "IoTSuite SaaSComposer prior to version 3.4.15"
+          },
+          {
+            "status": "affected",
+            "version": "IoTSuite Growth Linux docker prior to version V2.0.2"
+          },
+          {
+            "status": "affected",
+            "version": "IoTSuite Starter Linux docker prior to version V2.0.2"
+          },
+          {
+            "status": "affected",
+            "version": "IoT Edge Linux docker prior to version V2.0.2"
+          },
+          {
+            "status": "affected",
+            "version": "IoT Edge Windows prior to version V2.0.2"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [
+      {
+        "type": "scenarios",
+        "score": null,
+        "vectorString": null,
+        "severity": null
+      }
+    ],
+    "references": [
+      {
+        "url": "https://www.csa.gov.sg/alerts-and-advisories/alerts/alerts-al-2026-001/"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2023-34975",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2023-34975",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2023/34xxx/CVE-2023-34975.json",
+    "dateUpdated": "2026-01-12T09:15:12.250Z",
+    "cveMetadata": {
+      "cveId": "CVE-2023-34975",
+      "assignerOrgId": "2fd009eb-170a-4625-932b-17a53af1051f",
+      "state": "PUBLISHED",
+      "assignerShortName": "qnap",
+      "dateReserved": "2023-06-08T08:26:04.295Z",
+      "datePublished": "2023-10-13T19:17:06.034Z",
+      "dateUpdated": "2026-01-12T09:15:12.250Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "supportingMedia": [
+          {
+            "base64": false,
+            "type": "text/html",
+            "value": "An OS command injection vulnerability has been reported to affect several QNAP operating system versions. If exploited, the vulnerability could allow authenticated administrators to execute commands via a network.<br>QuTScloud is not affected.<br><br>We have already fixed the vulnerability in the following versions:<br>QuTS hero h4.5.4.2626 build 20231225 and later<br>QTS 4.5.4.2627 build 20231225 and later<br>"
+          }
+        ],
+        "value": "An OS command injection vulnerability has been reported to affect several QNAP operating system versions. If exploited, the vulnerability could allow authenticated administrators to execute commands via a network.\nQuTScloud is not affected.\n\nWe have already fixed the vulnerability in the following versions:\nQuTS hero h4.5.4.2626 build 20231225 and later\nQTS 4.5.4.2627 build 20231225 and later"
+      }
+    ],
+    "affectedProducts": [
+      {
+        "defaultStatus": "unaffected",
+        "product": "QuTS hero",
+        "vendor": "QNAP Systems Inc.",
+        "versions": [
+          {
+            "lessThan": "h4.5.4.2626 build 20231225",
+            "status": "affected",
+            "version": "h4.5.x",
+            "versionType": "custom"
+          }
+        ]
+      },
+      {
+        "defaultStatus": "unaffected",
+        "product": "QTS",
+        "vendor": "QNAP Systems Inc.",
+        "versions": [
+          {
+            "lessThan": "4.5.4.2627 build 20231225",
+            "status": "affected",
+            "version": "4.5.x",
+            "versionType": "custom"
+          }
+        ]
+      },
+      {
+        "defaultStatus": "unaffected",
+        "product": "QuTScloud",
+        "vendor": "QNAP Systems Inc.",
+        "versions": [
+          {
+            "lessThan": "4.5.4.2627 build 20231225",
+            "status": "unaffected",
+            "version": "c5.x.x",
+            "versionType": "custom"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [
+      {
+        "type": "scenarios",
+        "score": null,
+        "vectorString": null,
+        "severity": null
+      }
+    ],
+    "references": [
+      {
+        "url": "https://www.qnap.com/en/security-advisory/qsa-24-12"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2023-34976",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2023-34976",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2023/34xxx/CVE-2023-34976.json",
+    "dateUpdated": "2026-01-12T09:14:57.872Z",
+    "cveMetadata": {
+      "cveId": "CVE-2023-34976",
+      "assignerOrgId": "2fd009eb-170a-4625-932b-17a53af1051f",
+      "state": "PUBLISHED",
+      "assignerShortName": "qnap",
+      "dateReserved": "2023-06-08T08:26:04.295Z",
+      "datePublished": "2023-10-13T19:17:17.403Z",
+      "dateUpdated": "2026-01-12T09:14:57.872Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "supportingMedia": [
+          {
+            "base64": false,
+            "type": "text/html",
+            "value": "A SQL injection vulnerability has been reported to affect Video Station. If exploited, the vulnerability could allow authenticated users to inject malicious code via a network.<br><br>We have already fixed the vulnerability in the following version:<br>Video Station 5.7.0 ( 2023/07/27 ) and later<br>"
+          }
+        ],
+        "value": "A SQL injection vulnerability has been reported to affect Video Station. If exploited, the vulnerability could allow authenticated users to inject malicious code via a network.\n\nWe have already fixed the vulnerability in the following version:\nVideo Station 5.7.0 ( 2023/07/27 ) and later"
+      }
+    ],
+    "affectedProducts": [
+      {
+        "defaultStatus": "unaffected",
+        "product": "Video Station",
+        "vendor": "QNAP Systems Inc.",
+        "versions": [
+          {
+            "lessThan": "5.7.0 ( 2023/07/27 )",
+            "status": "affected",
+            "version": "5.7.x",
+            "versionType": "custom"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [
+      {
+        "type": "scenarios",
+        "score": null,
+        "vectorString": null,
+        "severity": null
+      }
+    ],
+    "references": [
+      {
+        "url": "https://www.qnap.com/en/security-advisory/qsa-23-52"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2025-20801",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-20801",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/20xxx/CVE-2025-20801.json",
+    "dateUpdated": "2026-01-06T01:46:49.056Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-20801",
+      "assignerOrgId": "ee979b05-11f8-4f25-a7e0-a1fa9c190374",
+      "state": "PUBLISHED",
+      "assignerShortName": "MediaTek",
+      "dateReserved": "2024-11-01T01:21:50.406Z",
+      "datePublished": "2026-01-06T01:46:49.056Z",
+      "dateUpdated": "2026-01-12T08:55:34.275Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "value": "In seninf, there is a possible memory corruption due to a race condition. This could lead to local escalation of privilege if a malicious actor has already obtained the System privilege. User interaction is not needed for exploitation. Patch ID: ALPS10251210; Issue ID: MSV-4926."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "vendor": "MediaTek, Inc.",
+        "product": "MT6878, MT6897, MT6899, MT6985, MT6989, MT6991, MT6993, MT8792, MT8796, MT8798",
+        "versions": [
+          {
+            "version": "Android 13.0, 14.0, 15.0, 16.0",
+            "status": "affected"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [],
+    "references": [
+      {
+        "url": "https://corp.mediatek.com/product-security-bulletin/January-2026"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  },
+  {
+    "cveId": "CVE-2025-20772",
+    "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-20772",
+    "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/20xxx/CVE-2025-20772.json",
+    "dateUpdated": "2026-01-12T08:32:38.835Z",
+    "cveMetadata": {
+      "cveId": "CVE-2025-20772",
+      "assignerOrgId": "ee979b05-11f8-4f25-a7e0-a1fa9c190374",
+      "state": "PUBLISHED",
+      "assignerShortName": "MediaTek",
+      "dateReserved": "2024-11-01T01:21:50.399Z",
+      "datePublished": "2025-12-02T02:34:40.764Z",
+      "dateUpdated": "2026-01-12T08:32:38.835Z"
+    },
+    "descriptions": [
+      {
+        "lang": "en",
+        "value": "In display, there is a possible memory corruption due to use after free. This could lead to local escalation of privilege if a malicious actor has already obtained the System privilege. User interaction is not needed for exploitation. Patch ID: ALPS10182914; Issue ID: MSV-4795."
+      }
+    ],
+    "affectedProducts": [
+      {
+        "vendor": "MediaTek, Inc.",
+        "product": "MT6739, MT6761, MT6765, MT6768, MT6781, MT6789, MT6833, MT6835, MT6853, MT6855, MT6877, MT6878, MT6879, MT6883, MT6885, MT6886, MT6889, MT6893, MT6895, MT6897, MT6899, MT6983, MT6985, MT6989, MT6991, MT8186, MT8188, MT8196, MT8667, MT8673, MT8676, MT8678, MT8765, MT8766, MT8768, MT8771, MT8781, MT8791T, MT8792, MT8793, MT8795T, MT8796, MT8798, MT8873, MT8883",
+        "versions": [
+          {
+            "version": "Android 14.0, 15.0, 16.0",
+            "status": "affected"
+          }
+        ]
+      }
+    ],
+    "cvssScores": [],
+    "references": [
+      {
+        "url": "https://corp.mediatek.com/product-security-bulletin/December-2025"
+      }
+    ],
+    "remediations": [],
+    "workarounds": []
+  }
+]

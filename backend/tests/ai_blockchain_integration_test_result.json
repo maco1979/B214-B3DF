@@ -1,0 +1,266 @@
+{
+  "success": true,
+  "timestamp": "2026-01-02T05:57:39.329120",
+  "test_results": {
+    "model_prediction": {
+      "model_type": "JEPA",
+      "input_dim": 100,
+      "timestamp": "2026-01-02T05:57:39.325944",
+      "performance_metrics": {
+        "mse_current": 0.0523,
+        "mse_future": 0.0876,
+        "avg_energy": 0.1234,
+        "prediction_steps": 3
+      },
+      "prediction_data": {
+        "current_embedding_shape": [
+          2,
+          512
+        ],
+        "predicted_embedding_shape": [
+          2,
+          512
+        ],
+        "predicted_data_shape": [
+          3,
+          2,
+          100
+        ]
+      },
+      "raw_outputs": {
+        "energy_values": [
+          0.1122,
+          0.1346
+        ],
+        "avg_energy": 0.1234
+      }
+    },
+    "model_registration": {
+      "success": true,
+      "model_id": "jepa_model_v1",
+      "model_hash": "37248e79b81dead8de22108d2e2fd9f892cef7cae339250d1b592b8d2c79c94e",
+      "shard_id": 3,
+      "record_id": "model_registry_1767304659_1e02ff232f36ac66"
+    },
+    "prediction_storage": {
+      "success": true,
+      "record_id": "data_provenance_1767304659_97852853f26b7831",
+      "data_hash": "0c53101d58a7b94901fa510e522ad8e33e678919a1fdb1d6efa0d797b5f194ab",
+      "shard_id": 2,
+      "provenance_data": {
+        "data_type": "ai_prediction",
+        "data_id": "data_1767304659",
+        "model_id": "jepa_model_v1",
+        "model_type": "JEPA",
+        "prediction_id": "pred_1767304659",
+        "timestamp": "2026-01-02T05:57:39.327361",
+        "prediction_result": {
+          "model_type": "JEPA",
+          "input_dim": 100,
+          "timestamp": "2026-01-02T05:57:39.325944",
+          "performance_metrics": {
+            "mse_current": 0.0523,
+            "mse_future": 0.0876,
+            "avg_energy": 0.1234,
+            "prediction_steps": 3
+          },
+          "prediction_data": {
+            "current_embedding_shape": [
+              2,
+              512
+            ],
+            "predicted_embedding_shape": [
+              2,
+              512
+            ],
+            "predicted_data_shape": [
+              3,
+              2,
+              100
+            ]
+          },
+          "raw_outputs": {
+            "energy_values": [
+              0.1122,
+              0.1346
+            ],
+            "avg_energy": 0.1234
+          }
+        },
+        "metadata": {
+          "test_environment": "development",
+          "blockchain_integration_version": "1.0.0"
+        },
+        "data_hash": "0c53101d58a7b94901fa510e522ad8e33e678919a1fdb1d6efa0d797b5f194ab",
+        "record_id": "data_provenance_1767304659_97852853f26b7831",
+        "shard_id": 2
+      }
+    },
+    "provenance_verification": {
+      "success": true,
+      "record_found": true,
+      "is_verified": false,
+      "original_record": {
+        "data_type": "ai_prediction",
+        "data_id": "data_1767304659",
+        "model_id": "jepa_model_v1",
+        "model_type": "JEPA",
+        "prediction_id": "pred_1767304659",
+        "timestamp": "2026-01-02T05:57:39.327361",
+        "prediction_result": {
+          "model_type": "JEPA",
+          "input_dim": 100,
+          "timestamp": "2026-01-02T05:57:39.325944",
+          "performance_metrics": {
+            "mse_current": 0.0523,
+            "mse_future": 0.0876,
+            "avg_energy": 0.1234,
+            "prediction_steps": 3
+          },
+          "prediction_data": {
+            "current_embedding_shape": [
+              2,
+              512
+            ],
+            "predicted_embedding_shape": [
+              2,
+              512
+            ],
+            "predicted_data_shape": [
+              3,
+              2,
+              100
+            ]
+          },
+          "raw_outputs": {
+            "energy_values": [
+              0.1122,
+              0.1346
+            ],
+            "avg_energy": 0.1234
+          }
+        },
+        "metadata": {
+          "test_environment": "development",
+          "blockchain_integration_version": "1.0.0"
+        },
+        "data_hash": "0c53101d58a7b94901fa510e522ad8e33e678919a1fdb1d6efa0d797b5f194ab",
+        "record_id": "data_provenance_1767304659_97852853f26b7831",
+        "shard_id": 2
+      },
+      "current_hash": "98faf6a98fc8fa47a33627e0bf04510bcbc0e86b38a834b9f34678925758eb25",
+      "verification_time": "2026-01-02T05:57:39.327907"
+    },
+    "semantic_sharding": {
+      "success": true,
+      "shards": [
+        {
+          "shard_id": 0,
+          "record_count": 0,
+          "created_at": "2026-01-02T05:57:39.323988",
+          "version": "1.0.0",
+          "model_count": 0,
+          "data_provenance_count": 0,
+          "transaction_count": 0
+        },
+        {
+          "shard_id": 1,
+          "record_count": 0,
+          "created_at": "2026-01-02T05:57:39.324028",
+          "version": "1.0.0",
+          "model_count": 0,
+          "data_provenance_count": 0,
+          "transaction_count": 0
+        },
+        {
+          "shard_id": 2,
+          "record_count": 1,
+          "created_at": "2026-01-02T05:57:39.324032",
+          "version": "1.0.0",
+          "model_count": 0,
+          "data_provenance_count": 1,
+          "transaction_count": 0
+        },
+        {
+          "shard_id": 3,
+          "record_count": 1,
+          "created_at": "2026-01-02T05:57:39.324034",
+          "version": "1.0.0",
+          "model_count": 1,
+          "data_provenance_count": 0,
+          "transaction_count": 0
+        },
+        {
+          "shard_id": 4,
+          "record_count": 0,
+          "created_at": "2026-01-02T05:57:39.324037",
+          "version": "1.0.0",
+          "model_count": 0,
+          "data_provenance_count": 0,
+          "transaction_count": 0
+        },
+        {
+          "shard_id": 5,
+          "record_count": 0,
+          "created_at": "2026-01-02T05:57:39.324039",
+          "version": "1.0.0",
+          "model_count": 0,
+          "data_provenance_count": 0,
+          "transaction_count": 0
+        },
+        {
+          "shard_id": 6,
+          "record_count": 0,
+          "created_at": "2026-01-02T05:57:39.324041",
+          "version": "1.0.0",
+          "model_count": 0,
+          "data_provenance_count": 0,
+          "transaction_count": 0
+        },
+        {
+          "shard_id": 7,
+          "record_count": 0,
+          "created_at": "2026-01-02T05:57:39.324044",
+          "version": "1.0.0",
+          "model_count": 0,
+          "data_provenance_count": 0,
+          "transaction_count": 0
+        }
+      ],
+      "total_shards": 8,
+      "total_records": 2
+    },
+    "blockchain_status": {
+      "status": "healthy",
+      "message": "区块链服务正常运行（开发模式）",
+      "timestamp": "2026-01-02T05:57:39.329106",
+      "version": "1.0.0",
+      "components": {
+        "fabric": "simulated",
+        "smart_contracts": "simulated",
+        "network": "development"
+      },
+      "statistics": {
+        "models_registered": 0,
+        "provenance_records": 1,
+        "federated_rounds": 0
+      }
+    },
+    "contract_status": {
+      "success": true,
+      "contracts": {
+        "model_registry": true,
+        "data_provenance": true,
+        "federated_learning": true,
+        "access_control": true
+      },
+      "total_contracts": 4,
+      "active_contracts": 4
+    }
+  },
+  "test_summary": {
+    "total_tests": 7,
+    "passed_tests": 7,
+    "message": "AI与区块链集成测试流程运行成功"
+  }
+}

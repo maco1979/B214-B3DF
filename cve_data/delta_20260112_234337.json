@@ -1,0 +1,21 @@
+{
+  "fetchTime": "2026-01-12T15:40:20.817Z",
+  "numberOfChanges": 2,
+  "new": [
+    {
+      "cveId": "CVE-2025-67813",
+      "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2025-67813",
+      "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2025/67xxx/CVE-2025-67813.json",
+      "dateUpdated": "2026-01-12T15:31:02.814Z"
+    }
+  ],
+  "updated": [
+    {
+      "cveId": "CVE-2023-4785",
+      "cveOrgLink": "https://www.cve.org/CVERecord?id=CVE-2023-4785",
+      "githubLink": "https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2023/4xxx/CVE-2023-4785.json",
+      "dateUpdated": "2026-01-12T15:34:12.725Z"
+    }
+  ],
+  "error": []
+}

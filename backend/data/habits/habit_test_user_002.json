@@ -1,0 +1,62 @@
+[
+  {
+    "behavior_id": "behavior_2d3719c6-d33a-40d4-891d-e04e0780de86",
+    "user_id": "test_user_002",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030470.090089,
+    "datetime": "2026-01-10T15:34:30.090089"
+  },
+  {
+    "behavior_id": "behavior_08fda04a-39d8-4e50-a2bb-818d3d8cbd46",
+    "user_id": "test_user_002",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030526.765708,
+    "datetime": "2026-01-10T15:35:26.765708"
+  },
+  {
+    "behavior_id": "behavior_4c29c606-702d-42e9-8dcd-c2f02f846718",
+    "user_id": "test_user_002",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030616.387907,
+    "datetime": "2026-01-10T15:36:56.387907"
+  },
+  {
+    "behavior_id": "behavior_facfb035-3729-476d-b5cd-125762f98f95",
+    "user_id": "test_user_002",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030644.1961,
+    "datetime": "2026-01-10T15:37:24.196100"
+  },
+  {
+    "behavior_id": "behavior_3d44c1bd-025a-4ba4-a670-ee9313679128",
+    "user_id": "test_user_002",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030668.822322,
+    "datetime": "2026-01-10T15:37:48.822322"
+  }
+]

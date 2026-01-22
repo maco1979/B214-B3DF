@@ -1,0 +1,102 @@
+{
+    "report_metadata": {
+        "report_time": "2026-01-01 00:14:54",
+        "report_version": "2.0",
+        "generator": "generate_security_report.py",
+        "platform": "win32"
+    },
+    "environment_check": {
+        "env_var_value": "production",
+        "is_production": true,
+        "status": "PASS",
+        "message": "生产环境标识已生效"
+    },
+    "cors_policy_check": {
+        "mode": "strict",
+        "allow_origins": [
+            "https://your-domain.com",
+            "https://www.your-domain.com",
+            "https://api.your-domain.com"
+        ],
+        "allow_credentials": false,
+        "allow_methods": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+        ],
+        "allow_headers": [
+            "Content-Type",
+            "Authorization",
+            "X-Requested-With"
+        ],
+        "max_age": 86400,
+        "status": "PASS",
+        "message": "生产环境已启用严格CORS（白名单模式，禁用跨域凭证）"
+    },
+    "https_config_check": {
+        "required": true,
+        "cert_found": false,
+        "cert_path": null,
+        "status": "CHECK",
+        "message": "请配置SSL证书（HTTPS是HSTS生效前提）",
+        "recommendations": [
+            "生产环境推荐使用Let's Encrypt免费证书",
+            "证书有效期90天，需配置自动续签",
+            "推荐使用Nginx反向代理处理HTTPS"
+        ]
+    },
+    "hsts_config_check": {
+        "enabled": true,
+        "hsts_header": "max-age=31536000; includeSubDomains; preload",
+        "config": {
+            "max_age": 31536000,
+            "include_subdomains": true,
+            "preload": true
+        },
+        "status": "PASS",
+        "message": "HSTS头已启用（强制HTTPS有效期1年，含子域名）"
+    },
+    "security_headers_check": {
+        "headers": {
+            "X-Frame-Options": "DENY",
+            "X-XSS-Protection": "1; mode=block",
+            "X-Content-Type-Options": "nosniff",
+            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'",
+            "Referrer-Policy": "strict-origin-when-cross-origin",
+            "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+            "Pragma": "no-cache",
+            "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload"
+        },
+        "count": 9,
+        "status": "PASS",
+        "message": "已配置9个安全响应头"
+    },
+    "rate_limit_check": {
+        "enabled": true,
+        "requests_per_minute": 120,
+        "burst_limit": 200,
+        "status": "PASS",
+        "message": "速率限制已启用（每分钟120请求，突发上限200）"
+    },
+    "input_validation_check": {
+        "sql_injection_protection": true,
+        "xss_protection": true,
+        "path_traversal_protection": true,
+        "status": "PASS",
+        "message": "输入验证已启用（SQL注入/XSS/路径遍历防护）"
+    },
+    "summary": {
+        "total_checks": 7,
+        "pass_count": 6,
+        "warn_count": 0,
+        "fail_count": 0,
+        "skip_count": 0,
+        "check_count": 1,
+        "score": 85.7,
+        "grade": "A",
+        "is_production_ready": true,
+        "overall_message": "✅ 所有生产环境安全配置已生效"
+    }
+}

@@ -1,0 +1,50 @@
+{
+  "agriculture_classification_v1": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T00:34:37.040641"
+  },
+  "resource_optimization_v1": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T00:34:37.042588"
+  },
+  "risk_assessment_v1": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T00:34:37.043803"
+  },
+  "pest_detection_v1": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T00:34:37.045025"
+  },
+  "yield_prediction_v1": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T00:34:37.046787"
+  },
+  "model_ai_6687e1fa": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T12:07:05.700468"
+  },
+  "model_ai_c8c555e6": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T12:07:19.754200"
+  },
+  "model_ai_87d52436": {
+    "permission_level": "private",
+    "owner_id": "system",
+    "shared_with": [],
+    "created_at": "2026-01-07T12:07:32.634054"
+  }
+}

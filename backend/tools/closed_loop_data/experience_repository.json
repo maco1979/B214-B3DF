@@ -1,0 +1,272 @@
+[
+  {
+    "data": {
+      "type": "decision",
+      "input": {
+        "sensor_data": {
+          "temperature": 26.5,
+          "humidity": 45.0
+        }
+      },
+      "output": {
+        "action": "adjust_temperature",
+        "parameters": {
+          "target": 25.5,
+          "range": 2.0
+        },
+        "confidence": 0.85,
+        "timestamp": "2026-01-05T01:56:23.569689"
+      },
+      "confidence": 0.85,
+      "reward": 8.5
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_decision_0",
+    "timestamp": "2026-01-05T01:56:23.569718",
+    "data_id": "experience_1767549383569_on_0"
+  },
+  {
+    "data": {
+      "type": "control",
+      "input": {
+        "device_id": "device_001",
+        "command": "adjust_temperature"
+      },
+      "output": {
+        "command": "activate_device",
+        "device_id": "device_001",
+        "status": "executed",
+        "timestamp": "2026-01-05T01:56:23.574599"
+      },
+      "status": "executed",
+      "reward": 8.0
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_control_1",
+    "timestamp": "2026-01-05T01:56:23.574618",
+    "data_id": "experience_1767549383574_ol_1"
+  },
+  {
+    "data": {
+      "type": "learning",
+      "input": {
+        "training_data": "sample_data",
+        "epochs": 10
+      },
+      "output": {
+        "knowledge_updated": true,
+        "new_patterns": [
+          "pattern_1",
+          "pattern_2"
+        ],
+        "confidence_improved": 0.1,
+        "collaborative_experience_used": 2,
+        "timestamp": "2026-01-05T01:56:23.579165"
+      },
+      "new_patterns": [
+        "pattern_1",
+        "pattern_2"
+      ],
+      "collaborative_experience_used": 2,
+      "reward": 4.0
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_learning_2",
+    "timestamp": "2026-01-05T01:56:23.580523",
+    "data_id": "experience_1767549383580_ng_2"
+  },
+  {
+    "data": {
+      "type": "decision",
+      "input": {
+        "sensor_data": {
+          "temperature": 26.5,
+          "humidity": 45.0
+        }
+      },
+      "output": {
+        "action": "adjust_temperature",
+        "parameters": {
+          "target": 25.5,
+          "range": 2.0
+        },
+        "confidence": 0.85,
+        "timestamp": "2026-01-05T02:02:53.257554"
+      },
+      "confidence": 0.85,
+      "reward": 8.5,
+      "tags": [
+        "decision",
+        "success",
+        "high_reward",
+        "high_confidence"
+      ]
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_decision_0",
+    "timestamp": "2026-01-05T02:02:53.257580",
+    "data_id": "experience_1767549773257_on_0",
+    "quality_score": 0.9700000000000001
+  },
+  {
+    "data": {
+      "type": "control",
+      "input": {
+        "device_id": "device_001",
+        "command": "adjust_temperature"
+      },
+      "output": {
+        "command": "activate_device",
+        "device_id": "device_001",
+        "status": "executed",
+        "timestamp": "2026-01-05T02:02:53.260987"
+      },
+      "status": "executed",
+      "reward": 8.0,
+      "tags": [
+        "control",
+        "success",
+        "high_reward",
+        "low_confidence"
+      ]
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_control_1",
+    "timestamp": "2026-01-05T02:02:53.261008",
+    "data_id": "experience_1767549773261_ol_1",
+    "quality_score": 0.8
+  },
+  {
+    "data": {
+      "type": "learning",
+      "input": {
+        "training_data": "sample_data",
+        "epochs": 10
+      },
+      "output": {
+        "knowledge_updated": true,
+        "new_patterns": [
+          "pattern_1",
+          "pattern_2"
+        ],
+        "confidence_improved": 0.1,
+        "collaborative_experience_used": 2,
+        "timestamp": "2026-01-05T02:02:53.267081"
+      },
+      "new_patterns": [
+        "pattern_1",
+        "pattern_2"
+      ],
+      "collaborative_experience_used": 2,
+      "reward": 4.0,
+      "tags": [
+        "learning",
+        "success",
+        "medium_reward",
+        "low_confidence"
+      ]
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_learning_2",
+    "timestamp": "2026-01-05T02:02:53.268815",
+    "data_id": "experience_1767549773268_ng_2",
+    "quality_score": 0.7
+  },
+  {
+    "data": {
+      "type": "decision",
+      "input": {
+        "sensor_data": {
+          "temperature": 26.5,
+          "humidity": 45.0
+        }
+      },
+      "output": {
+        "action": "adjust_temperature",
+        "parameters": {
+          "target": 25.5,
+          "range": 2.0
+        },
+        "confidence": 0.85,
+        "timestamp": "2026-01-05T02:03:43.919251"
+      },
+      "confidence": 0.85,
+      "reward": 8.5,
+      "tags": [
+        "decision",
+        "success",
+        "high_reward",
+        "high_confidence"
+      ]
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_decision_0",
+    "timestamp": "2026-01-05T02:03:43.919278",
+    "data_id": "experience_1767549823919_on_0",
+    "quality_score": 0.9700000000000001
+  },
+  {
+    "data": {
+      "type": "control",
+      "input": {
+        "device_id": "device_001",
+        "command": "adjust_temperature"
+      },
+      "output": {
+        "command": "activate_device",
+        "device_id": "device_001",
+        "status": "executed",
+        "timestamp": "2026-01-05T02:03:43.926154"
+      },
+      "status": "executed",
+      "reward": 8.0,
+      "tags": [
+        "control",
+        "success",
+        "high_reward",
+        "low_confidence"
+      ]
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_control_1",
+    "timestamp": "2026-01-05T02:03:43.926175",
+    "data_id": "experience_1767549823926_ol_1",
+    "quality_score": 0.8
+  },
+  {
+    "data": {
+      "type": "learning",
+      "input": {
+        "training_data": "sample_data",
+        "epochs": 10
+      },
+      "output": {
+        "knowledge_updated": true,
+        "new_patterns": [
+          "pattern_2",
+          "pattern_1"
+        ],
+        "confidence_improved": 0.1,
+        "collaborative_experience_used": 4,
+        "timestamp": "2026-01-05T02:03:43.932770"
+      },
+      "new_patterns": [
+        "pattern_2",
+        "pattern_1"
+      ],
+      "collaborative_experience_used": 4,
+      "reward": 4.0,
+      "tags": [
+        "learning",
+        "success",
+        "medium_reward",
+        "low_confidence"
+      ]
+    },
+    "data_type": "experience",
+    "publisher_id": "agent_learning_2",
+    "timestamp": "2026-01-05T02:03:43.936831",
+    "data_id": "experience_1767549823936_ng_2",
+    "quality_score": 0.7
+  }
+]

@@ -1,0 +1,476 @@
+{
+  "project_name": "核心AI有机智能体项目",
+  "start_date": "2026-01-02",
+  "end_date": "2026-02-20",
+  "duration_weeks": 7,
+  "timeline": {
+    "week_1": {
+      "title": "项目启动",
+      "tasks": [
+        "项目启动",
+        "实现统一异常处理",
+        "实现身份认证",
+        "完善参数校验框架",
+        "前端安全加固"
+      ]
+    },
+    "week_2": {
+      "title": "三层防护机制",
+      "tasks": [
+        "完成三层防护机制",
+        "加强数据安全",
+        "改善用户体验",
+        "统一文档规范"
+      ]
+    },
+    "week_3": {
+      "title": "生物-机器接口",
+      "tasks": [
+        "实现生物-机器接口",
+        "重构核心模块",
+        "建立自动化测试体系",
+        "安全审计"
+      ]
+    },
+    "week_4": {
+      "title": "系统增强",
+      "tasks": [
+        "完成生物-机器接口",
+        "重构核心模块",
+        "建立监控系统",
+        "AI控制页面增强"
+      ]
+    },
+    "week_5": {
+      "title": "功能完善",
+      "tasks": [
+        "完成生物信号处理",
+        "实现告警机制",
+        "完成自动化测试",
+        "编写API文档"
+      ]
+    },
+    "week_6": {
+      "title": "安全与合规",
+      "tasks": [
+        "完善生物安全措施",
+        "制定应急预案",
+        "完成生物相容性测试",
+        "安全措施审查"
+      ]
+    },
+    "week_7": {
+      "title": "项目收尾",
+      "tasks": [
+        "项目验收",
+        "项目复盘"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "task_id": "TASK_001",
+      "task_name": "项目启动",
+      "week": 1,
+      "start_date": "2026-01-02",
+      "end_date": "2026-01-09",
+      "status": "planned",
+      "owner": "未分配",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_002",
+      "task_name": "实现统一异常处理",
+      "week": 1,
+      "start_date": "2026-01-02",
+      "end_date": "2026-01-09",
+      "status": "planned",
+      "owner": "李工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_003",
+      "task_name": "实现身份认证",
+      "week": 1,
+      "start_date": "2026-01-02",
+      "end_date": "2026-01-09",
+      "status": "planned",
+      "owner": "李工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_004",
+      "task_name": "完善参数校验框架",
+      "week": 1,
+      "start_date": "2026-01-02",
+      "end_date": "2026-01-09",
+      "status": "planned",
+      "owner": "张工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_005",
+      "task_name": "前端安全加固",
+      "week": 1,
+      "start_date": "2026-01-02",
+      "end_date": "2026-01-09",
+      "status": "planned",
+      "owner": "王工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_006",
+      "task_name": "完成三层防护机制",
+      "week": 2,
+      "start_date": "2026-01-09",
+      "end_date": "2026-01-16",
+      "status": "planned",
+      "owner": "未分配",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_007",
+      "task_name": "加强数据安全",
+      "week": 2,
+      "start_date": "2026-01-09",
+      "end_date": "2026-01-16",
+      "status": "planned",
+      "owner": "李工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_008",
+      "task_name": "改善用户体验",
+      "week": 2,
+      "start_date": "2026-01-09",
+      "end_date": "2026-01-16",
+      "status": "planned",
+      "owner": "王工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_009",
+      "task_name": "统一文档规范",
+      "week": 2,
+      "start_date": "2026-01-09",
+      "end_date": "2026-01-16",
+      "status": "planned",
+      "owner": "张工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_010",
+      "task_name": "实现生物-机器接口",
+      "week": 3,
+      "start_date": "2026-01-16",
+      "end_date": "2026-01-23",
+      "status": "planned",
+      "owner": "李工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_011",
+      "task_name": "重构核心模块",
+      "week": 3,
+      "start_date": "2026-01-16",
+      "end_date": "2026-01-23",
+      "status": "planned",
+      "owner": "刘工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_012",
+      "task_name": "建立自动化测试体系",
+      "week": 3,
+      "start_date": "2026-01-16",
+      "end_date": "2026-01-23",
+      "status": "planned",
+      "owner": "黄工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_013",
+      "task_name": "安全审计",
+      "week": 3,
+      "start_date": "2026-01-16",
+      "end_date": "2026-01-23",
+      "status": "planned",
+      "owner": "未分配",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_014",
+      "task_name": "完成生物-机器接口",
+      "week": 4,
+      "start_date": "2026-01-23",
+      "end_date": "2026-01-30",
+      "status": "planned",
+      "owner": "李工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_015",
+      "task_name": "重构核心模块",
+      "week": 4,
+      "start_date": "2026-01-23",
+      "end_date": "2026-01-30",
+      "status": "planned",
+      "owner": "刘工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_016",
+      "task_name": "建立监控系统",
+      "week": 4,
+      "start_date": "2026-01-23",
+      "end_date": "2026-01-30",
+      "status": "planned",
+      "owner": "刘工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_017",
+      "task_name": "AI控制页面增强",
+      "week": 4,
+      "start_date": "2026-01-23",
+      "end_date": "2026-01-30",
+      "status": "planned",
+      "owner": "王工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_018",
+      "task_name": "完成生物信号处理",
+      "week": 5,
+      "start_date": "2026-01-30",
+      "end_date": "2026-02-06",
+      "status": "planned",
+      "owner": "李工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_019",
+      "task_name": "实现告警机制",
+      "week": 5,
+      "start_date": "2026-01-30",
+      "end_date": "2026-02-06",
+      "status": "planned",
+      "owner": "李工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_020",
+      "task_name": "完成自动化测试",
+      "week": 5,
+      "start_date": "2026-01-30",
+      "end_date": "2026-02-06",
+      "status": "planned",
+      "owner": "黄工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_021",
+      "task_name": "编写API文档",
+      "week": 5,
+      "start_date": "2026-01-30",
+      "end_date": "2026-02-06",
+      "status": "planned",
+      "owner": "陈工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_022",
+      "task_name": "完善生物安全措施",
+      "week": 6,
+      "start_date": "2026-02-06",
+      "end_date": "2026-02-13",
+      "status": "planned",
+      "owner": "张工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_023",
+      "task_name": "制定应急预案",
+      "week": 6,
+      "start_date": "2026-02-06",
+      "end_date": "2026-02-13",
+      "status": "planned",
+      "owner": "张工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_024",
+      "task_name": "完成生物相容性测试",
+      "week": 6,
+      "start_date": "2026-02-06",
+      "end_date": "2026-02-13",
+      "status": "planned",
+      "owner": "张工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_025",
+      "task_name": "安全措施审查",
+      "week": 6,
+      "start_date": "2026-02-06",
+      "end_date": "2026-02-13",
+      "status": "planned",
+      "owner": "张工",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_026",
+      "task_name": "项目验收",
+      "week": 7,
+      "start_date": "2026-02-13",
+      "end_date": "2026-02-20",
+      "status": "planned",
+      "owner": "未分配",
+      "priority": "medium"
+    },
+    {
+      "task_id": "TASK_027",
+      "task_name": "项目复盘",
+      "week": 7,
+      "start_date": "2026-02-13",
+      "end_date": "2026-02-20",
+      "status": "planned",
+      "owner": "未分配",
+      "priority": "medium"
+    }
+  ],
+  "progress": {
+    "total_tasks": 27,
+    "completed_tasks": 0,
+    "in_progress_tasks": 5,
+    "planned_tasks": 22,
+    "completion_rate": 0.0,
+    "project_status": "at_risk",
+    "weekly_task_distribution": {
+      "week_1": 5,
+      "week_2": 4,
+      "week_3": 4,
+      "week_4": 4,
+      "week_5": 4,
+      "week_6": 4,
+      "week_7": 2
+    },
+    "status_distribution": {
+      "completed": 0,
+      "in_progress": 5,
+      "planned": 22
+    },
+    "owner_distribution": {
+      "未分配": 5,
+      "李工": 7,
+      "张工": 6,
+      "王工": 3,
+      "刘工": 3,
+      "黄工": 2,
+      "陈工": 1
+    },
+    "current_week": 1,
+    "project_timeline": {
+      "week_1": {
+        "title": "项目启动",
+        "tasks": [
+          "项目启动",
+          "实现统一异常处理",
+          "实现身份认证",
+          "完善参数校验框架",
+          "前端安全加固"
+        ]
+      },
+      "week_2": {
+        "title": "三层防护机制",
+        "tasks": [
+          "完成三层防护机制",
+          "加强数据安全",
+          "改善用户体验",
+          "统一文档规范"
+        ]
+      },
+      "week_3": {
+        "title": "生物-机器接口",
+        "tasks": [
+          "实现生物-机器接口",
+          "重构核心模块",
+          "建立自动化测试体系",
+          "安全审计"
+        ]
+      },
+      "week_4": {
+        "title": "系统增强",
+        "tasks": [
+          "完成生物-机器接口",
+          "重构核心模块",
+          "建立监控系统",
+          "AI控制页面增强"
+        ]
+      },
+      "week_5": {
+        "title": "功能完善",
+        "tasks": [
+          "完成生物信号处理",
+          "实现告警机制",
+          "完成自动化测试",
+          "编写API文档"
+        ]
+      },
+      "week_6": {
+        "title": "安全与合规",
+        "tasks": [
+          "完善生物安全措施",
+          "制定应急预案",
+          "完成生物相容性测试",
+          "安全措施审查"
+        ]
+      },
+      "week_7": {
+        "title": "项目收尾",
+        "tasks": [
+          "项目验收",
+          "项目复盘"
+        ]
+      }
+    }
+  },
+  "analysis": {
+    "total_tasks": 27,
+    "tasks_per_week": [
+      5,
+      4,
+      4,
+      4,
+      4,
+      4,
+      2
+    ],
+    "average_tasks_per_week": 3.86,
+    "task_distribution_balance": 3,
+    "max_tasks_in_week": 5,
+    "min_tasks_in_week": 2,
+    "is_task_distribution_balanced": false,
+    "critical_path_tasks": [
+      "项目启动",
+      "完成三层防护机制",
+      "实现生物-机器接口",
+      "完成生物-机器接口",
+      "完成生物信号处理",
+      "完善生物安全措施",
+      "项目验收"
+    ],
+    "owner_workload_distribution": {
+      "未分配": 5,
+      "李工": 7,
+      "张工": 6,
+      "王工": 3,
+      "刘工": 3,
+      "黄工": 2,
+      "陈工": 1
+    },
+    "max_tasks_per_owner": 7,
+    "is_owner_workload_balanced": true,
+    "overall_reasonableness": "需要调整"
+  }
+}

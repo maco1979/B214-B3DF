@@ -1,0 +1,334 @@
+{
+  "models": {
+    "agriculture_classification_v1": {
+      "model_id": "agriculture_classification_v1",
+      "name": "农业作物分类模型",
+      "description": "用于农业作物分类的深度学习模型",
+      "type": "classification",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "trained",
+      "created_at": "2026-01-07T00:34:37.040567",
+      "updated_at": "2026-01-07T14:09:22.280920",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.001,
+        "batch_size": 32,
+        "epochs": 100
+      },
+      "metrics": {
+        "accuracy": 0.85,
+        "loss": 0.23
+      },
+      "file_path": "D:\\1.6\\1.5\\models\\agriculture_classification_v1.pth",
+      "hash": "a0280d16e3cb34f3c26a4ebb4a29f1e93f5d1c6ac5037b7c9cf5476dc65f5574",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      },
+      "accuracy": 0.85
+    },
+    "resource_optimization_v1": {
+      "model_id": "resource_optimization_v1",
+      "name": "资源优化模型",
+      "description": "用于农业资源优化分配的模型",
+      "type": "optimization",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "ready",
+      "created_at": "2026-01-07T00:34:37.042517",
+      "updated_at": "2026-01-07T00:34:37.042524",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.0001,
+        "batch_size": 64,
+        "epochs": 50
+      },
+      "metrics": {},
+      "file_path": "D:\\1.6\\1.5\\models\\resource_optimization_v1.pth",
+      "hash": "7c2a8de96e77179486db64f4978a389c6246cdae5f7e834d8376cc472e977b4d",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "risk_assessment_v1": {
+      "model_id": "risk_assessment_v1",
+      "name": "风险评估模型",
+      "description": "用于农业风险评估的模型",
+      "type": "regression",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "ready",
+      "created_at": "2026-01-07T00:34:37.043749",
+      "updated_at": "2026-01-07T00:34:37.043756",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.005,
+        "batch_size": 16,
+        "epochs": 120
+      },
+      "metrics": {},
+      "file_path": "D:\\1.6\\1.5\\models\\risk_assessment_v1.pth",
+      "hash": "d66ec6eeca446b9317833089a1e54ce603274c19912fa9c646e0a1abf2dea300",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "pest_detection_v1": {
+      "model_id": "pest_detection_v1",
+      "name": "病虫害检测模型",
+      "description": "用于检测农作物病虫害的模型",
+      "type": "detection",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "running",
+      "created_at": "2026-01-07T00:34:37.044980",
+      "updated_at": "2026-01-07T12:03:38.389388",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.002,
+        "batch_size": 24,
+        "epochs": 80
+      },
+      "metrics": {},
+      "file_path": "D:\\1.6\\1.5\\models\\pest_detection_v1.pth",
+      "hash": "aade80590f3db29289f76c630eaf999243cd6cfd9a8104650f5522993811b21d",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    },
+    "yield_prediction_v1": {
+      "model_id": "yield_prediction_v1",
+      "name": "产量预测模型",
+      "description": "用于预测农作物产量的模型",
+      "type": "regression",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "trained",
+      "created_at": "2026-01-07T00:34:37.046712",
+      "updated_at": "2026-01-07T12:04:17.643478",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.0015,
+        "batch_size": 48,
+        "epochs": 90
+      },
+      "metrics": {
+        "accuracy": 0.85,
+        "loss": 0.23
+      },
+      "file_path": "D:\\1.6\\1.5\\models\\yield_prediction_v1.pth",
+      "hash": "96cf0e6582aaf6967c3759eac644c6bb484c5f899619518f2b05923f161ec39c",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      },
+      "accuracy": 0.85
+    },
+    "model_ai_6687e1fa": {
+      "model_id": "model_ai_6687e1fa",
+      "name": "通用Transformer大模型",
+      "description": "用于文本生成、对话等任务的通用Transformer模型",
+      "type": "ai",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "trained",
+      "created_at": "2026-01-07T12:07:05.700431",
+      "updated_at": "2026-01-07T14:08:30.554909",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.0001,
+        "batch_size": 16,
+        "epochs": 50
+      },
+      "metrics": {
+        "accuracy": 0.85,
+        "loss": 0.23
+      },
+      "file_path": "D:\\1.6\\1.5\\models\\model_ai_6687e1fa.pth",
+      "hash": "abb5758f78e288a8ae3a645750fa98170d3efabbc8c80e6e4d6ea1000d351b06",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      },
+      "accuracy": 0.85
+    },
+    "model_ai_c8c555e6": {
+      "model_id": "model_ai_c8c555e6",
+      "name": "ASR语音识别模型",
+      "description": "用于将语音转换为文本的模型",
+      "type": "ai",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "trained",
+      "created_at": "2026-01-07T12:07:19.754162",
+      "updated_at": "2026-01-07T15:09:39.682903",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.0002,
+        "batch_size": 32,
+        "epochs": 100
+      },
+      "metrics": {
+        "accuracy": 0.85,
+        "loss": 0.23
+      },
+      "file_path": "D:\\1.6\\1.5\\models\\model_ai_c8c555e6.pth",
+      "hash": "1c5845f1f8cd8b9e0dbd5eb485214f26fd6590d88f5ea3ea072e3a819405cf6d",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      },
+      "accuracy": 0.85
+    },
+    "model_ai_87d52436": {
+      "model_id": "model_ai_87d52436",
+      "name": "TTS文本转语音模型",
+      "description": "用于将文本转换为语音的模型",
+      "type": "ai",
+      "framework": "pytorch",
+      "version": "1.0.0",
+      "status": "ready",
+      "created_at": "2026-01-07T12:07:32.633992",
+      "updated_at": "2026-01-07T12:07:32.633997",
+      "owner_id": "system",
+      "workspace_id": null,
+      "hyperparameters": {
+        "learning_rate": 0.0003,
+        "batch_size": 24,
+        "epochs": 80
+      },
+      "metrics": {},
+      "file_path": "D:\\1.6\\1.5\\models\\model_ai_87d52436.pth",
+      "hash": "2bf653e948427087deb1f4d3ed625aee451a63b7bf5c4cb9dcb0625f86eb2257",
+      "is_pretrained": false,
+      "pretrained_source": null,
+      "model_format": "pytorch",
+      "quantization": {
+        "enabled": false
+      }
+    }
+  },
+  "versions": {
+    "agriculture_classification": [
+      {
+        "model_id": "agriculture_classification_v1",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T00:34:37.040567",
+        "status": "ready"
+      }
+    ],
+    "resource_optimization": [
+      {
+        "model_id": "resource_optimization_v1",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T00:34:37.042517",
+        "status": "ready"
+      }
+    ],
+    "risk_assessment": [
+      {
+        "model_id": "risk_assessment_v1",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T00:34:37.043749",
+        "status": "ready"
+      }
+    ],
+    "pest_detection": [
+      {
+        "model_id": "pest_detection_v1",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T00:34:37.044980",
+        "status": "ready"
+      }
+    ],
+    "yield_prediction": [
+      {
+        "model_id": "yield_prediction_v1",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T00:34:37.046712",
+        "status": "ready"
+      }
+    ],
+    "model_ai_6687e1fa": [
+      {
+        "model_id": "model_ai_6687e1fa",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T12:07:05.700431",
+        "status": "ready"
+      }
+    ],
+    "model_ai_c8c555e6": [
+      {
+        "model_id": "model_ai_c8c555e6",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T12:07:19.754162",
+        "status": "ready"
+      }
+    ],
+    "model_ai_87d52436": [
+      {
+        "model_id": "model_ai_87d52436",
+        "version": "1.0.0",
+        "created_at": "2026-01-07T12:07:32.633992",
+        "status": "ready"
+      }
+    ]
+  },
+  "usage_stats": {
+    "agriculture_classification_v1": {
+      "load_count": 4,
+      "last_loaded": "2026-01-07T15:05:41.310822",
+      "total_load_time": 0.4201478958129883
+    },
+    "resource_optimization_v1": {
+      "load_count": 4,
+      "last_loaded": "2026-01-07T15:05:41.418793",
+      "total_load_time": 0.4278738498687744
+    },
+    "risk_assessment_v1": {
+      "load_count": 4,
+      "last_loaded": "2026-01-07T15:05:41.526486",
+      "total_load_time": 0.4347407817840576
+    },
+    "pest_detection_v1": {
+      "load_count": 1,
+      "last_loaded": "2026-01-07T12:03:38.389034",
+      "total_load_time": 0.11568570137023926
+    },
+    "yield_prediction_v1": {
+      "load_count": 1,
+      "last_loaded": "2026-01-07T12:03:40.261450",
+      "total_load_time": 0.10861468315124512
+    },
+    "model_ai_c8c555e6": {
+      "load_count": 3,
+      "last_loaded": "2026-01-07T14:08:10.740294",
+      "total_load_time": 0.3268592357635498
+    }
+  }
+}

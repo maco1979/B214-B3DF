@@ -1,0 +1,57 @@
+PTZ摄像头视觉对比验证报告
+============================================================
+验证时间: 2026-01-10 13:28:09
+验证类型: 视觉对比验证
+总对比次数: 5
+
+详细结果:
+1. pan_left
+   差异像素数: 305167
+   差异百分比: 99.34%
+   检测到的轮廓数: 1
+   动作前照片: ptz_comparison_动作前_pan_left_20260110_132754.jpg
+   动作后照片: ptz_comparison_动作后_pan_left_20260110_132756.jpg
+   并排对比图: ptz_comparison_side_by_side_pan_left_20260110_132756.jpg
+   差异高亮图: ptz_comparison_with_diff_pan_left_20260110_132756.jpg
+   差异热图: ptz_diff_heatmap_pan_left_20260110_132756.jpg
+
+2. pan_right
+   差异像素数: 252700
+   差异百分比: 82.26%
+   检测到的轮廓数: 16
+   动作前照片: ptz_comparison_动作前_pan_right_20260110_132757.jpg
+   动作后照片: ptz_comparison_动作后_pan_right_20260110_132759.jpg
+   并排对比图: ptz_comparison_side_by_side_pan_right_20260110_132759.jpg
+   差异高亮图: ptz_comparison_with_diff_pan_right_20260110_132759.jpg
+   差异热图: ptz_diff_heatmap_pan_right_20260110_132759.jpg
+
+3. tilt_up
+   差异像素数: 256147
+   差异百分比: 83.38%
+   检测到的轮廓数: 10
+   动作前照片: ptz_comparison_动作前_tilt_up_20260110_132800.jpg
+   动作后照片: ptz_comparison_动作后_tilt_up_20260110_132802.jpg
+   并排对比图: ptz_comparison_side_by_side_tilt_up_20260110_132802.jpg
+   差异高亮图: ptz_comparison_with_diff_tilt_up_20260110_132802.jpg
+   差异热图: ptz_diff_heatmap_tilt_up_20260110_132802.jpg
+
+4. tilt_down
+   差异像素数: 211908
+   差异百分比: 68.98%
+   检测到的轮廓数: 0
+   动作前照片: ptz_comparison_动作前_tilt_down_20260110_132803.jpg
+   动作后照片: ptz_comparison_动作后_tilt_down_20260110_132805.jpg
+   并排对比图: ptz_comparison_side_by_side_tilt_down_20260110_132805.jpg
+   差异高亮图: ptz_comparison_with_diff_tilt_down_20260110_132805.jpg
+   差异热图: ptz_diff_heatmap_tilt_down_20260110_132805.jpg
+
+5. pan_180_degrees
+   差异像素数: 212300
+   差异百分比: 69.11%
+   检测到的轮廓数: 0
+   动作前照片: ptz_comparison_大角度动作前_20260110_132806.jpg
+   动作后照片: ptz_comparison_大角度动作后_20260110_132809.jpg
+   并排对比图: ptz_comparison_side_by_side_pan_180_degrees_20260110_132809.jpg
+   差异高亮图: ptz_comparison_with_diff_pan_180_degrees_20260110_132809.jpg
+   差异热图: ptz_diff_heatmap_pan_180_degrees_20260110_132809.jpg
+

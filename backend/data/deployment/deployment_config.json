@@ -1,0 +1,8 @@
+{
+  "auto_update": true,
+  "update_check_interval": 3600,
+  "install_dir": "./install",
+  "backup_dir": "./backups",
+  "repo_url": "https://github.com/example/ai-assistant",
+  "release_url": "https://api.github.com/repos/example/ai-assistant/releases/latest"
+}

@@ -1,0 +1,20 @@
+# 目标浏览器配置
+# 用于autoprefixer和babel-preset-env确定需要支持的浏览器范围
+
+# 市场份额大于1%的浏览器
+> 1%
+
+# 每个浏览器的最近2个版本
+last 2 versions
+
+# 排除已停止维护的浏览器
+not dead
+
+# 明确不支持IE11（已停止维护）
+not IE 11
+
+# 支持的最低版本（可选，更明确）
+chrome >= 80
+firefox >= 78
+safari >= 13
+edge >= 88

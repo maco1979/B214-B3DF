@@ -1,0 +1,26 @@
+{
+  "agent_decision_0": {
+    "agent_id": "agent_decision_0",
+    "performance_score": 63.4,
+    "success_rate": 1.0,
+    "average_reward": 8.5,
+    "total_tasks": 3,
+    "last_update": "2026-01-05T02:03:43.921798"
+  },
+  "agent_control_1": {
+    "agent_id": "agent_control_1",
+    "performance_score": 63.2,
+    "success_rate": 1.0,
+    "average_reward": 8.0,
+    "total_tasks": 3,
+    "last_update": "2026-01-05T02:03:43.928821"
+  },
+  "agent_learning_2": {
+    "agent_id": "agent_learning_2",
+    "performance_score": 61.6,
+    "success_rate": 1.0,
+    "average_reward": 4.0,
+    "total_tasks": 3,
+    "last_update": "2026-01-05T02:03:43.940427"
+  }
+}

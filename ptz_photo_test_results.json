@@ -1,0 +1,86 @@
+[
+  {
+    "position_name": "home",
+    "description": "初始位置",
+    "target_pan": 0.0,
+    "target_tilt": 0.0,
+    "actual_pan": 0.0,
+    "actual_tilt": 0.0,
+    "move_success": true,
+    "photo_success": false,
+    "photo_result": {
+      "detail": "Not Found"
+    },
+    "timestamp": 1767989394.2055697
+  },
+  {
+    "position_name": "left",
+    "description": "左侧位置",
+    "target_pan": -15.0,
+    "target_tilt": 0.0,
+    "actual_pan": -15.0,
+    "actual_tilt": 0.0,
+    "move_success": true,
+    "photo_success": false,
+    "photo_result": {
+      "detail": "Not Found"
+    },
+    "timestamp": 1767989405.3584464
+  },
+  {
+    "position_name": "right",
+    "description": "右侧位置",
+    "target_pan": 15.0,
+    "target_tilt": 0.0,
+    "actual_pan": 15.0,
+    "actual_tilt": 0.0,
+    "move_success": true,
+    "photo_success": false,
+    "photo_result": {
+      "detail": "Not Found"
+    },
+    "timestamp": 1767989416.5657883
+  },
+  {
+    "position_name": "up",
+    "description": "上方位置",
+    "target_pan": 0.0,
+    "target_tilt": 10.0,
+    "actual_pan": 0.0,
+    "actual_tilt": 10.0,
+    "move_success": true,
+    "photo_success": false,
+    "photo_result": {
+      "detail": "Not Found"
+    },
+    "timestamp": 1767989427.7380111
+  },
+  {
+    "position_name": "down",
+    "description": "下方位置",
+    "target_pan": 0.0,
+    "target_tilt": -10.0,
+    "actual_pan": 0.0,
+    "actual_tilt": -10.0,
+    "move_success": true,
+    "photo_success": false,
+    "photo_result": {
+      "detail": "Not Found"
+    },
+    "timestamp": 1767989438.9565043
+  },
+  {
+    "position_name": "diagonal",
+    "description": "对角线位置",
+    "target_pan": 10.0,
+    "target_tilt": 10.0,
+    "actual_pan": 10.0,
+    "actual_tilt": 10.0,
+    "move_success": true,
+    "photo_success": false,
+    "photo_result": {
+      "detail": "Not Found"
+    },
+    "timestamp": 1767989450.1662722
+  }
+]

@@ -1,0 +1,93 @@
+{
+  "export_time": "2026-01-03T12:59:08.456605",
+  "total_knowledge": 3,
+  "knowledge": [
+    {
+      "id": "agri_know_e447f8a55c866763",
+      "category": "作物管理",
+      "title": "番茄种植技术要点：选择优质种子，适时播种，合理密植。",
+      "content": "番茄种植技术要点：选择优质种子，适时播种，合理密植。",
+      "keywords": [
+        "番茄种植技术要点",
+        "选择优质种子",
+        "适时播种",
+        "合理密植"
+      ],
+      "entities": {
+        "crops": [
+          "番茄"
+        ],
+        "pests": [],
+        "diseases": [],
+        "fertilizers": [],
+        "pesticides": [],
+        "techniques": []
+      },
+      "confidence": 0.6799999999999999,
+      "source": "export_test",
+      "created_at": "2026-01-03T12:59:08.455764",
+      "updated_at": "2026-01-03T12:59:08.455765",
+      "usage_count": 0,
+      "effectiveness": 0.0
+    },
+    {
+      "id": "agri_know_1dce907b31562ccc",
+      "category": "作物管理",
+      "title": "黄瓜施肥管理：基肥为主，追肥为辅，氮磷钾配合施用。",
+      "content": "黄瓜施肥管理：基肥为主，追肥为辅，氮磷钾配合施用。",
+      "keywords": [
+        "黄瓜施肥管理",
+        "基肥为主",
+        "追肥为辅",
+        "氮磷钾配合施用"
+      ],
+      "entities": {
+        "crops": [
+          "黄瓜"
+        ],
+        "pests": [],
+        "diseases": [],
+        "fertilizers": [],
+        "pesticides": [],
+        "techniques": []
+      },
+      "confidence": 0.6799999999999999,
+      "source": "export_test",
+      "created_at": "2026-01-03T12:59:08.455878",
+      "updated_at": "2026-01-03T12:59:08.455880",
+      "usage_count": 0,
+      "effectiveness": 0.0
+    },
+    {
+      "id": "agri_know_7a18e34af56d0e2d",
+      "category": "种植技术",
+      "title": "辣椒病虫害防治：预防为主，综合防治，绿色防控。",
+      "content": "辣椒病虫害防治：预防为主，综合防治，绿色防控。",
+      "keywords": [
+        "辣椒病虫害防治",
+        "预防为主",
+        "综合防治",
+        "绿色防控"
+      ],
+      "entities": {
+        "crops": [
+          "辣椒"
+        ],
+        "pests": [],
+        "diseases": [],
+        "fertilizers": [],
+        "pesticides": [],
+        "techniques": [
+          "综合防治",
+          "绿色防控"
+        ]
+      },
+      "confidence": 0.88,
+      "source": "export_test",
+      "created_at": "2026-01-03T12:59:08.455977",
+      "updated_at": "2026-01-03T12:59:08.455979",
+      "usage_count": 0,
+      "effectiveness": 0.0
+    }
+  ]
+}

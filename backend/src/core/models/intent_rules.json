@@ -1,0 +1,55 @@
+{
+  "open_file": [
+    "打开文件"
+  ],
+  "take_photo": [
+    "拍照"
+  ],
+  "run_command": [
+    "执行命令",
+    "运行命令"
+  ],
+  "list_files": [
+    "列出文件"
+  ],
+  "get_system_info": [
+    "系统信息"
+  ],
+  "navigate": [
+    "导航到",
+    "打开页面",
+    "进入"
+  ],
+  "open_url": [
+    "打开网页",
+    "访问网站",
+    "打开链接"
+  ],
+  "screenshot": [
+    "截图",
+    "截屏"
+  ],
+  "create_file": [
+    "创建文件"
+  ],
+  "copy_file": [
+    "复制文件"
+  ],
+  "delete_file": [
+    "删除文件"
+  ],
+  "start_application": [
+    "启动应用",
+    "打开应用"
+  ],
+  "get_process_list": [
+    "进程列表",
+    "运行的程序"
+  ],
+  "chat": [
+    "你好",
+    "hello",
+    "hi",
+    "在吗"
+  ]
+}

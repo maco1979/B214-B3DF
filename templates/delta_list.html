@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delta记录 - CVE监控系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Delta记录</h1>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        导航菜单
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="/" class="list-group-item list-group-item-action">首页</a>
+                        <a href="/cves" class="list-group-item list-group-item-action">CVE列表</a>
+                        <a href="/deltas" class="list-group-item list-group-item-action active">Delta记录</a>
+                        <a href="/assets" class="list-group-item list-group-item-action">资产列表</a>
+                        <a href="/impact" class="list-group-item list-group-item-action">影响分析</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        Delta记录列表
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>文件名</th>
+                                    <th>获取时间</th>
+                                    <th>变更数量</th>
+                                    <th>新增</th>
+                                    <th>更新</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for delta in deltas %}
+                                <tr>
+                                    <td>{{ delta.file_name }}</td>
+                                    <td>{{ delta.fetchTime }}</td>
+                                    <td>{{ delta.numberOfChanges }}</td>
+                                    <td>{{ delta.new | length }}</td>
+                                    <td>{{ delta.updated | length }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

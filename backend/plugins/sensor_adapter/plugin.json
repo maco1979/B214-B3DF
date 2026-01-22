@@ -1,0 +1,9 @@
+{
+  "name": "SensorAdapter",
+  "version": "1.0.0",
+  "description": "传感器数据适配器插件，用于接入各种类型的传感器",
+  "author": "AI Platform Team",
+  "plugin_type": "sensor_adapter",
+  "dependencies": [],
+  "entry_point": "sensor_adapter.main"
+}

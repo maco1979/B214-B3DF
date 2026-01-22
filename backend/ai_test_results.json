@@ -1,0 +1,883 @@
+{
+  "test_start_time": "2026-01-13T11:16:10.622406",
+  "master_control": {
+    "activate_result": {
+      "success": true,
+      "master_control_active": true,
+      "message": "AI主控已激活",
+      "timestamp": "2026-01-13T11:16:12.689168",
+      "controlled_devices": [
+        {
+          "device_id": 1,
+          "device_name": "AI农业监测站",
+          "action": "auto_adjust",
+          "status": "success"
+        },
+        {
+          "device_id": 2,
+          "device_name": "智能灌溉系统",
+          "action": "auto_adjust",
+          "status": "success"
+        }
+      ],
+      "organic_ai_core_status": "active"
+    },
+    "status_result": {
+      "success": true,
+      "master_control_active": true,
+      "message": "AI主控当前状态: 激活",
+      "timestamp": "2026-01-13T11:16:12.692642"
+    }
+  },
+  "organic_ai_activation": {
+    "activate_result": {
+      "success": true,
+      "message": "有机体AI核心主动迭代已激活",
+      "data": {
+        "state": "idle",
+        "created_at": "2026-01-13T11:15:39.237558",
+        "last_update": "2026-01-13T11:15:39.237560",
+        "decision_count": 0,
+        "learning_memory_size": 0,
+        "performance_metrics": {
+          "success_rate": 0.0,
+          "average_reward": 0.0
+        },
+        "active_iteration": true,
+        "iteration_interval": 60
+      }
+    },
+    "status_result": {
+      "success": true,
+      "data": {
+        "state": "idle",
+        "created_at": "2026-01-13T11:15:39.237558",
+        "last_update": "2026-01-13T11:15:39.237560",
+        "decision_count": 0,
+        "learning_memory_size": 0,
+        "performance_metrics": {
+          "success_rate": 0.0,
+          "average_reward": 0.0
+        },
+        "active_iteration": true,
+        "iteration_interval": 60
+      }
+    }
+  },
+  "organic_ai_evolution": {
+    "success": true,
+    "message": "有机体AI核心网络结构演化完成",
+    "data": {
+      "state": "idle",
+      "created_at": "2026-01-13T11:15:39.237558",
+      "last_update": "2026-01-13T11:15:39.237560",
+      "decision_count": 0,
+      "learning_memory_size": 0,
+      "performance_metrics": {
+        "success_rate": 0.0,
+        "average_reward": 0.0
+      },
+      "active_iteration": true,
+      "iteration_interval": 60
+    }
+  },
+  "decision_making": [
+    {
+      "test_case": 0,
+      "input_data": {
+        "temperature": 20,
+        "humidity": 55,
+        "co2_level": 500,
+        "light_intensity": 800,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 30,
+        "growth_rate": 0.8,
+        "energy_consumption": 400,
+        "resource_utilization": 60,
+        "health_score": 80,
+        "yield_potential": 73,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172708",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0005469322204589844,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 1,
+      "input_data": {
+        "temperature": 21,
+        "humidity": 56,
+        "co2_level": 501,
+        "light_intensity": 801,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 31,
+        "growth_rate": 0.81,
+        "energy_consumption": 401,
+        "resource_utilization": 61,
+        "health_score": 81,
+        "yield_potential": 74,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172712",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0004992485046386719,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 2,
+      "input_data": {
+        "temperature": 22,
+        "humidity": 57,
+        "co2_level": 502,
+        "light_intensity": 802,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 32,
+        "growth_rate": 0.8200000000000001,
+        "energy_consumption": 402,
+        "resource_utilization": 62,
+        "health_score": 82,
+        "yield_potential": 75,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172715",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0005168914794921875,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 3,
+      "input_data": {
+        "temperature": 23,
+        "humidity": 58,
+        "co2_level": 503,
+        "light_intensity": 803,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 33,
+        "growth_rate": 0.8300000000000001,
+        "energy_consumption": 403,
+        "resource_utilization": 63,
+        "health_score": 83,
+        "yield_potential": 76,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172719",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.000591278076171875,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 4,
+      "input_data": {
+        "temperature": 24,
+        "humidity": 59,
+        "co2_level": 504,
+        "light_intensity": 804,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 34,
+        "growth_rate": 0.8400000000000001,
+        "energy_consumption": 404,
+        "resource_utilization": 64,
+        "health_score": 84,
+        "yield_potential": 77,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172723",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0005633831024169922,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 5,
+      "input_data": {
+        "temperature": 25,
+        "humidity": 60,
+        "co2_level": 505,
+        "light_intensity": 805,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 35,
+        "growth_rate": 0.8500000000000001,
+        "energy_consumption": 405,
+        "resource_utilization": 65,
+        "health_score": 85,
+        "yield_potential": 78,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172727",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0006945133209228516,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 6,
+      "input_data": {
+        "temperature": 26,
+        "humidity": 61,
+        "co2_level": 506,
+        "light_intensity": 806,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 36,
+        "growth_rate": 0.8600000000000001,
+        "energy_consumption": 406,
+        "resource_utilization": 66,
+        "health_score": 86,
+        "yield_potential": 79,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172731",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0004963874816894531,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 7,
+      "input_data": {
+        "temperature": 27,
+        "humidity": 62,
+        "co2_level": 507,
+        "light_intensity": 807,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 37,
+        "growth_rate": 0.8700000000000001,
+        "energy_consumption": 407,
+        "resource_utilization": 67,
+        "health_score": 87,
+        "yield_potential": 80,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172735",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0005984306335449219,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 8,
+      "input_data": {
+        "temperature": 28,
+        "humidity": 63,
+        "co2_level": 508,
+        "light_intensity": 808,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 38,
+        "growth_rate": 0.88,
+        "energy_consumption": 408,
+        "resource_utilization": 68,
+        "health_score": 88,
+        "yield_potential": 81,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172739",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0006082057952880859,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 9,
+      "input_data": {
+        "temperature": 29,
+        "humidity": 64,
+        "co2_level": 509,
+        "light_intensity": 809,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 39,
+        "growth_rate": 0.89,
+        "energy_consumption": 409,
+        "resource_utilization": 69,
+        "health_score": 89,
+        "yield_potential": 82,
+        "objective": "maximize_yield",
+        "task_type": "routine_monitoring",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172745",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0017588138580322266,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "risk_analysis": [
+    {
+      "test_case": 0,
+      "input_data": {
+        "temperature": 35,
+        "humidity": 85,
+        "co2_level": 1500,
+        "light_intensity": 1800,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 30,
+        "growth_rate": 0.8,
+        "energy_consumption": 800,
+        "resource_utilization": 90,
+        "health_score": 60,
+        "yield_potential": 50,
+        "objective": "risk_management",
+        "task_type": "high_priority",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172750",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0017714500427246094,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 1,
+      "input_data": {
+        "temperature": 36,
+        "humidity": 86,
+        "co2_level": 1501,
+        "light_intensity": 1801,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 31,
+        "growth_rate": 0.81,
+        "energy_consumption": 801,
+        "resource_utilization": 91,
+        "health_score": 59,
+        "yield_potential": 49,
+        "objective": "risk_management",
+        "task_type": "high_priority",
+        "risk_level": "high"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172755",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0012824535369873047,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 2,
+      "input_data": {
+        "temperature": 37,
+        "humidity": 87,
+        "co2_level": 1502,
+        "light_intensity": 1802,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 32,
+        "growth_rate": 0.8200000000000001,
+        "energy_consumption": 802,
+        "resource_utilization": 92,
+        "health_score": 58,
+        "yield_potential": 48,
+        "objective": "risk_management",
+        "task_type": "high_priority",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172760",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0015609264373779297,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 3,
+      "input_data": {
+        "temperature": 38,
+        "humidity": 88,
+        "co2_level": 1503,
+        "light_intensity": 1803,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 33,
+        "growth_rate": 0.8300000000000001,
+        "energy_consumption": 803,
+        "resource_utilization": 93,
+        "health_score": 57,
+        "yield_potential": 47,
+        "objective": "risk_management",
+        "task_type": "high_priority",
+        "risk_level": "high"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172766",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0017189979553222656,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    },
+    {
+      "test_case": 4,
+      "input_data": {
+        "temperature": 39,
+        "humidity": 89,
+        "co2_level": 1504,
+        "light_intensity": 1804,
+        "spectrum_config": {
+          "uv_380nm": 0.05,
+          "far_red_720nm": 0.1,
+          "white_light": 0.7,
+          "red_660nm": 0.15
+        },
+        "crop_type": "tomato",
+        "growth_day": 34,
+        "growth_rate": 0.8400000000000001,
+        "energy_consumption": 804,
+        "resource_utilization": 94,
+        "health_score": 56,
+        "yield_potential": 46,
+        "objective": "risk_management",
+        "task_type": "high_priority",
+        "risk_level": "low"
+      },
+      "result": {
+        "success": true,
+        "data": {
+          "decision_id": "decision_1768274172770",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0012776851654052734,
+          "recommendations": [
+            "调整LED光谱配比"
+          ],
+          "risk_assessment": {
+            "error": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "batch_decision": {
+    "success": true,
+    "data": {
+      "batch_id": "batch_1768274172",
+      "total_decisions": 3,
+      "total_execution_time": 0.0042400360107421875,
+      "average_execution_time": 0.0014133453369140625,
+      "decisions": [
+        {
+          "decision_id": "batch_batch_1768274172_decision_0",
+          "crop_type": "tomato",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.001180887222290039
+        },
+        {
+          "decision_id": "batch_batch_1768274172_decision_1",
+          "crop_type": "tomato",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0016474723815917969
+        },
+        {
+          "decision_id": "batch_batch_1768274172_decision_2",
+          "crop_type": "tomato",
+          "action": "no_action",
+          "parameters": {},
+          "expected_reward": 0.0,
+          "confidence": 0.0,
+          "execution_time": 0.0014116764068603516
+        }
+      ]
+    }
+  },
+  "collaboration": [
+    {
+      "test_type": "blockchain_status",
+      "result": {
+        "success": true,
+        "data": {
+          "status": "healthy",
+          "initialized": true,
+          "latest_block": {
+            "block_number": 8201,
+            "transaction_count": 88
+          },
+          "timestamp": "2026-01-13T11:16:12.783133"
+        }
+      }
+    },
+    {
+      "test_type": "blockchain_config",
+      "result": {
+        "network_type": "development",
+        "smart_contracts": {
+          "model_registry": {
+            "name": "modelregistry",
+            "version": "1.0",
+            "functions": [
+              "registerModel",
+              "updateModel",
+              "verifyModel",
+              "getModelHistory"
+            ]
+          },
+          "data_provenance": {
+            "name": "dataprovenance",
+            "version": "1.0",
+            "functions": [
+              "recordUsage",
+              "getProvenance",
+              "verifyDataIntegrity"
+            ]
+          },
+          "federated_learning": {
+            "name": "federatedlearning",
+            "version": "1.0",
+            "functions": [
+              "startRound",
+              "submitUpdate",
+              "completeRound",
+              "getRoundStatus"
+            ]
+          }
+        },
+        "fabric_config": {
+          "network_type": "development",
+          "rpc_url": "http://localhost:8545",
+          "chain_id": 1337,
+          "is_development": true
+        }
+      }
+    }
+  ],
+  "system_health": {
+    "health_result": {
+      "status": "healthy",
+      "timestamp": "2026-01-13T11:16:12.791602",
+      "version": "1.0.0",
+      "components": {
+        "jax": "healthy",
+        "flax": "healthy",
+        "models_directory": "healthy"
+      }
+    },
+    "metrics_result": {
+      "success": true,
+      "data": {
+        "inference_requests": 296,
+        "active_models": 2,
+        "edge_nodes": 0,
+        "neural_latency": 42.7,
+        "memory_saturation": 0,
+        "active_connections": 39,
+        "ai_service_status": "healthy",
+        "database_status": "healthy",
+        "cpu_usage": 0,
+        "memory_usage": 0,
+        "disk_usage": 0,
+        "network": {
+          "sent": 0,
+          "received": 0
+        },
+        "timestamp": "2026-01-13T11:16:12.806853"
+      }
+    }
+  },
+  "test_end_time": "2026-01-13T11:16:12.808424",
+  "deactivation": {
+    "deactivate_organic": {
+      "success": true,
+      "message": "有机体AI核心主动迭代已停用",
+      "data": {
+        "state": "idle",
+        "created_at": "2026-01-13T11:15:39.237558",
+        "last_update": "2026-01-13T11:15:39.237560",
+        "decision_count": 0,
+        "learning_memory_size": 0,
+        "performance_metrics": {
+          "success_rate": 0.0,
+          "average_reward": 0.0
+        },
+        "active_iteration": false,
+        "iteration_interval": 60
+      }
+    },
+    "deactivate_master": {
+      "success": true,
+      "master_control_active": false,
+      "message": "AI主控已关闭",
+      "timestamp": "2026-01-13T11:16:12.831750",
+      "controlled_devices": [],
+      "organic_ai_core_status": "inactive"
+    },
+    "status_result": {
+      "success": true,
+      "master_control_active": false,
+      "message": "AI主控当前状态: 关闭",
+      "timestamp": "2026-01-13T11:16:12.834702"
+    }
+  }
+}

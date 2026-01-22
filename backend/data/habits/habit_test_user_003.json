@@ -1,0 +1,206 @@
+[
+  {
+    "behavior_id": "behavior_e99bc058-173b-4c3f-9f71-d010b80ef306",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.95
+    },
+    "timestamp": 1768030470.158236,
+    "datetime": "2026-01-10T15:34:30.158236"
+  },
+  {
+    "behavior_id": "behavior_9bf73bb4-bc35-470f-a844-904e120aa850",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030470.167073,
+    "datetime": "2026-01-10T15:34:30.167073"
+  },
+  {
+    "behavior_id": "behavior_73be0216-fa39-4b3f-8b37-cbfab1dc6bcf",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "static_analysis_agent",
+      "success": false,
+      "satisfaction": 0.6
+    },
+    "timestamp": 1768030470.179415,
+    "datetime": "2026-01-10T15:34:30.179415"
+  },
+  {
+    "behavior_id": "behavior_5bdb3bc5-3d81-4009-88f9-665cb5bc4767",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "error_monitor_agent",
+      "success": true,
+      "satisfaction": 0.7
+    },
+    "timestamp": 1768030470.188757,
+    "datetime": "2026-01-10T15:34:30.188757"
+  },
+  {
+    "behavior_id": "behavior_9782c754-7cb0-4cc2-9d67-a80d3a853600",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.95
+    },
+    "timestamp": 1768030526.855355,
+    "datetime": "2026-01-10T15:35:26.855355"
+  },
+  {
+    "behavior_id": "behavior_a7f641c8-4432-4af8-9d3c-6b7003d54522",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.95
+    },
+    "timestamp": 1768030616.440595,
+    "datetime": "2026-01-10T15:36:56.440595"
+  },
+  {
+    "behavior_id": "behavior_2238d466-6e91-4ec1-bbce-0540d06155ec",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030616.451211,
+    "datetime": "2026-01-10T15:36:56.451211"
+  },
+  {
+    "behavior_id": "behavior_e264e089-0a3b-4198-a796-743892ebe199",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "static_analysis_agent",
+      "success": false,
+      "satisfaction": 0.6
+    },
+    "timestamp": 1768030616.460258,
+    "datetime": "2026-01-10T15:36:56.460258"
+  },
+  {
+    "behavior_id": "behavior_defafae8-e382-471a-8519-37bc0ff93ee9",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "error_monitor_agent",
+      "success": true,
+      "satisfaction": 0.7
+    },
+    "timestamp": 1768030616.470269,
+    "datetime": "2026-01-10T15:36:56.470269"
+  },
+  {
+    "behavior_id": "behavior_8acc8f49-c266-41b4-8606-9ca12e468e88",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.95
+    },
+    "timestamp": 1768030644.259186,
+    "datetime": "2026-01-10T15:37:24.259186"
+  },
+  {
+    "behavior_id": "behavior_efee380d-66eb-4856-a21d-055134fe1daa",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030644.268516,
+    "datetime": "2026-01-10T15:37:24.268516"
+  },
+  {
+    "behavior_id": "behavior_9964e8b9-674c-48b8-b40e-259dd63b6a21",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "static_analysis_agent",
+      "success": false,
+      "satisfaction": 0.6
+    },
+    "timestamp": 1768030644.27758,
+    "datetime": "2026-01-10T15:37:24.277580"
+  },
+  {
+    "behavior_id": "behavior_0cd6dec8-f2d1-4123-90e9-6146465a241d",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "error_monitor_agent",
+      "success": true,
+      "satisfaction": 0.7
+    },
+    "timestamp": 1768030644.287241,
+    "datetime": "2026-01-10T15:37:24.287241"
+  },
+  {
+    "behavior_id": "behavior_cb535c67-624d-4e29-8857-609b1abb70c9",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.95
+    },
+    "timestamp": 1768030668.88062,
+    "datetime": "2026-01-10T15:37:48.880620"
+  },
+  {
+    "behavior_id": "behavior_1e7a3711-514f-4ffe-9a66-6203b30ea1f1",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "auto_test_agent",
+      "success": true,
+      "satisfaction": 0.9
+    },
+    "timestamp": 1768030668.890704,
+    "datetime": "2026-01-10T15:37:48.890704"
+  },
+  {
+    "behavior_id": "behavior_49a6c855-b2c2-44c3-820c-ef504dcd79ce",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "static_analysis_agent",
+      "success": false,
+      "satisfaction": 0.6
+    },
+    "timestamp": 1768030668.898449,
+    "datetime": "2026-01-10T15:37:48.898449"
+  },
+  {
+    "behavior_id": "behavior_80e1c236-7710-4d3d-b7e4-a2aa6f60de4f",
+    "user_id": "test_user_003",
+    "behavior_type": "agent_interaction",
+    "params": {
+      "agent_id": "error_monitor_agent",
+      "success": true,
+      "satisfaction": 0.7
+    },
+    "timestamp": 1768030668.908381,
+    "datetime": "2026-01-10T15:37:48.908381"
+  }
+]

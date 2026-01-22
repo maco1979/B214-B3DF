@@ -1,0 +1,60 @@
+Python version: 3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]
+CWD: d:\1.5
+Sys Path: ['d:/1.5/backend\\src', 'd:/1.5/backend', 'd:\\1.5', 'C:\\Python314\\python314.zip', 'C:\\Python314\\DLLs', 'C:\\Python314\\Lib', 'C:\\Python314', 'C:\\Users\\42235\\AppData\\Roaming\\Python\\Python314\\site-packages', 'D:\\1.4\\src', 'C:\\Users\\42235\\AppData\\Roaming\\Python\\Python314\\site-packages\\win32', 'C:\\Users\\42235\\AppData\\Roaming\\Python\\Python314\\site-packages\\win32\\lib', 'C:\\Users\\42235\\AppData\\Roaming\\Python\\Python314\\site-packages\\Pythonwin', 'C:\\Python314\\Lib\\site-packages']
+Traceback (most recent call last):
+  File "d:\1.5\test_imports.py", line 14, in <module>
+    from src.core.services import model_manager
+  File "d:\1.5/backend\src\core\services\__init__.py", line 7, in <module>
+    from .inference_engine import InferenceEngine
+  File "d:\1.5/backend\src\core\services\inference_engine.py", line 11, in <module>
+    from flax.training import train_state
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\__init__.py", line 26, in <module>
+    from flax import linen
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\__init__.py", line 67, in <module>
+    from .attention import (
+    ...<8 lines>...
+    )
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\attention.py", line 35, in <module>
+    from flax.linen.normalization import LayerNorm
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\normalization.py", line 1184, in <module>
+    class WeightNorm(Module):
+    ...<206 lines>...
+        return jnp.asarray(value_bar, dtype)
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\module.py", line 1042, in __init_subclass__
+    cls._customized_dataclass_transform(kw_only)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\module.py", line 1114, in _customized_dataclass_transform
+    kw_only_dataclasses.dataclass(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+      cls,
+      ^^^^
+    ...<2 lines>...
+      extra_fields=extra_fields,
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )  # pytype: disable=wrong-keyword-args
+    ^
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\kw_only_dataclasses.py", line 125, in dataclass
+    return wrap if cls is None else wrap(cls)
+                                    ~~~~^^^^^
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\kw_only_dataclasses.py", line 123, in wrap
+    return _process_class(cls, extra_fields=extra_fields, **kwargs)
+  File "C:\Users\42235\AppData\Roaming\Python\Python314\site-packages\flax\linen\kw_only_dataclasses.py", line 210, in _process_class
+    transformed_cls: type[M] = dataclasses.dataclass(cls, **kwargs)
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\dataclasses.py", line 1370, in dataclass
+    return wrap(cls)
+  File "C:\Python314\Lib\dataclasses.py", line 1360, in wrap
+    return _process_class(cls, init, repr, eq, order, unsafe_hash,
+                          frozen, match_args, kw_only, slots,
+                          weakref_slot)
+  File "C:\Python314\Lib\dataclasses.py", line 1038, in _process_class
+    raise TypeError(f'{name!r} is a field but has no type annotation')
+TypeError: 'variable_filter' is a field but has no type annotation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\1.5\test_imports.py", line 23, in <module>
+    print(f"\u274c Failed to import model_manager service: {e}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'gbk' codec can't encode character '\u274c' in position 0: illegal multibyte sequence
